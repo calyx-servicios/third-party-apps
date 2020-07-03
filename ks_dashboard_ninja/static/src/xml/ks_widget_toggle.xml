@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates>
+    <t t-name="ks_widget_toggle">
+        <div class="ks_select_dashboard_item_toggle">
+            <div class="ks_select_icon_div">
+                <input id="ks_default_icon" type="radio" name="default_custom_icon_toggle"
+                       class="ks_toggle_icon_input" value="Default"/> Default Icons
+            </div>
+            <div class="ks_select_icon_div">
+                <input id="ks_custom_icon" type="radio" name="default_custom_icon_toggle" class="ks_toggle_icon_input"
+                       value="Custom"/> Upload Icon
+            </div>
+        </div>
+    </t>
+</templates>
