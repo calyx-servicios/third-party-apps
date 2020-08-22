@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="base.group_user" model="res.groups">
+        <!-- 
+            Enable beta reports on demo
+         -->
+        <field eval="[
+            (4, ref('l10n_ar_account_reports.group_beta_argentina_reports')),
+        ]" name="implied_ids"/>
+    </record>
+
+</odoo>
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- creamos este item de menu padre para poder meterlos en algo beta, tal vez después lo podemos sacar -->
+    <menuitem id="account_reports_ar_positions" name="Posiciones de impuestos" parent="l10n_ar_account.account_reports_ar_statements_menu" sequence="90" groups="group_beta_argentina_reports"/>
+
+    <!-- VAT POSITION -->
+    <record id="account_financial_report_vat_position" model="account.financial.html.report">
+        <field name="name">Posición de IVA (Beta)</field>
+        <field name="debit_credit" eval="True"/>
+        <field name="report_type">date_range</field>
+        <field name='parent_id' ref='account_reports_ar_positions'/>
+    </record>
+
+    <record id="account_financial_report_vat_position_position" model="account.financial.html.report.line">
+        <field name="name">Posición Período</field>
+        <field name="code">position</field>
+        <field name="formulas">debit = primer_parrafo.debit + segundo_parrafo.debit; credit = primer_parrafo.credit + segundo_parrafo.credit; balance=primer_parrafo.balance + segundo_parrafo.balance</field>
+        <field name="financial_report_id" ref="account_financial_report_vat_position"/>
+        <field name="special_date_changer">strict_range</field>
+        <field name="sequence" eval="1"/>
+        <field name="level" eval="0" />
+    </record>
+
+    <record id="account_financial_report_vat_position_primer" model="account.financial.html.report.line">
+        <!-- <field name="name">Iva Saldo Técnico</field> -->
+        <field name="name">Primer Párrafo</field>
+        <field name="code">primer_parrafo</field>
+        <field name="parent_id" ref="account_financial_report_vat_position_position"/>
+        <field name="formulas">debit = sum.debit; credit = sum.credit; balance=sum.balance</field>
+        <!-- <field name="domain">[('tax_line_id.tax_group_id.tax', '=', 'vat'), ('tax_line_id.tax_group_id.type', '=', 'tax')]</field> -->
+        <field name="domain" eval="[('account_id.tag_ids', 'in', [ref('l10n_ar_account.tag_iva_primer_parrafo')])]"/>
+        <!-- por ahora neteamos asi controlamos que nos quede en cero -->
+        <!-- <field name="domain">[('tax_line_id.tax_group_id.tax', '=', 'vat'), ('tax_line_id.tax_group_id.type', '=', 'tax'), ('journal_id.type', '!=', 'generic')]</field> -->
+        <field name="special_date_changer">strict_range</field>
+        <field name="show_domain">always</field>
+        <field name="groupby">account_id</field>
+        <field name="sequence" eval="1"/>
+        <field name="level" eval="2"/>
+    </record>
+
+    <record id="account_financial_report_vat_position_segundo" model="account.financial.html.report.line">
+        <field name="name">Segundo Párrafo</field>
+        <field name="code">segundo_parrafo</field>
+        <field name="parent_id" ref="account_financial_report_vat_position_position"/>
+        <field name="formulas">debit = sum.debit; credit = sum.credit; balance=sum.balance</field>
+        <!-- por ahora neteamos asi controlamos que nos quede en cero -->
+        <field name="domain" eval="[('account_id.tag_ids', 'in', [ref('l10n_ar_account.tag_a_cuenta_iva')])]"/>
+        <!-- <field name="domain">[('tax_line_id.tax_group_id.tax', '=', 'vat'), ('tax_line_id.tax_group_id.type', '!=', 'tax'), ('journal_id.type', '!=', 'generic')]</field> -->
+        <field name="special_date_changer">strict_range</field>
+        <field name="show_domain">always</field>
+        <field name="groupby">account_id</field>
+        <field name="sequence" eval="2"/>
+        <field name="level" eval="2"/>
+    </record>
+</odoo>
