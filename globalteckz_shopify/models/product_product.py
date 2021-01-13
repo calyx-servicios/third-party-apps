@@ -38,9 +38,16 @@ class ProductProduct(models.Model):
     gt_shopify_exported = fields.Boolean(string='Shopify Exported')
     gt_fullfilment_service = fields.Many2one('gt.fulfillment.service', string='Fullfilment Service')
     gt_inventory_management = fields.Many2one('gt.inventory.management', string='Inventory Management')
-    
-    
-    
+    gt_product_inventory_id = fields.Char('Product Inventory ID')
+
+    @api.multi
+    def _get_primary_stock_location(self):
+        stores = self.env['gt.shopify.store'].search([])
+        for store in stores:
+            if store.id == self.gt_shopify_instance_id.id:
+                return store.primary_stock_location
+
+
     @api.multi
     def update_variant(self,products_response,instance,log_id):
         policy_obj = self.env['gt.inventory.policy']
@@ -77,6 +84,7 @@ class ProductProduct(models.Model):
                     weights = weight_id.id
                 else:
                     weights = uom_obj.create({'name':str(products_response['weight_unit']),'gt_shopify_instance_id':instance.id}).id
+            
             vals = {
                 'gt_requires_shipping': str(products_response['requires_shipping']) if 'requires_shipping' in products_response else '',
                 'gt_product_id': products_response['id'] if 'id' in products_response else '',
@@ -86,7 +94,6 @@ class ProductProduct(models.Model):
                 'uom_id' : weights,
                 'uom_po_id': weights,
                 'gt_inventory_policy': policies,
-                'barcode' : products_response['barcode'] if 'barcode' in products_response else '',
                 'gt_shopify_instance_id': instance.id,
                 'gt_shopify_exported': True,
                 'gt_shopify_product':True,
@@ -94,6 +101,7 @@ class ProductProduct(models.Model):
                 'gt_inventory_management':management,
             }
             self.write(vals)
+            #'barcode' : products_response['barcode'] if 'barcode' in products_response else '',
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
             log_line_obj.create({'name':'Create Product Template','description':exc,'create_date':date.today(),

@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <record model="ir.ui.view" id="gt_view_product_product_easy_shopify">
+        <field name="name">product product</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="after">
+                <field name="gt_product_id"/>
+            </xpath>
+        </field>
+    </record>
+
     <record model="ir.ui.view" id="gt_view_product_product_shopify">
         <field name="name">product product</field>
         <field name="model">product.product</field>

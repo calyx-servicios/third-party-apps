@@ -20,6 +20,7 @@
                             <field name="gt_store_zipcode"/>
                             <field name="gt_store_country_name"/>
                             <field name="gt_shopify_instance_id"/>
+                            <field name="primary_stock_location"/>
                         </group>
                         <group>
                             <field name="gt_store_plan_display_name"/>

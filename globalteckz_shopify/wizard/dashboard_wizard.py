@@ -42,7 +42,7 @@ class ShopifyWizard(models.Model):
         context = dict(self._context or {})
         active_id = context.get('active_ids')
         shop_id = shop_obj.browse(active_id)
-        instance_ids=self.instance_ids
+        instance_ids=self.gt_shopify_instance_ids
 #     IMPORT FUNCTION
         if self.import_attribute_sets == True:
             instance_ids.import_att_set()
@@ -71,7 +71,7 @@ class ShopifyWizard(models.Model):
 #             shop_id
 #     UPDATE FUNCTION
         if self.update_stock == True:
-            instance_ids.updateProductStock()
+            instance_ids.gt_export_shopify_stock()
             
         if self.update_product == True:
             instance_ids.updateSimpleProductDashboard(shop_id)  

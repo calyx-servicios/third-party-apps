@@ -19,6 +19,9 @@
 ###############################################################################
 
 from odoo import fields,api,models, tools
+from datetime import date
+import requests
+import json
 import itertools
 import psycopg2
 #from odoo.exceptions import ValidationError, except_orm
@@ -41,6 +44,50 @@ class ProductTemplate(models.Model):
     gt_shopify_exported = fields.Boolean(string='Shopify Exported')
     gt_shopify_product_type = fields.Many2one('gt.shopify.product.type',string='Product Type')
     
+    @api.multi
+    def update_variant_ids(self,shopify_instance_id):
+        
+        shopify_url = str(shopify_instance_id.gt_location)
+        api_key = str(shopify_instance_id.gt_api_key)
+        api_pass = str(shopify_instance_id.gt_password)
+        shop_url = shopify_url + 'admin/products.json'
+        response = requests.get( shop_url,auth=(api_key,api_pass))
+        product_rs=json.loads(response.text)
+        product_items = product_rs['products']
+        product_obj = self.env['product.product']
+
+        for products in product_items:
+            if 'variants' in products:
+                for variant in products['variants']:
+                    if 'id' in variant:
+                        product_id = product_obj.search([('default_code','=',variant['product_id'])])
+                        if product_id:                      
+                            if variant['option3'] != None:
+                                for product in product_id:
+                                    variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name, product.attribute_value_ids[2].name ]
+                                    if (variant['option1'] in variantes) and (variant['option2'] in variantes) and (variant['option3'] in variantes):
+                                        product.write({'gt_product_id': variant['id']})
+                                        product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                        product.write({'gt_shopify_exported': True})
+                            elif variant['option2'] != None:
+                                for product in product_id:
+                                    variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name]
+                                    if (variant['option1'] in variantes) and (variant['option2'] in variantes):
+                                        product.write({'gt_product_id': variant['id']})
+                                        product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                        product.write({'gt_shopify_exported': True})
+                            elif variant['option1'] != None:
+                                for product in product_id:
+                                    if product.attribute_value_ids.name == variant['option1'] :
+                                        product.write({'gt_product_id': variant['id']})
+                                        product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                        product.write({'gt_shopify_exported': True})
+                        else:
+                            product = product_obj.search([('product_tmpl_id.gt_product_id','=',products['id'])])
+                            if product:
+                                product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                product.write({'gt_shopify_exported': True})
+
     @api.multi
     def gt_create_product_template(self,products,instance,log_id):
         product_obj = self.env['product.product']
@@ -85,10 +132,23 @@ class ProductTemplate(models.Model):
                             tags_id = tags_obj.create({'name':str(tags),'gt_shopify_instance_id':instance.id})
                             tags_lst.append(tags_id.id)
             variant = []
-            if len(products['options']) == 1:
+            
+            def _variants(self):
+
+                if len(self) == 1:
+                    return len(self[0]['values'])
+                elif len(self) == 2:
+                    return len(self[1]['values'])
+                elif len(self) == 3:
+                    return len(self[2]['values'])    
+                else:  
+                    return 1
+
+            if _variants(products['options']) == 1:
                 for options in products['options']:
                     if str(options['name']) != 'Title':
                         print ('options++++++=', options)
+
             else:
                 for options in products['options']:
                     attribute_id = []
@@ -202,6 +262,9 @@ class ProductTemplate(models.Model):
                     product_product = product_obj.search([('default_code','=',str(variant['product_id']))])
                     if product_product:
                         product_product.update_variant(variant,instance,log_id)
+            
+            self.update_variant_ids(instance)
+
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
             log_line_obj.create({'name':'Create Product Template','description':exc,'create_date':date.today(),
@@ -217,6 +280,7 @@ class ProductTemplate(models.Model):
         for tmpl_id in self.with_context(active_test=False):
             # adding an attribute with only one value should not recreate product
             # write this attribute on every product to make sure we don't lose them
+            
             variant_alone = tmpl_id.attribute_line_ids.filtered(lambda line: len(line.value_ids) == 1).mapped('value_ids')
             for value_id in variant_alone:
                 updated_products = tmpl_id.product_variant_ids.filtered(lambda product: value_id.attribute_id not in product.mapped('attribute_value_ids.attribute_id'))
@@ -322,55 +386,51 @@ class ProductTemplate(models.Model):
 #        return True
 #    
 #    
-    
+    @api.multi
+    def updateProductStock(self):
+
+        import wdb
+        wdb.set_trace()
+
+        product_obj = self.env['product.product']
+        shopify_url = str(self.gt_shopify_instance_id.gt_location)
+        api_key = str(self.gt_shopify_instance_id.gt_api_key)
+        api_pass = str(self.gt_shopify_instance_id.gt_password)
+        product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('gt_shopify_product','=',True),('gt_shopify_exported','=', True),('product_tmpl_id.id', '=', self.id )])
+        for products in product_ids:
+            if products.qty_available >= 0:
+                vals =  {
+                    "location_id": products._get_primary_stock_location(),
+                    "inventory_item_id": products.gt_product_inventory_id,
+                    "available": int(products.qty_available),
+                }
+                shop_url = shopify_url + 'admin/api/2021-01/inventory_levels/set.json'
+                response = requests.post(shop_url,auth=(api_key,api_pass),data=vals)
+                product_rs=json.loads(response.text)    
+
+
     @api.multi
     def gt_export_shopify_product(self):
+
         log_obj = self.env['shopify.log']
         log_line_obj = self.env['shopify.log.details']
-        log_id = log_obj.create({'create_date':date.today(),'name': 'Import Product','description': 'Successfull','gt_shopify_instance_id': self.id})
         product_tmpl_obj = self.env['product.template']
         product_obj = self.env['product.product']
-        #try:
-        shopify_url = str(self.gt_location)
-        api_key = str(self.gt_api_key)
-        api_pass = str(self.gt_password)
-        #product_ids = product_tmpl_obj.search([('gt_shopify_exported','=', False),('gt_shopify_product','=',True)])
-        ids = product_tmpl_obj.search([('id','=', 7)])
-        ids.write({'gt_shopify_exported':True})
-        self._cr.commit()
+        shopify_url = str(self.gt_shopify_instance_id.gt_location)
+        api_key = str(self.gt_shopify_instance_id.gt_api_key)
+        api_pass = str(self.gt_shopify_instance_id.gt_password)
+
         for products in self:
+
             tag = ''
             if len(products.gt_product_tags) == 1:
                 tag = str(products.gt_product_tags.name)
             else:
                 for tags in products.gt_product_tags:
                     tag += str(tags.name)+',' 
-            if len(products.product_variant_ids) == 1:
-                vals = {        
-                    "product": {
-                        "title":str(products.name),
-                        "body_html":str(products.gt_shopify_description),
-                        "vendor": str(products.gt_vendor.name),
-                        "product_type": str(products.gt_shopify_product_type.name),
-                        "published_scope" : str(products.gt_published_scope.name),
-                        "tags": tag,
-                        "variants": [
-                            {
-                              "price": str(products.list_price),
-                              "sku": str(products.default_code),
-                              #"inventory_policy": products.product_variant_ids.gt_inventory_policy.name,
-                              "fulfillment_service": str(products.product_variant_ids.gt_fullfilment_service.name),
-                              "inventory_management": str(products.product_variant_ids.gt_inventory_management.name),
-                              "taxable": str(True),
-                              "barcode": str(products.barcode),
-                              "weight": str(products.weight),
-                              "weight_unit": str(products.product_variant_ids.uom_id.name),
-                              "requires_shipping": str(products.product_variant_ids.gt_requires_shipping),
-                            }
-                          ],
-                    }
-                }
-            else:
+
+            if len(products.product_variant_ids) > 1 and not products.gt_product_id:
+
                 list_variant = []
                 option1_list = []
                 option2_list = []
@@ -389,11 +449,12 @@ class ProductTemplate(models.Model):
                         attribute1 = str(atts.attribute_value_ids[0].attribute_id.name)
                         attribute2 = str(atts.attribute_value_ids[1].attribute_id.name)
                         attribute3 = str(atts.attribute_value_ids[2].attribute_id.name)
+
                 for variants in products.product_variant_ids:
                     option1 = ''
                     option2 = ''
                     option3 = ''
-                    if len(variants.attribute_value_ids) == 3:
+                    if len(variants.attribute_value_ids) <= 3:
                         for atts in variants.attribute_value_ids:
                             if attribute1 == str(atts.attribute_id.name):
                                 option1 = str(atts.name)
@@ -407,52 +468,92 @@ class ProductTemplate(models.Model):
                                 option3 = str(atts.name)
                                 if str(atts.name) not in option3_list:
                                     option3_list.append(option3)
+
                     vals_variant = {
                             "price": str(variants.lst_price),
                             "sku": str(variants.default_code),
-                            #"inventory_policy": products.product_variant_ids.gt_inventory_policy.name,
-                            "fulfillment_service": str(variants.gt_fullfilment_service.name),
-                            "inventory_management": str(variants.gt_inventory_management.name),
-                            "taxable": str(True),
                             "barcode": str(variants.barcode),
-                            "weight": str(variants.weight),
-                            "weight_unit": str(variants.uom_id.name),
-                            "requires_shipping": str(variants.gt_requires_shipping),
                             "option1": option1,
                             "option2": option2,
                             "option3": option3,
                           }
+
                     list_variant.append(vals_variant)
+
+
                 if len(option1_list) > 0:
-                    vals_option = {"name": attribute1,"position": 1,"values": option1_list}
+                    vals_option = {"name": attribute1, "values": option1_list}
                     options.append(vals_option)
                 if len(option2_list) > 0:
-                    vals_option = { "name": attribute2,"position": 2,"values": option2_list}
+                    vals_option = { "name": attribute2, "values": option2_list}
                     options.append(vals_option)
                 if len(option3_list) > 0:
-                    vals_option = {"name": attribute3,"position": 3,"values": option3_list}
+                    vals_option = {"name": attribute3, "values": option3_list}
                     options.append(vals_option)
+                import wdb
+                wdb.set_trace()
+
                 vals = {
                     "product": {
                       "title": str(products.name),
                       "body_html": str(products.gt_shopify_description),
-                      "vendor": str(products.gt_vendor.name),
                       "product_type": str(products.gt_shopify_product_type.name),
-                      "published_scope" : str(products.gt_published_scope.name),
+                      "inventory_management": "shopify",
                       "tags": tag,
-                      "variants": list_variant,
                       "options": options,
+                      "variants": list_variant,
+
                     }
                   }
-            payload=str(vals)
-            payload=payload.replace("'",'"')
-            payload=str(payload)
-            shop_url = shopify_url + 'admin/products.json'
-            response = requests.post( shop_url,auth=(api_key,api_pass),data=payload,  headers={'Content-Type': 'application/json',})
-            product_rs=json.loads(response.text)    
-            if str(response) == '<Response [201]>':
-                products.write({'gt_shopify_exported': True})
-                products.product_variant_ids.write({'gt_shopify_exported': True})
+
+                payload= json.dumps(vals)
+                shop_url = shopify_url + 'admin/api/2021-01/products.json'
+                response = requests.post( shop_url,auth=(api_key,api_pass), data=payload, headers={'Content-Type': 'application/json',})
+
+                if str(response) == '<Response [201]>':
+                    prod_id = response.json()["product"]["id"]
+                    products.write({'gt_shopify_exported': True, 'gt_product_id': prod_id})
+
+                    shop_url = shopify_url + 'admin/api/2021-01/products/'+str(prod_id)+'/variants.json'
+                    response = requests.get(shop_url,auth=(api_key,api_pass))
+                    variants = json.loads(response.text)
+
+                    
+                    products_id = self.env['product.product'].search([('product_tmpl_id.gt_product_id','=',prod_id)])
+
+                    for product_id in products_id:
+
+                        for variant in variants['variants']:
+
+                            if variant['option3'] != None:
+                                for product in product_id:
+                                    variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name, product.attribute_value_ids[2].name ]
+                                    if (variant['option1'] in variantes) and (variant['option2'] in variantes) and (variant['option3'] in variantes):
+                                        product.write({'gt_product_id': variant['id']})
+                                        product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                        product.write({'gt_shopify_exported': True})
+                                        product.write({'gt_shopify_instance_id': self.gt_shopify_instance_id.id})
+                            elif variant['option2'] != None:
+                                for product in product_id:
+                                    variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name]
+                                    if (variant['option1'] in variantes) and (variant['option2'] in variantes):
+                                        product.write({'gt_product_id': variant['id']})
+                                        product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                        product.write({'gt_shopify_exported': True})
+                                        product.write({'gt_shopify_instance_id': self.gt_shopify_instance_id.id})
+                            elif variant['option1'] != None:
+                                for product in product_id:
+                                    if product.attribute_value_ids.name == variant['option1'] :
+                                        product.write({'gt_product_id': variant['id']})
+                                        product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                        product.write({'gt_shopify_exported': True})
+                                        product.write({'gt_shopify_instance_id': self.gt_shopify_instance_id.id})
+                            else:
+                                product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                product.write({'gt_shopify_exported': True})
+                                product.write({'gt_shopify_instance_id': self.gt_shopify_instance_id.id})
+
+
 #        except Exception as exc:
 #            logger.error('Exception===================:  %s', exc)
 #            log_id.write({'description': exc}) 

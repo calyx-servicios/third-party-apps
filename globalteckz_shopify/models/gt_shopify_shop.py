@@ -46,3 +46,4 @@ class GTShopifyStore(models.Model):
     gt_store_plan_display_name = fields.Char(string='Display Name')
     gt_store_phone = fields.Char(string='Phone')
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance')
+    primary_stock_location = fields.Char(string='Primary Location Stock ID',size=64,required=True)
