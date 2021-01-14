@@ -37,7 +37,7 @@ class GTShopifyInstance(models.Model):
     gt_location = fields.Char(string='Location',size=64,required=True)
     gt_api_key = fields.Char(string='Api Key',size=64,required=True)
     gt_password = fields.Char(string='password',size=64,required=True)
-    gt_worflow_id = fields.Many2one('gt.import.order.workflow', string='Workflow & Settings')
+    gt_workflow_id = fields.Many2one('gt.import.order.workflow', string='Workflow & Settings')
     count_shopify_shop = fields.Integer(compute='get_shopify_shop_count')
     count_shopify_orders = fields.Integer(compute='get_shopify_orders_count')
     count_shopify_customers = fields.Integer(compute='get_shopify_customers_count')
@@ -159,6 +159,9 @@ class GTShopifyInstance(models.Model):
             product_items = product_rs['products']
             for products in product_items:
                 product_tmpl_obj.gt_create_product_template(products,self,log_id)
+            
+            product_tmpl_obj.update_variant_ids(self)
+        
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
             log_id.write({'description': exc}) 
@@ -331,6 +334,29 @@ class GTShopifyInstance(models.Model):
 #            log_id.write({'description': exc}) 
         return True
 
+
+    @api.multi
+    def _get_primary_stock_location(self):
+        stores = self.env['gt.shopify.store'].search([])
+        for store in stores:
+            if store.id == self.id:
+                return store.primary_stock_location
+
+    
+    def get_inventory_variant(self, inventory_item_id):
+
+        shopify_url = str(self.gt_location)
+        api_key = str(self.gt_api_key)
+        api_pass = str(self.gt_password)
+        shop_url = shopify_url + 'admin/api/2021-01/inventory_levels.json?inventory_item_ids=' + str(inventory_item_id)
+        response = requests.get( shop_url,auth=(api_key,api_pass))
+        product_rs=json.loads(response.text)
+
+        for location in product_rs['inventory_levels']:
+            if str(location['location_id']) == self._get_primary_stock_location():
+                return location['available']
+
+    
     @api.one
     def gt_import_shopify_stock(self):
         log_obj = self.env['shopify.log']
@@ -348,6 +374,8 @@ class GTShopifyInstance(models.Model):
             product_rs=json.loads(response.text)
             product_items = product_rs['products']
             inventory_id = stock_inv_obj.create({'name':'update stock'+' '+str(datetime.datetime.now())})
+            stock_location_id = self.gt_workflow_id.stock_location_id.id
+
             for products in product_items:
                 try:
                     if 'variants' in products:
@@ -357,26 +385,26 @@ class GTShopifyInstance(models.Model):
                                     if int(variant['inventory_quantity']) > 0:
                                         product_id = product_obj.search([('gt_product_id','=',variant['id'])])
                                         if product_id:
-                                            stock_inve_line_obj.create({'inventory_id':inventory_id.id,'location_id':15,'product_id':product_id.id,'product_qty':int(variant['inventory_quantity'])})
+                                            stock_inve_line_obj.create({'inventory_id':inventory_id.id,'location_id':self.gt_workflow_id.stock_location_id.id,'product_id':product_id.id,'product_qty':int(self.get_inventory_variant(variant['inventory_item_id']))})
                                         else:
                                             product_id = product_obj.search([('default_code','=',variant['product_id'])])
                                             if variant['option3'] != None :
                                                 for product in product_id:
                                                     variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name, product.attribute_value_ids[2].name ]
                                                     if (variant['option1'] in variantes) and (variant['option2'] in variantes) and (variant['option3'] in variantes):
-                                                        stock_inve_line_obj.create({'inventory_id':inventory_id.id,'location_id':15,'product_id':product.id,'product_qty':int(variant['inventory_quantity'])})                                                    
+                                                        stock_inve_line_obj.create({'inventory_id':inventory_id.id,'location_id':self.gt_workflow_id.stock_location_id.id,'product_id':product_id.id,'product_qty':int(self.get_inventory_variant(variant['inventory_item_id']))})
 
                                             elif variant['option2'] != None:
                                                 for product in product_id:
                                                     variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name]
                                                     if (variant['option1'] in variantes) and (variant['option2'] in variantes):
-                                                        stock_inve_line_obj.create({'inventory_id':inventory_id.id,'location_id':15,'product_id':product.id,'product_qty':int(variant['inventory_quantity'])})
+                                                        stock_inve_line_obj.create({'inventory_id':inventory_id.id,'location_id':self.gt_workflow_id.stock_location_id.id,'product_id':product_id.id,'product_qty':int(self.get_inventory_variant(variant['inventory_item_id']))})
 
                                             elif variant['option1'] != None:
                                                 product_id = product_obj.search([('default_code','=',variant['product_id'])])
                                                 for product in product_id:
                                                     if product.attribute_value_ids.name == variant['option1'] :
-                                                        stock_inve_line_obj.create({'inventory_id':inventory_id.id,'location_id':15,'product_id':product.id,'product_qty':int(variant['inventory_quantity'])})
+                                                        stock_inve_line_obj.create({'inventory_id':inventory_id.id,'location_id':self.gt_workflow_id.stock_location_id.id,'product_id':product_id.id,'product_qty':int(self.get_inventory_variant(variant['inventory_item_id']))})
                 
                 except Exception as exc:
                     logger.error('Exception===================:  %s', exc)

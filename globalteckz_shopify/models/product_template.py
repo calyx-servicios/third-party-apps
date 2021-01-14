@@ -60,33 +60,36 @@ class ProductTemplate(models.Model):
             if 'variants' in products:
                 for variant in products['variants']:
                     if 'id' in variant:
-                        product_id = product_obj.search([('default_code','=',variant['product_id'])])
-                        if product_id:                      
+                        product_ids = product_obj.search(['|',('product_tmpl_id.gt_product_id','=',products['id']),('default_code','=',variant['product_id'])])
+                        if product_ids:                      
                             if variant['option3'] != None:
-                                for product in product_id:
+                                for product in product_ids:
                                     variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name, product.attribute_value_ids[2].name ]
                                     if (variant['option1'] in variantes) and (variant['option2'] in variantes) and (variant['option3'] in variantes):
                                         product.write({'gt_product_id': variant['id']})
                                         product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                         product.write({'gt_shopify_exported': True})
+                                        product.write({'lst_price': variant['price']})
                             elif variant['option2'] != None:
-                                for product in product_id:
+                                for product in product_ids:
                                     variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name]
                                     if (variant['option1'] in variantes) and (variant['option2'] in variantes):
                                         product.write({'gt_product_id': variant['id']})
                                         product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                         product.write({'gt_shopify_exported': True})
+                                        product.write({'lst_price': variant['price']})
                             elif variant['option1'] != None:
-                                for product in product_id:
+                                for product in product_ids:
                                     if product.attribute_value_ids.name == variant['option1'] :
                                         product.write({'gt_product_id': variant['id']})
                                         product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                         product.write({'gt_shopify_exported': True})
-                        else:
-                            product = product_obj.search([('product_tmpl_id.gt_product_id','=',products['id'])])
-                            if product:
-                                product.write({'gt_product_inventory_id': variant['inventory_item_id']})
-                                product.write({'gt_shopify_exported': True})
+                                        product.write({'lst_price': variant['price']})
+                            else:
+                                for product in product_ids:
+                                    product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                    product.write({'gt_shopify_exported': True})
+                                    product.write({'lst_price': variant['price']})
 
     @api.multi
     def gt_create_product_template(self,products,instance,log_id):
@@ -144,38 +147,28 @@ class ProductTemplate(models.Model):
                 else:  
                     return 1
 
-            if _variants(products['options']) == 1:
-                for options in products['options']:
-                    if str(options['name']) != 'Title':
-                        print ('options++++++=', options)
-
-            else:
-                for options in products['options']:
-                    attribute_id = []
-                    att_search = []
-                    value_search = []
-                    if 'name' in options:
-
-                        att_id = product_attribute_obj.search([('name','=',str(options['name']))])
-                        att_search.append(att_id.id)
-                        if att_id:
-
-                            attribute_id = att_search[0]
-
+            for options in products['options']:
+                attribute_id = []
+                att_search = []
+                value_search = []
+                if 'name' in options:
+                    att_id = product_attribute_obj.search([('name','=',str(options['name']))])
+                    att_search.append(att_id.id)
+                    if att_id:
+                        attribute_id = att_search[0]
+                    else:
+                        attribute_id = product_attribute_obj.create({'name': str(options['name']),'create_variant': True}).id
+                if 'values' in options:
+                    value_list = []
+                    value_id = []
+                    for values in options['values']:
+                        value = product_attribute_option_obj.search([('attribute_id','=',attribute_id),('name','=',values)])
+                        value_search.append(value.id)
+                        if value:
+                            value_id = value
                         else:
-                            attribute_id = product_attribute_obj.create({'name': str(options['name']),'create_variant': True}).id
-
-                    if 'values' in options:
-                        value_list = []
-                        value_id = []
-                        for values in options['values']:
-                            value = product_attribute_option_obj.search([('attribute_id','=',attribute_id),('name','=',values)])
-                            value_search.append(value.id)
-                            if value:
-                                value_id = value
-                            else:
-                                value_id = product_attribute_option_obj.create({'name': values,'attribute_id': attribute_id})
-                            value_list.append(value_id.id)
+                            value_id = product_attribute_option_obj.create({'name': values,'attribute_id': attribute_id})
+                        value_list.append(value_id.id)
 
                     variant.append((0,0,{'attribute_id': attribute_id,'value_ids': [(6, 0,value_list)]}))
             vals = {
@@ -262,8 +255,6 @@ class ProductTemplate(models.Model):
                     product_product = product_obj.search([('default_code','=',str(variant['product_id']))])
                     if product_product:
                         product_product.update_variant(variant,instance,log_id)
-            
-            self.update_variant_ids(instance)
 
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
@@ -389,25 +380,22 @@ class ProductTemplate(models.Model):
     @api.multi
     def updateProductStock(self):
 
-        import wdb
-        wdb.set_trace()
-
         product_obj = self.env['product.product']
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
         product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('gt_shopify_product','=',True),('gt_shopify_exported','=', True),('product_tmpl_id.id', '=', self.id )])
+        
         for products in product_ids:
-            if products.qty_available >= 0:
+            qty_available = self.env['stock.quant'].search([('product_id','=',products.id),('location_id','=',self.gt_shopify_instance_id.gt_workflow_id.stock_location_id.id)])
+            if qty_available.quantity >= 0:
                 vals =  {
                     "location_id": products._get_primary_stock_location(),
                     "inventory_item_id": products.gt_product_inventory_id,
-                    "available": int(products.qty_available),
+                    "available": int(qty_available.quantity),
                 }
                 shop_url = shopify_url + 'admin/api/2021-01/inventory_levels/set.json'
                 response = requests.post(shop_url,auth=(api_key,api_pass),data=vals)
-                product_rs=json.loads(response.text)    
-
 
     @api.multi
     def gt_export_shopify_product(self):
@@ -490,8 +478,6 @@ class ProductTemplate(models.Model):
                 if len(option3_list) > 0:
                     vals_option = {"name": attribute3, "values": option3_list}
                     options.append(vals_option)
-                import wdb
-                wdb.set_trace()
 
                 vals = {
                     "product": {

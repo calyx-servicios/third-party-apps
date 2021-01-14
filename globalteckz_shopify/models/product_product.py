@@ -91,8 +91,6 @@ class ProductProduct(models.Model):
                 'weight': products_response['weight'] if 'weight' in products_response else '',
                 'default_code' : products_response['sku'] if 'sku' in products_response else '',
                 'gt_fulfillment_service' : products_response['fulfillment_service'] if 'fulfillment_service' in products_response else '',
-                'uom_id' : weights,
-                'uom_po_id': weights,
                 'gt_inventory_policy': policies,
                 'gt_shopify_instance_id': instance.id,
                 'gt_shopify_exported': True,
