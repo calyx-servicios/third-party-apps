@@ -33,7 +33,7 @@ class ProductTemplate(models.Model):
     
     
     gt_published_scope = fields.Many2one('gt.published.scope', string='Published Scope')
-    gt_shopify_description = fields.Text(string='Shopify Description')
+    gt_shopify_description = fields.Html(string='Shopify Description')
     gt_vendor = fields.Many2one('gt.shopify.vendor',string='Vendor')
     gt_product_id = fields.Char(string='Product ID')
     gt_requires_shipping = fields.Boolean(string='Requires Shipping')
@@ -43,6 +43,7 @@ class ProductTemplate(models.Model):
     gt_product_image_id = fields.One2many('gt.product.photo', 'gt_product_temp_id', string='Product Images')
     gt_shopify_exported = fields.Boolean(string='Shopify Exported')
     gt_shopify_product_type = fields.Many2one('gt.shopify.product.type',string='Product Type')
+    gt_shopify_active = fields.Boolean(string ='Active Publication')
     
     @api.multi
     def update_variant_ids(self,shopify_instance_id):
@@ -319,7 +320,6 @@ class ProductTemplate(models.Model):
                 try:
                     with self._cr.savepoint(), tools.mute_logger('odoo.sql_db'):
                         variant.unlink()
-                # We catch all kind of exception to be sure that the operation doesn't fail.
                 except (psycopg2.Error, except_orm):
                     variant.write({'active': False})
                     pass
@@ -396,6 +396,62 @@ class ProductTemplate(models.Model):
                 }
                 shop_url = shopify_url + 'admin/api/2021-01/inventory_levels/set.json'
                 response = requests.post(shop_url,auth=(api_key,api_pass),data=vals)
+
+    @api.multi
+    def updateProductShopify(self):
+
+        shopify_url = str(self.gt_shopify_instance_id.gt_location)
+        api_key = str(self.gt_shopify_instance_id.gt_api_key)
+        api_pass = str(self.gt_shopify_instance_id.gt_password)
+        
+        tag = ''
+        if len(self.gt_product_tags) == 1:
+            tag = str(self.gt_product_tags.name)
+        else:
+            for tags in self.gt_product_tags:
+                tag += str(tags.name)+','         
+        
+        vals = {
+            "product": {
+            "id": int(self.gt_product_id),
+            "title": str(self.name),
+            "status": "active" if self.gt_shopify_active else "draft",
+            "tags": tag,
+          }  
+        }
+        
+        shop_url = shopify_url + '/admin/api/2021-01/products/'+ str(self.gt_product_id) +'.json'
+        response = requests.put(shop_url,auth=(api_key,api_pass),data=json.dumps(vals), headers={'Content-Type': 'application/json'})
+
+        import wdb
+        wdb.set_trace()
+        for product in self.product_variant_ids:
+            if product.gt_product_id:
+
+                vals = {
+                  "variant": {
+                    "id": int(product.gt_product_id),
+                    "price": product.lst_price
+                  }
+                }                
+                
+                shop_url = shopify_url + '/admin/api/2021-01/variants/'+ str(product.gt_product_id) +'.json'
+                response = requests.put(shop_url,auth=(api_key,api_pass),data=json.dumps(vals), headers={'Content-Type': 'application/json'})
+
+    
+    @api.multi
+    def updateProductOdoo(self):
+        
+        shopify_url = str(self.gt_shopify_instance_id.gt_location)
+        api_key = str(self.gt_shopify_instance_id.gt_api_key)
+        api_pass = str(self.gt_shopify_instance_id.gt_password)
+        vals = {
+            "product": {
+            "id": int(self.gt_product_id),
+            "title": str(self.name),
+            "status": "active" if self.gt_shopify_active else "draft"
+          }
+        }
 
     @api.multi
     def gt_export_shopify_product(self):
