@@ -20,6 +20,7 @@
 
 
 from odoo import fields,api,models
+from odoo.exceptions import UserError, ValidationError
 import logging
 logger = logging.getLogger('product')
 
@@ -39,6 +40,13 @@ class ProductProduct(models.Model):
     gt_fullfilment_service = fields.Many2one('gt.fulfillment.service', string='Fullfilment Service')
     gt_inventory_management = fields.Many2one('gt.inventory.management', string='Inventory Management')
     gt_product_inventory_id = fields.Char('Product Inventory ID')
+    gt_product_price_compare = fields.Float('Product Price Compare')
+    
+
+    @api.constrains('gt_product_price_compare')
+    def _check_gt_product_price_compare(self):
+        if self.lst_price >= self.gt_product_price_compare:
+            raise ValidationError('The "Product Price Compare" must be greater than the list price.')
 
     @api.multi
     def _get_primary_stock_location(self):
@@ -97,6 +105,7 @@ class ProductProduct(models.Model):
                 'gt_shopify_product':True,
                 'gt_fullfilment_service': fullfilment,
                 'gt_inventory_management':management,
+                'gt_product_price_compare': products_response['compare_at_price'],
             }
             self.write(vals)
             #'barcode' : products_response['barcode'] if 'barcode' in products_response else '',

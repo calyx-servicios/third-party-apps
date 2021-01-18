@@ -9,6 +9,9 @@
             <xpath expr="//field[@name='default_code']" position="after">
                 <field name="gt_product_id"/>
             </xpath>
+            <xpath expr="//field[@name='lst_price']" position="after">
+                <field name="gt_product_price_compare" widget="monetary"/>
+            </xpath>
         </field>
     </record>
 
@@ -26,7 +29,7 @@
                         <label for="gt_shopify_exported"/>
                     </div>
                 </div>
-            </xpath>
+            </xpath>            
             <xpath expr="/form/sheet/notebook" position="inside">
                 <page string="Shopify">
                     <group>

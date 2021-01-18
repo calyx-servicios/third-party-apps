@@ -71,6 +71,7 @@ class ProductTemplate(models.Model):
                                         product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                         product.write({'gt_shopify_exported': True})
                                         product.write({'lst_price': variant['price']})
+                                        product.write({'gt_product_price_compare': variant['compare_at_price']})
                             elif variant['option2'] != None:
                                 for product in product_ids:
                                     variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name]
@@ -79,6 +80,7 @@ class ProductTemplate(models.Model):
                                         product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                         product.write({'gt_shopify_exported': True})
                                         product.write({'lst_price': variant['price']})
+                                        product.write({'gt_product_price_compare': variant['compare_at_price']})
                             elif variant['option1'] != None:
                                 for product in product_ids:
                                     if product.attribute_value_ids.name == variant['option1'] :
@@ -86,11 +88,13 @@ class ProductTemplate(models.Model):
                                         product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                         product.write({'gt_shopify_exported': True})
                                         product.write({'lst_price': variant['price']})
+                                        product.write({'gt_product_price_compare': variant['compare_at_price']})
                             else:
                                 for product in product_ids:
                                     product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                     product.write({'gt_shopify_exported': True})
                                     product.write({'lst_price': variant['price']})
+                                    product.write({'gt_product_price_compare': variant['compare_at_price']})
 
     @api.multi
     def gt_create_product_template(self,products,instance,log_id):
@@ -417,21 +421,21 @@ class ProductTemplate(models.Model):
             "title": str(self.name),
             "status": "active" if self.gt_shopify_active else "draft",
             "tags": tag,
+            "body_html": self.gt_shopify_description,
           }  
         }
         
         shop_url = shopify_url + '/admin/api/2021-01/products/'+ str(self.gt_product_id) +'.json'
         response = requests.put(shop_url,auth=(api_key,api_pass),data=json.dumps(vals), headers={'Content-Type': 'application/json'})
 
-        import wdb
-        wdb.set_trace()
         for product in self.product_variant_ids:
             if product.gt_product_id:
 
                 vals = {
                   "variant": {
                     "id": int(product.gt_product_id),
-                    "price": product.lst_price
+                    "price": product.lst_price,
+                    "compare_at_price": product.gt_product_price_compare,
                   }
                 }                
                 
