@@ -103,9 +103,9 @@ class SearchAssistant(models.TransientModel):
     def _get_purchase_line_values(self, product_id, quantity, purchase_order_id):
         line_obj = self.env['purchase.order.line']
         values = {
-            'name': '',
+            'name': product_id.name,
             'order_id': purchase_order_id,
-            'product_id': product_id,
+            'product_id': product_id.id,
             'price_unit': 0.0,
             'product_qty': quantity
         }
@@ -114,8 +114,7 @@ class SearchAssistant(models.TransientModel):
         values.update({
             'product_uom': draft_line.product_uom.id,
             'date_planned': draft_line.date_planned,
-            'price_unit': draft_line.price_unit,
-            'display_type': draft_line.display_type
+            'price_unit': draft_line.price_unit
         })
         return values
 
@@ -126,7 +125,7 @@ class SearchAssistant(models.TransientModel):
                 [line.product_id.id for line in self.purchase_order_id.order_line])
         return value
 
-    @api.onchange('attribute_ids', 'attribute_value_ids', 'description', 'selected', 'category_ids', 'code', 'warehouse_id', 'stock_date')
+    @api.onchange('attribute_ids', 'attribute_value_ids', 'description', 'selected', 'category_ids', 'code', 'warehouse_id', 'stock_date', 'brand_ids')
     def search(self):
         selected_products = self._get_selected_products()
         self._search(selected_products=selected_products)
@@ -149,7 +148,7 @@ class SearchAssistant(models.TransientModel):
                         {'partner_id': self.partner_id.id})
                     for line in search_wizard.line_ids:
                         if line.selected:
-                            line_obj.create(self._get_purchase_line_values(line.product_id.id,
+                            line_obj.create(self._get_purchase_line_values(line.product_id,
                                                                            line.product_uom_qty, purchase_order.id))
                     return self.action_view_purchase_order(purchase_order.id)
 
@@ -169,7 +168,7 @@ class SearchAssistant(models.TransientModel):
                 if len(selection) > 0:
                     for line in search_wizard.line_ids:
                         if line.selected and line.product_id.id not in exists:
-                            line_obj.create(self._get_purchase_line_values(line.product_id.id,
+                            line_obj.create(self._get_purchase_line_values(line.product_id,
                                                                            line.product_uom_qty,
                                                                            search_wizard.purchase_order_id.id))
 

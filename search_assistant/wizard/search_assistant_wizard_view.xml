@@ -9,12 +9,12 @@
 
                 <group>
                     <group>
-                        <field name="partner_readonly" invisible="1" />
-                        <field name="partner_id" colspan="4" attrs="{'readonly':[('partner_readonly','=',True)]}" />
+                        <field name="partner_readonly" invisible="1" options="{'no_create': True}" />
+                        <field name="partner_id" colspan="4" attrs="{'readonly':[('partner_readonly','=',True)]}" options="{'no_create': True}" />
                     </group>
                     <group>
                         <field name="stock_date" />
-                        <field name="warehouse_id" />
+                        <field name="warehouse_id" options="{'no_create': True}" />
                     </group>
                 </group>
 
@@ -25,6 +25,7 @@
                         <field name="category_ids" widget="many2many_tags" options="{'no_create': True}" colspan="4" />
                     </group>
                     <group>
+                        <field name="brand_ids" widget="many2many_tags" options="{'no_create': True}" colspan="4" />
                         <field name="attribute_ids" widget="many2many_tags" options="{'no_create': True}" colspan="4" />
                         <field name="attribute_value_ids" widget="many2many_tags" options="{'no_create': True}" colspan="4" />
                     </group>
@@ -40,6 +41,7 @@
                                 <field name="product_id" readonly="1" force_save="1" />
 
                                 <field name="attribute_value_ids" string="Attributes" widget="many2many_tags" options="{'no_create': True}" colspan="4" readonly="1" />
+                                <field name="brand_id" readonly="1" force_save="1" />
                                 <field name="qty_available_today" readonly="1"/>
                                 <field name="product_uom_qty" />
                                 <field name="price_unit" />

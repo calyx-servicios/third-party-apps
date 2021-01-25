@@ -43,15 +43,9 @@ class SearchAssistantLine(models.TransientModel):
         related='product_id.uom_id.category_id', readonly=True)
     price_unit = fields.Float('Unit Price', required=True, digits=dp.get_precision(
         'Product Price'), default=0.0)
-
-    # Please check sale_stock module for a similiar use of this calculation fields. I took part of this code from there.
-    virtual_available_at_date = fields.Float()
-    scheduled_date = fields.Datetime()
-    free_qty_today = fields.Float()
     qty_available_today = fields.Float(string='Stock',)
     warehouse_id = fields.Many2one('stock.warehouse')
-    qty_to_deliver = fields.Float()
-
+    brand_id = fields.Many2one('product.brand')
 
 class SearchAssistant(models.TransientModel):
     """
@@ -102,7 +96,7 @@ class SearchAssistant(models.TransientModel):
     attribute_value_ids = fields.Many2many(
         'product.attribute.value', string="Attribute Values")
     category_ids = fields.Many2many(
-        'product.category', string="Product Category")
+        'product.category', string="Product Categories")
     code = fields.Char(string='Code')
 
     description = fields.Char(string='Description',
@@ -116,6 +110,9 @@ class SearchAssistant(models.TransientModel):
 
     stock_date = fields.Datetime(
         'Stock Date', default=_default_stock_date, required=True)
+    
+    brand_ids = fields.Many2many(
+        'product.brand', string="Product Brands")
 
     def make_domain(self, domain_name, code):
         """
@@ -143,6 +140,7 @@ class SearchAssistant(models.TransientModel):
         attribute_ids = list(set(self.attribute_ids.ids))
         attribute_values_ids = list(set(self.attribute_value_ids.ids))
         category_ids = list(set(self.category_ids.ids))
+        brand_ids = list(set(self.brand_ids.ids))
         description = self.description
         code = self.code
 
@@ -152,6 +150,12 @@ class SearchAssistant(models.TransientModel):
         if code and len(code) > 0:
             for code_domain in self.make_domain('default_code', code):
                 domain.append(code_domain)
+
+        if len(brand_ids) > 0:
+            product_template_obj = self.env['product.template']
+            product_ids = product_template_obj.search(
+                    [('product_brand_id', 'in', brand_ids)]).ids
+            domain.append(('product_tmpl_id', 'in', product_ids))
 
         if len(attribute_values_ids) > 0:
             domain.append(('attribute_value_ids', 'in', attribute_values_ids))
@@ -189,11 +193,12 @@ class SearchAssistant(models.TransientModel):
                     'price_unit': product.list_price,
                     'qty_available_today': available_qty,
                     'description': product.description or '',
+                    'brand_id': product.product_tmpl_id.product_brand_id
                 }))
 
             self.line_ids = line_ids
 
-    @api.onchange('attribute_ids', 'attribute_value_ids', 'description', 'selected', 'category_ids', 'code', 'warehouse_id', 'stock_date')
+    @api.onchange('attribute_ids', 'attribute_value_ids', 'description', 'selected', 'category_ids', 'code', 'warehouse_id', 'stock_date', 'brand_ids')
     def search(self):
         """
         """

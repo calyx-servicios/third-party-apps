@@ -109,9 +109,9 @@ class SearchAssistant(models.TransientModel):
     def _get_sale_line_values(self, product_id, quantity, sale_order_id):
         line_obj = self.env['sale.order.line']
         values = {
-            'name': '',
+            'name': product_id.name,
             'order_id': sale_order_id,
-            'product_id': product_id,
+            'product_id': product_id.id,
         }
         values.update(
             line_obj._prepare_add_missing_fields(values))
@@ -126,10 +126,8 @@ class SearchAssistant(models.TransientModel):
                 [line.product_id.id for line in self.sale_order_id.order_line])
         return value
 
-    @api.onchange('attribute_ids', 'attribute_value_ids', 'description', 'selected', 'category_ids', 'code', 'warehouse_id', 'stock_date')
+    @api.onchange('attribute_ids', 'attribute_value_ids', 'description', 'selected', 'category_ids', 'code', 'warehouse_id', 'stock_date', 'brand_ids')
     def search(self):
-        _logger.debug('=====================search active_model?===>',
-                      self._context.get('active_model'))
         selected_products = self._get_selected_products()
         self._search(selected_products=selected_products)
 
@@ -151,7 +149,7 @@ class SearchAssistant(models.TransientModel):
                         {'partner_id': self.partner_id.id})
                     for line in search_wizard.line_ids:
                         if line.selected:
-                            line_obj.create(self._get_sale_line_values(line.product_id.id,
+                            line_obj.create(self._get_sale_line_values(line.product_id,
                                                                        line.product_uom_qty, sale_order.id))
                     return self.action_view_sale_order(sale_order.id)
 
@@ -171,7 +169,7 @@ class SearchAssistant(models.TransientModel):
                 if len(selection) > 0:
                     for line in search_wizard.line_ids:
                         if line.selected and line.product_id.id not in exists:
-                            line_obj.create(self._get_sale_line_values(line.product_id.id,
+                            line_obj.create(self._get_sale_line_values(line.product_id,
                                                                        line.product_uom_qty,
                                                                        search_wizard.sale_order_id.id))
 

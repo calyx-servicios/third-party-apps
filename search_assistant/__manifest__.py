@@ -16,6 +16,7 @@
     'depends': [
         'purchase',
         'sale_management',
+        'product_brand',
     ],
     'data': [
         'security/security.xml',
