@@ -8,10 +8,7 @@
         <field name="arch" type="xml">
             <data>
                 <xpath expr="//header" position="inside">
-                    <button name="gt_close_shopify_order" string="Close Shopify Order" type="object" class="btn-primary" attrs="{'invisible': [('gt_shopify_order','=',False)]}"/>
-                    <button name="gt_reopen_shopify_order" string="Re-Open Shopify Order" type="object" class="btn-primary" attrs="{'invisible': [('gt_shopify_order','=',False),('gt_shopify_order','=',False)]}"/>
-                    <button name="gt_cancel_shopify_order" string="Re-Open Shopify Order" type="object" class="btn-primary" attrs="{'invisible': [('gt_shopify_order','=',False),('gt_shopify_order','=',False)]}"/>
-                    
+                    <button name="gt_update_shopify_order" string="Update Shopify Order" type="object" class="btn-primary" attrs="{'invisible': ['|', '|', ('gt_shopify_order','=',False),('gt_shopify_order_status','=','Closed'),('gt_shopify_order_status','=','Cancelled')]}"/>
                 </xpath>
                 <xpath expr="//notebook" position="inside">
                     <page string="Shopify Details">
@@ -19,26 +16,20 @@
                             <group>
                                 <field name="gt_shopify_instance_id"/>
                                 <field name="gt_shopify_order_id"/>
-                                <field name="gt_shopify_order_status_url"/>
+                                <field name="gt_shopify_order_status_url" widget="url" text="Order URL"/>
                                 <field name="gt_shopify_order_currency"/>
                             </group>
                             <group>
+                                <field name="gt_shopify_order_status"/>
+                                <field name="gt_shopify_financial_status"/>
+                                <field name="gt_shopify_fulfillment_status"/>
                                 <field name="gt_shopify_order"/>
                                 <field name="gt_shopify_order_confirmed"/>
-                                <field name="gt_shopify_shipped"/>
                                 <field name="gt_shopify_tax_included"/>
-                                <field name="gt_shopify_close_order"/>
                             </group>
-                        </group>
-                        <group>
-                            <field name="gt_shopify_order_cancel_reason"/>
                         </group>
                     </page>
                 </xpath>
-<!--           <xpath expr="//field[@name='partner_id']" position="after">
-                <field name="gt_shopify_order"/>
-                <field name="gt_shopify_instance_id"/>
-            </xpath>-->
           </data>
        </field>
     </record>

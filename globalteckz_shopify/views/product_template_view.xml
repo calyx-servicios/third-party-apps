@@ -7,9 +7,9 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="gt_export_shopify_product" string="Export To Shopify" type="object" class="btn-primary" attrs="{'invisible': [('gt_shopify_exported', '=', True)]}"/>
-                <button name="updateProductStock" string="Upgrade Stock to Shopify" type="object" class="btn-primary"  attrs="{'invisible': [('gt_shopify_exported', '=', False)]}"/>
-                <button name="updateProductShopify" string="Update Product to Shopify" type="object" class="btn-primary"  attrs="{'invisible': [('gt_shopify_exported', '=', False)]}"/>
-                <button name="updateProductOdoo" string="Update Product to Odoo" type="object" class="btn-primary"  attrs="{'invisible': [('gt_shopify_exported', '=', False)]}"/>
+                <button name="update_product_stock" string="Upgrade Stock to Shopify" type="object" class="btn-primary"  attrs="{'invisible': [('gt_shopify_exported', '=', False)]}"/>
+                <button name="update_product_shopify" string="Update Product to Shopify" type="object" class="btn-primary"  attrs="{'invisible': [('gt_shopify_exported', '=', False)]}"/>
+                <button name="update_product_odoo" string="Update Product to Odoo" type="object" class="btn-primary"  attrs="{'invisible': [('gt_shopify_exported', '=', False)]}"/>
             </xpath>
             <xpath expr="/form/sheet/notebook" position="inside">  
                 <page string="Shopify">

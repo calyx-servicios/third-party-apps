@@ -63,9 +63,7 @@
                                 <button name="gt_import_shopify_image" string="Import Image" type="object" class="btn-primary"/>
                             </group>
                             <group colspan="6" col="3">
-                                <button name="gt_export_shopify_products" string="Export Products" type="object" class="btn-primary"/>
                                 <button name="gt_export_shopify_stock" string="Export Stock" type="object" class="btn-primary"/>
-                                <button name="gt_export_shopify_image" string="Export Image" type="object" class="btn-primary"/>
                             </group>
                         </page>
                         <page string="Manage Customers">
