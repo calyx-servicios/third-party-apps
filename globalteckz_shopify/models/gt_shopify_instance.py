@@ -160,8 +160,6 @@ class GTShopifyInstance(models.Model):
 
             for products in product_items:
                 product_tmpl_obj.gt_create_product_template(products,self,log_id)
-                product_tmpl_obj.update_variant_ids(self)
-            
         
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
@@ -189,7 +187,7 @@ class GTShopifyInstance(models.Model):
         shopify_url = str(self.gt_location)
         api_key = str(self.gt_api_key)
         api_pass = str(self.gt_password)
-        product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('gt_shopify_product','=',True),('gt_shopify_exported','=', True)])
+        product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('product_tmpl_id.gt_shopify_product','=',True),('product_tmpl_id.gt_shopify_exported','=', True)])
         if product_ids:
             for products in product_ids:
                 if products.qty_available >= 0:
@@ -205,7 +203,7 @@ class GTShopifyInstance(models.Model):
 
 
     @api.multi
-    def _get_primary_stock_location(self):
+    def _get_instance_primary_stock_location(self):
         stores = self.env['gt.shopify.store'].search([])
         for store in stores:
             if store.id == self.id:
@@ -222,7 +220,7 @@ class GTShopifyInstance(models.Model):
         product_rs=json.loads(response.text)
 
         for location in product_rs['inventory_levels']:
-            if str(location['location_id']) == self._get_primary_stock_location():
+            if str(location['location_id']) == self._get_instance_primary_stock_location():
                 return location['available']
 
     

@@ -71,7 +71,8 @@ class ProductTemplate(models.Model):
                                     product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                     product.write({'gt_shopify_exported': True})
                                     product.write({'lst_price': variant['price']})
-                                    product.write({'gt_product_price_compare': variant['compare_at_price']})
+                                    if variant['compare_at_price'] != 0 and variant['compare_at_price'] > variant['price']: 
+                                        product.write({'gt_product_price_compare': variant['compare_at_price']})
                         elif variant['option2'] != None:
                             for product in product_ids:
                                 variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name]
@@ -80,7 +81,8 @@ class ProductTemplate(models.Model):
                                     product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                     product.write({'gt_shopify_exported': True})
                                     product.write({'lst_price': variant['price']})
-                                    product.write({'gt_product_price_compare': variant['compare_at_price']})
+                                    if variant['compare_at_price'] != 0 and variant['compare_at_price'] > variant['price']: 
+                                        product.write({'gt_product_price_compare': variant['compare_at_price']})
                         elif variant['option1'] != None:
                             for product in product_ids:
                                 if product.attribute_value_ids.name == variant['option1'] :
@@ -88,13 +90,15 @@ class ProductTemplate(models.Model):
                                     product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                     product.write({'gt_shopify_exported': True})
                                     product.write({'lst_price': variant['price']})
-                                    product.write({'gt_product_price_compare': variant['compare_at_price']})
+                                    if variant['compare_at_price'] != 0 and variant['compare_at_price'] > variant['price']: 
+                                        product.write({'gt_product_price_compare': variant['compare_at_price']})
                         else:
                             for product in product_ids:
                                 product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                 product.write({'gt_shopify_exported': True})
                                 product.write({'lst_price': variant['price']})
-                                product.write({'gt_product_price_compare': variant['compare_at_price']})
+                                if variant['compare_at_price'] != 0 and variant['compare_at_price'] > variant['price']: 
+                                    product.write({'gt_product_price_compare': variant['compare_at_price']})
     
 
     @api.multi
@@ -207,7 +211,6 @@ class ProductTemplate(models.Model):
                 'gt_shopify_exported': True,
                 'gt_shopify_product_type' : type_id,
                 'gt_shopify_active' : self._get_product_active(instance),
-                'status': 'active' if self.gt_shopify_active else 'draft',
             }
             product_id = self.search([('gt_product_id','=',str(products['id'])),('gt_shopify_instance_id','=',instance.id),('gt_shopify_product','=',True)])
 
@@ -222,13 +225,12 @@ class ProductTemplate(models.Model):
                     'gt_shopify_description': products['body_html'] if 'body_html' in products else '',
                     'gt_vendor' : vendors,
                     'gt_shopify_instance_id':instance.id,
-                    'attribute_line_ids': variant,
                     'gt_shopify_exported': True,
                     'gt_shopify_product_type' : type_id,
-                    'status': 'active' if product_id.gt_shopify_active else 'draft',
                     'gt_shopify_active' : product_id._get_product_active(instance)
                 }
                 product_id.write(vals)
+                product_id.update_variant_ids(instance)
             
             self._cr.commit()
             
@@ -283,6 +285,8 @@ class ProductTemplate(models.Model):
                     product_product = product_obj.search([('default_code','=',str(variant['product_id']))])
                     if product_product:
                         product_product.update_variant(variant,instance,log_id)
+
+            
 
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
