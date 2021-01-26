@@ -70,9 +70,9 @@ class ProductTemplate(models.Model):
                                     product.write({'gt_product_id': variant['id']})
                                     product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                     product.write({'gt_shopify_exported': True})
-                                    product.write({'lst_price': variant['price']})
-                                    if variant['compare_at_price'] != 0 and variant['compare_at_price'] > variant['price']: 
-                                        product.write({'gt_product_price_compare': variant['compare_at_price']})
+                                    if variant['compare_at_price'] != None:
+                                        if variant['compare_at_price'] != 0 and float(variant['compare_at_price']) > float(variant['price']): 
+                                            product.write({'gt_product_price_compare': variant['compare_at_price']})
                         elif variant['option2'] != None:
                             for product in product_ids:
                                 variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name]
@@ -80,25 +80,25 @@ class ProductTemplate(models.Model):
                                     product.write({'gt_product_id': variant['id']})
                                     product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                     product.write({'gt_shopify_exported': True})
-                                    product.write({'lst_price': variant['price']})
-                                    if variant['compare_at_price'] != 0 and variant['compare_at_price'] > variant['price']: 
-                                        product.write({'gt_product_price_compare': variant['compare_at_price']})
+                                    if variant['compare_at_price'] != None:    
+                                        if variant['compare_at_price'] != 0 and float(variant['compare_at_price']) > float(variant['price']): 
+                                            product.write({'gt_product_price_compare': variant['compare_at_price']})
                         elif variant['option1'] != None:
                             for product in product_ids:
                                 if product.attribute_value_ids.name == variant['option1'] :
                                     product.write({'gt_product_id': variant['id']})
                                     product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                     product.write({'gt_shopify_exported': True})
-                                    product.write({'lst_price': variant['price']})
-                                    if variant['compare_at_price'] != 0 and variant['compare_at_price'] > variant['price']: 
-                                        product.write({'gt_product_price_compare': variant['compare_at_price']})
+                                    if variant['compare_at_price'] != None:
+                                        if variant['compare_at_price'] != 0 and float(variant['compare_at_price']) > float(variant['price']): 
+                                            product.write({'gt_product_price_compare': variant['compare_at_price']})
                         else:
                             for product in product_ids:
                                 product.write({'gt_product_inventory_id': variant['inventory_item_id']})
                                 product.write({'gt_shopify_exported': True})
-                                product.write({'lst_price': variant['price']})
-                                if variant['compare_at_price'] != 0 and variant['compare_at_price'] > variant['price']: 
-                                    product.write({'gt_product_price_compare': variant['compare_at_price']})
+                                if variant['compare_at_price'] != None:
+                                    if variant['compare_at_price'] != 0 and float(variant['compare_at_price']) > float(variant['price']): 
+                                        product.write({'gt_product_price_compare': variant['compare_at_price']})
     
 
     @api.multi
@@ -303,8 +303,7 @@ class ProductTemplate(models.Model):
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
-        product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('gt_shopify_product','=',True),('gt_shopify_exported','=', True),('product_tmpl_id.id', '=', self.id )])
-        
+        product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('product_tmpl_id.id', '=', self.id )])
         for products in product_ids:
             qty_available = self.env['stock.quant'].search([('product_id','=',products.id),('location_id','=',self.gt_shopify_instance_id.gt_workflow_id.stock_location_id.id)])
             if qty_available.quantity >= 0:
@@ -363,7 +362,7 @@ class ProductTemplate(models.Model):
                 shop_url = shopify_url + '/admin/api/2021-01/variants/'+ str(product.gt_product_id) +'.json'
                 response = requests.put(shop_url,auth=(api_key,api_pass),data=json.dumps(vals), headers={'Content-Type': 'application/json'})
 
-    
+     
     @api.multi
     def update_product_odoo(self):
         
@@ -378,9 +377,6 @@ class ProductTemplate(models.Model):
         product_item = json.loads(response.text)
         
         self.gt_create_product_template(product_item['product'], self.gt_shopify_instance_id, log_id)
-
-        self.update_variant_ids(self.gt_shopify_instance_id)
-
 
     @api.multi
     def gt_export_shopify_product(self):
@@ -446,6 +442,7 @@ class ProductTemplate(models.Model):
                             "price": str(variants.lst_price),
                             "sku": str(variants.default_code),
                             "barcode": str(variants.barcode),
+                            "inventory_management": "shopify",
                             "option1": option1,
                             "option2": option2,
                             "option3": option3,

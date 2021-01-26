@@ -182,22 +182,18 @@ class GTShopifyInstance(models.Model):
         log_line_obj = self.env['shopify.log.details']
         log_id = log_obj.create({'create_date':date.today(),'name': 'Import Product','description': 'Successfull','gt_shopify_instance_id': self.id})
         product_tmpl_obj = self.env['product.template']
-        product_obj = self.env['product.product']
-        #try:
+
         shopify_url = str(self.gt_location)
         api_key = str(self.gt_api_key)
         api_pass = str(self.gt_password)
-        product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('product_tmpl_id.gt_shopify_product','=',True),('product_tmpl_id.gt_shopify_exported','=', True)])
+        product_ids = product_tmpl_obj.search([('gt_shopify_exported','=', True),('gt_shopify_product','=',True),('gt_shopify_exported','=', True)])
+        
+        #import wdb
+        #wdb.set_trace()
+
         if product_ids:
             for products in product_ids:
-                if products.qty_available >= 0:
-                    vals =  {
-                        "location_id": products._get_primary_stock_location(),
-                        "inventory_item_id": products.gt_product_inventory_id,
-                        "available": int(products.qty_available),
-                    }
-                    shop_url = shopify_url + 'admin/api/2021-01/inventory_levels/set.json'
-                    response = requests.post(shop_url,auth=(api_key,api_pass),data=vals)
+                products.update_product_stock()
 
         return True
 
@@ -206,7 +202,7 @@ class GTShopifyInstance(models.Model):
     def _get_instance_primary_stock_location(self):
         stores = self.env['gt.shopify.store'].search([])
         for store in stores:
-            if store.id == self.id:
+            if store.gt_shopify_instance_id.id == self.id:
                 return store.primary_stock_location
 
     

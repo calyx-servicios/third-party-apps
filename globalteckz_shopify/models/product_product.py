@@ -52,7 +52,7 @@ class ProductProduct(models.Model):
     def _get_primary_stock_location(self):
         stores = self.env['gt.shopify.store'].search([])
         for store in stores:
-            if store.id == self.product_tmpl_id.gt_shopify_instance_id.id:
+            if store.gt_shopify_instance_id.id == self.product_tmpl_id.gt_shopify_instance_id.id:
                 return store.primary_stock_location
 
 
