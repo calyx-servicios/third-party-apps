@@ -338,7 +338,7 @@ class ProductTemplate(models.Model):
             "body_html": self.gt_shopify_description,
           }  
         }
-        
+
         shop_url = shopify_url + '/admin/api/2021-01/products/'+ str(self.gt_product_id) +'.json'
         response = requests.put(shop_url,auth=(api_key,api_pass),data=json.dumps(vals), headers={'Content-Type': 'application/json'})
 
@@ -389,6 +389,9 @@ class ProductTemplate(models.Model):
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
 
+        #import wdb
+        #wdb.set_trace()
+        
         for products in self:
 
             tag = ''
@@ -398,7 +401,7 @@ class ProductTemplate(models.Model):
                 for tags in products.gt_product_tags:
                     tag += str(tags.name)+',' 
 
-            if len(products.product_variant_ids) > 1 and not products.gt_product_id:
+            if len(products.product_variant_ids) > 0 and not products.gt_product_id:
 
                 list_variant = []
                 option1_list = []
@@ -470,7 +473,7 @@ class ProductTemplate(models.Model):
                       "tags": tag,
                       "options": options,
                       "variants": list_variant,
-
+                      "status": "active" if products.gt_shopify_active else "draft",
                     }
                   }
 
