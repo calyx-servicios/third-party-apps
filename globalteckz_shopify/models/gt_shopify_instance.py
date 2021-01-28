@@ -485,6 +485,9 @@ class GTShopifyInstance(models.Model):
 
         self.gt_import_shopify_customers()
 
+        #import wdb
+        #wdb.set_trace()
+
         try:
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
@@ -541,7 +544,7 @@ class GTShopifyInstance(models.Model):
                                         else:
                                             tax_id = tax_obj.create({'name':tax_line['title'],'amount':tax_line['rate'] * 100,'type_tax_use':'sale'})
                                         tax_list.append(tax_id.id)
-                                product_lines.append((0,0,{'product_id': product_id.id,'tax_id': [(6, 0,tax_list)],'price_unit':lines['price'],'product_uom_qty': lines['quantity'],}))
+                                product_lines.append((0,0,{'product_id': product_id.id,'template_id': product_id.product_tmpl_id.id,'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],'price_unit':lines['price'],'product_uom_qty': lines['quantity'],}))
                     sale_id = sale_obj.search([('name','=',order['order_number']),('gt_shopify_order_id','=',order['id'])])
                     if not sale_id:
                         order = sale_obj.create({
@@ -559,7 +562,8 @@ class GTShopifyInstance(models.Model):
                             'gt_shopify_tax_included':tax_incl,
                             'gt_shopify_financial_status':order['financial_status'],
                             'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
-                            'gt_shopify_order_status': self._get_shopify_status(order['id'])
+                            'gt_shopify_order_status': self._get_shopify_status(order['id']),
+                            'email_partner': customer_id.email,
                         })
                         
                         if order.state in ['draft','sent'] and order.gt_shopify_financial_status == 'paid':

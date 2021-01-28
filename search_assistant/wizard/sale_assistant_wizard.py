@@ -112,6 +112,8 @@ class SearchAssistant(models.TransientModel):
             'name': product_id.name,
             'order_id': sale_order_id,
             'product_id': product_id.id,
+            'template_id': product_id.product_tmpl_id.id, #Se agrego campo custom para el cliente Talleres
+            'variants_status_ok': True, #Se agrego campo custom para el cliente Talleres
         }
         values.update(
             line_obj._prepare_add_missing_fields(values))
