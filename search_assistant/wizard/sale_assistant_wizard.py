@@ -111,7 +111,7 @@ class SearchAssistant(models.TransientModel):
     def _get_sale_line_values(self, product_id, quantity, sale_order_id):
         line_obj = self.env['sale.order.line']
         values = {
-            'name': product_id.name,
+            'name': product_id.display_name,
             'order_id': sale_order_id,
             'product_id': product_id.id,
             'template_id': product_id.product_tmpl_id.id, #Se agrego campo custom para el cliente Talleres
