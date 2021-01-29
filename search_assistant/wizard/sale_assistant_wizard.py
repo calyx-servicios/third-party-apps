@@ -96,6 +96,8 @@ class SearchAssistant(models.TransientModel):
 
     stock_date = fields.Datetime('Stock Date', default=_default_stock_date)
 
+    team_id = fields.Many2one('crm.team', string='CRM Team', required=True)
+
     def action_view_sale_order(self, sale_order_id):
 
         action = self.env.ref('sale.action_orders').read()[0]
@@ -148,11 +150,15 @@ class SearchAssistant(models.TransientModel):
                     line for line in search_wizard.line_ids if line.selected]
                 if len(selection) > 0:
                     sale_order = sale_obj.create(
-                        {'partner_id': self.partner_id.id})
+                        {'partner_id': self.partner_id.id,
+                         'team_id': self.team_id.id,
+                         'email_partner': self.partner_id.email})
+                         
                     for line in search_wizard.line_ids:
                         if line.selected:
                             line_obj.create(self._get_sale_line_values(line.product_id,
-                                                                       line.product_uom_qty, sale_order.id))
+                                                                       line.product_uom_qty, sale_order.id,
+                                                                       ))
                     return self.action_view_sale_order(sale_order.id)
 
     def add_sale_order_items(self):
