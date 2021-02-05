@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="shopify_category" model="ir.module.category" >
+            <field name="name">Shopify</field>
+            <field name="sequence">1</field>
+            <field name="description">Shopify Settings</field>
+        </record>
+
+        <record id ="gt_shopify_user_group" model="res.groups">
+            <field name="name">Shopify User</field>
+            <field name="category_id" ref="shopify_category"/>
+        </record>   
+
+        <record id ="gt_shopify_admin_group" model="res.groups">
+            <field name="name">Shopify Administrador</field>
+            <field name="category_id" ref="shopify_category"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            <field name="implied_ids" eval="[(4, ref('gt_shopify_user_group'))]"/>
+        </record>
+
+    </data>
+</odoo>

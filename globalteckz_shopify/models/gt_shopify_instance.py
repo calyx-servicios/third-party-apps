@@ -188,9 +188,6 @@ class GTShopifyInstance(models.Model):
         api_pass = str(self.gt_password)
         product_ids = product_tmpl_obj.search([('gt_shopify_exported','=', True),('gt_shopify_product','=',True),('gt_shopify_exported','=', True)])
         
-        #import wdb
-        #wdb.set_trace()
-
         if product_ids:
             for products in product_ids:
                 products.update_product_stock()
@@ -484,9 +481,6 @@ class GTShopifyInstance(models.Model):
         payment_obj = self.env['account.payment.term']
 
         self.gt_import_shopify_customers()
-
-        #import wdb
-        #wdb.set_trace()
 
         try:
             shopify_url = str(self.gt_location)

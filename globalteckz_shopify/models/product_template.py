@@ -20,6 +20,7 @@
 
 from odoo import fields,api,models, tools
 from datetime import date
+from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
 import requests
 import json
 import itertools
@@ -389,9 +390,9 @@ class ProductTemplate(models.Model):
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
 
-        #import wdb
-        #wdb.set_trace()
-        
+        if not self.gt_shopify_instance_id:
+            raise ValidationError('Debe seleccionar una instancia de Shopify para poder exportar el producto a la tienda.')
+
         for products in self:
 
             tag = ''
