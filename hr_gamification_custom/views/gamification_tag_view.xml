@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_gamification_tag_tree" model="ir.ui.view">
+        <field name="model">gamification.tag</field>
+        <field name="arch" type="xml">
+            <tree string="Gamification Tag" decoration-muted="active == False">
+                <field name="sequence" widget="handle" />
+                <field name="active" invisible="True" />
+                <field name="tag_name" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_gamification_tag_form" model="ir.ui.view">
+        <field name="model">gamification.tag</field>
+        <field name="arch" type="xml">
+            <form string="Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="tag_name" required="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_gamification_tag_search" model="ir.ui.view">
+        <field name="model">gamification.tag</field>
+        <field name="arch" type="xml">
+            <search string="Gamification Tag">
+                <field name="tag_name" />
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_gamification_tag_view">
+        <field name="name">Gamification Tag</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">gamification.tag</field>
+        <field name="view_mode">form,tree</field>
+        <field name="view_id" ref="view_gamification_tag_tree"/>
+        <field name="search_view_id" ref="view_gamification_tag_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Click to set a new Gamification Tag.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_gamification_tag" groups="base.group_no_one" parent="hr.menu_human_resources_configuration" sequence="25" action="action_gamification_tag_view"/>
+
+</odoo>

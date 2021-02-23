@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="challenge_form_view_custom" model="ir.ui.view">
+        <field name="name">challenge.form.view</field>
+        <field name="model">gamification.challenge</field>
+        <field name="inherit_id" ref="gamification.challenge_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_domain']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='user_ids']" position="attributes">
+                <attribute name="readonly">False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/tree/field[@name='definition_full_suffix']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/tree/field[@name='target_goal']" position="after">
+                <field name="scoring"/>
+            </xpath>
+            <xpath expr="//field[@name='visibility_mode']" position="after">
+                <field name="total_scoring" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='end_date']" position="after">
+                <field name="name_tag_ids" groups="base.group_no_one" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="goal_form_view" model="ir.ui.view">
+        <field name="name">Goal Form</field>
+        <field name="model">gamification.goal</field>
+        <field name="inherit_id" ref="gamification.goal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="after">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="replace">
+                <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,reached,approved,declined" />
+            </xpath>
+            <xpath expr="//header/button[@name='action_cancel']" position="after">
+                <button string="Approve" type="object" name="action_approve" states="failed,reached" groups="base.group_no_one" />
+                <button string="Decline" type="object" name="action_decline" states="failed,reached" groups="base.group_no_one" />
+            </xpath>
+            <xpath expr="//header/button[@name='action_cancel']" position="after">
+                <button string="Approve" type="object" name="action_approve" states="failed,reached" groups="base.group_no_one" />
+                <button string="Decline" type="object" name="action_decline" states="failed,reached" groups="base.group_no_one" />
+            </xpath>
+            <xpath expr="//field[@name='end_date']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|',('state', '=', 'declined'),('state', '=', 'approved')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='current']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|',('state', '=', 'declined'),('state', '=', 'approved')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='last_update']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|',('state', '=', 'declined'),('state', '=', 'approved')]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="goal_list_view" model="ir.ui.view">
+        <field name="name">Goal List</field>
+        <field name="model">gamification.goal</field>
+        <field name="inherit_id" ref="gamification.goal_list_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='end_date']" position="after">
+                <field name="total_scoring" string="Scoring"/>
+                <field name="current_scoring" string="Scoring Reached"/>
+            </xpath>
+            <xpath expr="//field[@name='target_goal']" position="after">
+                <field name="state"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="goal_definition_form_view_custom" model="ir.ui.view">
+        <field name="name">Goal Definitions Form</field>
+        <field name="model">gamification.goal.definition</field>
+        <field name="inherit_id" ref="gamification.goal_definition_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[1]" position="replace">
+            </xpath>
+            <xpath expr="//group[2]" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='description']" position="after">
+                <group>
+                    <group string="How to compute the goal?">
+                        <field widget="radio" name="computation_mode"/>
+                        <field name="model_id" class="oe_inline"
+                            attrs="{'invisible':[('computation_mode','not in',('sum', 'count'))], 'required':[('computation_mode','in',('sum', 'count'))]}"/>
+                        <field name="field_id" class="oe_inline"
+                            attrs="{'invisible':[('computation_mode','!=','sum')], 'required':[('computation_mode','=','sum')]}"/>
+                        <field name="field_date_id" class="oe_inline" attrs="{'invisible':[('computation_mode','not in',('sum', 'count'))]}"/>
+                        <field name="domain" attrs="{'invisible':[('computation_mode','not in',('sum', 'count'))], 'required':[('computation_mode','in',('sum', 'count'))]}" class="oe_inline"/>
+                        <field name="compute_code" attrs="{'invisible':[('computation_mode','!=','python')], 'required':[('computation_mode','=','python')]}" placeholder="e.g. result = env['mail.followers'].search_count([('res_model', '=', 'mail.channel'), ('partner_id', '=', object.user_id.partner_id.id)])"/>
+                        <field name="condition" widget="radio"/>
+                    </group>
+                    <group string="Scoring">
+                        <field name="scoring" string="Scoring Goal"/>
+                        <field name="scoring_rules" string="Scoring Rules">
+                            <tree string="Line List" editable="bottom">
+                                <field name="interval_from" string="From"/>
+                                <field name="interval_to" string="To"/>
+                                <field name="scoring_goal" string="Equivalent %Scoring"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Optimisation" attrs="{'invisible': [('computation_mode', '!=', 'count')]}">
+                        <field name="batch_mode" />
+                        <div colspan="4">In batch mode, the domain is evaluated globally. If enabled, do not use keyword 'user' in above filter domain.</div>
+                        <field name="batch_distinctive_field" attrs="{'invisible': [('batch_mode', '=', False)], 'required':  [('batch_mode', '=', True)]}"
+                            domain="[('model_id', '=', model_id)]" class="oe_inline" />
+                        <field name="batch_user_expression" attrs="{'invisible': [('batch_mode', '=', False)], 'required':  [('batch_mode', '=', True)]}" class="oe_inline"
+                            placeholder="e.g. user.partner_id.id"/>
+                    </group>
+                    <group string="Formating Options">
+                        <field name="display_mode" widget="radio" />
+                        <field name="suffix" placeholder="e.g. days" class="oe_inline"/>
+                        <field name="monetary"/>
+                    </group>
+                    <group string="Clickable Goals" attrs="{'invisible': [('computation_mode', '=', 'manually')]}">
+                        <field name="action_id"  class="oe_inline"/>
+                        <field name="res_id_field"  attrs="{'invisible': [('action_id', '=', False)]}" class="oe_inline"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='computation_mode']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='suffix']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='monetary']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
