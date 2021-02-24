@@ -237,7 +237,7 @@ msgstr "Secuencia"
 #. module: hr_gamification_custom
 #: model:ir.model.fields,field_description:hr_gamification_custom.field_gamification_goal__state
 msgid "State"
-msgstr "Provincia"
+msgstr "Estado"
 
 #. module: hr_gamification_custom
 #: model:ir.model.fields,field_description:hr_gamification_custom.field_gamification_challenge__name_tag_ids
@@ -259,6 +259,13 @@ msgstr "Scoring Total"
 #: model_terms:ir.ui.view,arch_db:hr_gamification_custom.view_gamification_tag_form
 msgid "Type"
 msgstr "Tipo"
+
+#. module: hr_gamification_custom
+#. openerp-web
+#: code:addons/hr_gamification_custom/static/src/js/field_utils_format.js:81
+#, python-format
+msgid "Percent field value must be 0 to 100 only"
+msgstr "El porcentaje de scoring debe estar entre 0 y 100"
 
 #. module: hr_gamification_custom
 #: code:addons/hr_gamification_custom/models/gamification_tag.py:19

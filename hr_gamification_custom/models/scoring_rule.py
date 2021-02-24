@@ -7,5 +7,5 @@ class ScoringRules(models.Model):
     rule_id = fields.Many2one('gamification.goal.definition', string='Rule')
     interval_from = fields.Integer(string="From")
     interval_to = fields.Integer(string="To")
-    scoring_goal = fields.Float(string="scoring goal")
+    scoring_goal = fields.Percent(string="scoring goal")
     

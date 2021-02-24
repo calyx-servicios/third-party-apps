@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-
 from odoo import api, fields, models, _, exceptions
 from odoo.exceptions import UserError, ValidationError
 
@@ -8,7 +5,7 @@ class GoalDefinition(models.Model):
 
     _inherit = 'gamification.goal.definition'
 
-    scoring = fields.Float(string="Scoring")
+    scoring = fields.Percent(string="Scoring")
     scoring_rules = fields.One2many('scoring.rule','rule_id')
     
     @api.constrains('scoring_rules')
@@ -31,8 +28,8 @@ class Goal(models.Model):
         ('declined', "Declined"),
         ('canceled', "Canceled"),
     ], default='draft', string='State', required=True, track_visibility='always')
-    total_scoring = fields.Float(string="Total Scoring", related="definition_id.scoring")
-    current_scoring = fields.Float(string="Current Scoring")
+    total_scoring = fields.Percent(string="Total Scoring", related="definition_id.scoring", store=True)
+    current_scoring = fields.Percent(string="Current Scoring")
 
     def action_approve(self):
         for rec in self:

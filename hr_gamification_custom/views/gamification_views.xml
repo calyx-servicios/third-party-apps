@@ -17,7 +17,7 @@
                 <field name="scoring"/>
             </xpath>
             <xpath expr="//field[@name='visibility_mode']" position="after">
-                <field name="total_scoring" readonly="1"/>
+                <field name="total_scoring" readonly="1" force_save="1"/>
             </xpath>
             <xpath expr="//field[@name='end_date']" position="after">
                 <field name="name_tag_ids" groups="base.group_no_one" widget="many2many_tags"/>
@@ -48,6 +48,10 @@
             </xpath>
             <xpath expr="//field[@name='current']" position="attributes">
                 <attribute name="attrs">{'readonly': ['|',('state', '=', 'declined'),('state', '=', 'approved')]}</attribute>
+            </xpath>
+            <xpath expr="//group[3]" position="inside">
+                <field name="total_scoring"  invisible="1" force_save="1"/>
+                <field name="current_scoring" invisible="1" force_save="1"/>
             </xpath>
             <xpath expr="//field[@name='last_update']" position="attributes">
                 <attribute name="attrs">{'readonly': ['|',('state', '=', 'declined'),('state', '=', 'approved')]}</attribute>
@@ -147,5 +151,4 @@
           </p>
         </field>
     </record>
-    
 </odoo>

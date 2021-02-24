@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'HR Gamification custom',
     'version': '1.0',
@@ -8,6 +6,7 @@
     'description': """  """,
     'data': [
         'security/ir.model.access.csv',
+        'views/assets.xml',
         'views/gamification_views.xml',
         'views/gamification_tag_view.xml',
     ],

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
@@ -8,7 +5,7 @@ class Challenge(models.Model):
 
     _inherit = 'gamification.challenge'
 
-    total_scoring = fields.Float(string="Scoring")
+    total_scoring = fields.Percent(string="Scoring")
     name_tag_ids = fields.Many2many(
         comodel_name="gamification.tag",
         string="Tags",
@@ -25,6 +22,6 @@ class ChallengeLine(models.Model):
 
     _inherit = 'gamification.challenge.line'
 
-    scoring = fields.Float(string="Scoring", related="definition_id.scoring")
+    scoring = fields.Percent(string="Scoring", related="definition_id.scoring")
 
 
