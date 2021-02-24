@@ -43,10 +43,6 @@
                 <button string="Approve" type="object" name="action_approve" states="failed,reached" groups="base.group_no_one" />
                 <button string="Decline" type="object" name="action_decline" states="failed,reached" groups="base.group_no_one" />
             </xpath>
-            <xpath expr="//header/button[@name='action_cancel']" position="after">
-                <button string="Approve" type="object" name="action_approve" states="failed,reached" groups="base.group_no_one" />
-                <button string="Decline" type="object" name="action_decline" states="failed,reached" groups="base.group_no_one" />
-            </xpath>
             <xpath expr="//field[@name='end_date']" position="attributes">
                 <attribute name="attrs">{'readonly': ['|',('state', '=', 'declined'),('state', '=', 'approved')]}</attribute>
             </xpath>
