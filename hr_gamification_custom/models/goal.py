@@ -49,3 +49,18 @@ class Goal(models.Model):
                 if rule.interval_from <= self.current <= rule.interval_to:
                     self.current_scoring = self.target_goal * rule.scoring_goal / 100
                     break
+
+class Followers(models.Model):
+    _inherit = 'mail.followers'
+
+    @api.model
+    def create(self, vals):
+        if 'res_model' in vals and 'res_id' in vals and 'partner_id' in vals:
+            dups = self.env['mail.followers'].search([('res_model', '=',vals.get('res_model')),
+                                               ('res_id', '=', vals.get('res_id')),
+                                               ('partner_id', '=', vals.get('partner_id'))])
+            if len(dups):
+                for p in dups:
+                    p.unlink()
+        res = super(Followers, self).create(vals)
+        return res
