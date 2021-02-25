@@ -30,6 +30,7 @@ class Goal(models.Model):
     ], default='draft', string='State', required=True, track_visibility='always')
     total_scoring = fields.Percent(string="Total Scoring", related="definition_id.scoring", store=True)
     current_scoring = fields.Percent(string="Current Scoring")
+    current = fields.Float("Current Value", required=True, default=0, track_visibility='always')
 
     def action_approve(self):
         for rec in self:
@@ -38,6 +39,10 @@ class Goal(models.Model):
     def action_decline(self):
         for rec in self:
             rec.state = 'declined'
+
+    def action_undo(self):
+        for rec in self:
+            rec.state = 'draft'
 
     @api.onchange('current')
     def _onchange_current(self):

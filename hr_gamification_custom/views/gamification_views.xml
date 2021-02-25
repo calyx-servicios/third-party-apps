@@ -42,6 +42,7 @@
             <xpath expr="//header/button[@name='action_cancel']" position="after">
                 <button string="Approve" type="object" name="action_approve" states="failed,reached" groups="base.group_no_one" />
                 <button string="Decline" type="object" name="action_decline" states="failed,reached" groups="base.group_no_one" />
+                <button string="Undo Decision" type="object" name="action_undo" states="approved,declined" groups="base.group_no_one" />            
             </xpath>
             <xpath expr="//field[@name='end_date']" position="attributes">
                 <attribute name="attrs">{'readonly': ['|',('state', '=', 'declined'),('state', '=', 'approved')]}</attribute>
@@ -59,18 +60,23 @@
         </field>
     </record>
 
-    <record id="goal_list_view" model="ir.ui.view">
+    <record id="gamification.goal_list_view" model="ir.ui.view">
         <field name="name">Goal List</field>
         <field name="model">gamification.goal</field>
-        <field name="inherit_id" ref="gamification.goal_list_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='end_date']" position="after">
+            <tree string="Goal List" decoration-danger="state == 'failed' or state == 'declined'" decoration-success="state == 'reached' or state == 'approved'" decoration-muted="state == 'canceled'" create="false">
+                <field name="definition_id" invisible="1"/>
+                <field name="user_id" invisible="1"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
                 <field name="total_scoring" string="Scoring"/>
                 <field name="current_scoring" string="Scoring Reached"/>
-            </xpath>
-            <xpath expr="//field[@name='target_goal']" position="after">
+                <field name="current"/>
+                <field name="target_goal"/>
                 <field name="state"/>
-            </xpath>
+                <field name="completeness" widget="progressbar"/>
+                <field name="line_id" invisible="1"/>
+            </tree>
         </field>
     </record>
 

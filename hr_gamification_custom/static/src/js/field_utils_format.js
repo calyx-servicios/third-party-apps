@@ -13,15 +13,6 @@ odoo.define('percent_field.field_utils_format', function (require) {
      }
     }
 
-    /**
-     * Parse a String containing Percent in language formating
-     *
-     * @param {string} value
-     *                The string to be parsed with the setting of thousands and
-     *                decimal separator
-     * @returns {float with percent symbol}
-     * @throws {Error} if no float is found respecting the language configuration
-     */
     function parsePercent(value) {
         var ks_lastChar = value[value.length -1];
         var ks_parsed = value.slice(0, -1);
@@ -56,16 +47,6 @@ odoo.define('percent_field.field_utils_format', function (require) {
 
     ks_field_utils['format']['Percent'] = formatPercent;
     ks_field_utils['parse']['Percent'] = parsePercent;
-
-    /**
-     * Parse a String containing Percent in language formating
-     *
-     * @param {string} value
-     *                The string to be parsed with the setting of thousands and
-     *                decimal separator
-     * @returns {float with percent symbol}
-     * @throws {Error} if no float is found respecting the language configuration
-     */
     ks_basic_controller.include({
         _notifyInvalidFields: function (invalidFields) {
             var record = this.model.get(this.handle, {raw: true});
@@ -88,7 +69,6 @@ odoo.define('percent_field.field_utils_format', function (require) {
             });
         }
     })
-
 
 });
 
