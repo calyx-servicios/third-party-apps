@@ -1,0 +1,1476 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* globalteckz_shopify
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-25 17:41+0000\n"
+"PO-Revision-Date: 2021-02-25 15:17-0300\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+"Last-Translator: \n"
+"Language: es_AR\n"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "<span>Invoices</span>"
+msgstr "<span>Facturas</span>"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "<span>Orders</span>"
+msgstr "<span>Órdenes</span>"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "<span>Products</span>"
+msgstr "<span>Productos</span>"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "<span>Setting</span>"
+msgstr "<span>Configuración</span>"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "<span>Shipment</span>"
+msgstr "<span>Envíos</span>"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_order_workflow_form_view
+msgid "Accounts"
+msgstr "Cuentas"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_shopify_active
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_shopify_active
+msgid "Active Publication"
+msgstr "Publicación Activa"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_address1
+msgid "Address 1"
+msgstr "Dirección 1"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_address2
+msgid "Address 2"
+msgstr "Dirección 2"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "All Order"
+msgstr "Toda la Orden"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_shopify_orders_all
+msgid "All Orders"
+msgstr "Todas las Órdenes"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_gt_api_key
+msgid "Api Key"
+msgstr "Api Key"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Authentication"
+msgstr "Autenticación"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Available"
+msgstr "Disponible"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_data_shopify
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Cancel Order"
+msgstr "Cancelar Orden"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_order_cancel_reason
+msgid "Cancel Reason"
+msgstr "Cancel Reason"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_city
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_city
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_default_city
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_res_partner_shopify
+msgid "City"
+msgstr "Ciudad"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,help:globalteckz_shopify.action_picking_tree_completed
+#: model:ir.actions.act_window,help:globalteckz_shopify.action_picking_tree_pending
+msgid "Click here to create a new transfer."
+msgstr "Clic aquí para crear una nueva transferencia."
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,help:globalteckz_shopify.action_gt_shopify_instance
+#: model:ir.actions.act_window,help:globalteckz_shopify.action_gt_shopify_store
+msgid "Click to add a new tag."
+msgstr "Clic para añadir una nueva etiqueta."
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,help:globalteckz_shopify.shopify_product_template_exported
+#: model:ir.actions.act_window,help:globalteckz_shopify.shopify_product_template_not_exported
+msgid "Click to define a new product."
+msgstr "Clic para definir un nuevo producto."
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,help:globalteckz_shopify.field_product_product_l10n_ar_ncm_code
+msgid "Code according to the Common Nomenclator of MERCOSUR"
+msgstr "Code according to the Common Nomenclator of MERCOSUR"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_color
+msgid "Color"
+msgstr "Color"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_complete_shipment
+msgid "Complete Shipment"
+msgstr "Envío Completo"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Completed"
+msgstr "Completo"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Completed Order"
+msgstr "Orden Completa"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_shipment_completed
+msgid "Completed Shipment"
+msgstr "Envío Completo"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_core_settings
+msgid "Core Settings"
+msgstr "Configuración Principal"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_count_shopify_customers
+msgid "Count Shopify Customers"
+msgstr "Shopify Clientes"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_count_shopify_orders
+msgid "Count Shopify Orders"
+msgstr "Shopify Ordenes"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_count_shopify_shop
+msgid "Count Shopify Shop"
+msgstr "Shopify Tienda"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_count_shopify_template
+msgid "Count Shopify Template"
+msgstr "Shopify Plantillas de Producto"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_count_shopify_variant
+msgid "Count Shopify Variant"
+msgstr "Shopify Variantes"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_country_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_default_country_id
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_res_partner_shopify
+msgid "Country"
+msgstr "País"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_country_code
+msgid "Country Code"
+msgstr "Código de país"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_country_name
+msgid "Country Name"
+msgstr "Nombre del país"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_create_date
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_details_create_date
+msgid "Create DateTime"
+msgstr "Fecha"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_create_invoice
+msgid "Create Invoice"
+msgstr "Factura"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_fulfillment_service_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_management_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_policy_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_published_scope_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_customer_state_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_tags_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_type_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_vendor_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_details_create_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_fulfillment_service_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_management_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_policy_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_published_scope_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_customer_state_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_tags_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_type_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_vendor_create_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_create_date
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Cron Job"
+msgstr "Trabajo del Cron"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_currency
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_customer_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_customer_id
+msgid "Customer ID"
+msgstr "ID Cliente"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_customer_state
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_customer_state
+msgid "Customer state"
+msgstr "Estado del Cliente"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_customers
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Customers"
+msgstr "Clientes"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.magento_dashboard_menu
+msgid "Dashboard"
+msgstr "Tablero"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_res_partner_shopify
+msgid "Default Address"
+msgstr "Dirección por Defecto"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_res_partner_shopify
+msgid "Default Name..."
+msgstr "Nombre por Defecto"
+
+#. module: globalteckz_shopify
+#: selection:gt.import.order.workflow,invoice_policy:0
+msgid "Delivered quantities"
+msgstr "Cantidades entregadas"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_fulfillment_status
+msgid "Delivery Status"
+msgstr "Estado de entrega"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_discount_product
+msgid "Discount Product"
+msgstr "Producto de descuento"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_fulfillment_service_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_management_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_policy_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_published_scope_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_customer_state_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_tags_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_type_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_plan_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_vendor_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_details_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_display_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_domain
+msgid "Domain"
+msgstr "Dominio"
+
+#. module: globalteckz_shopify
+#: selection:gt.import.order.workflow,ship_expo_shopify:0
+msgid "Done"
+msgstr "Hecho"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_shopify_orders_done
+msgid "Done Orders"
+msgstr "Pedidos realizados"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Draft Invoice"
+msgstr "Factura borrador"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Draft Order"
+msgstr "Orden borrador"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_email
+msgid "Email"
+msgstr "Email"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_product_product_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_product_template_shopify
+msgid "Example test.jpeg"
+msgstr "Example test.jpeg"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_data_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Export"
+msgstr "Exportar"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_export_images
+msgid "Export Images"
+msgstr "Exportar Imagenes"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_export_products
+msgid "Export Products"
+msgstr "Exportar Productos"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Export Shipment"
+msgstr "Exportación Envío"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Export Stock"
+msgstr "Exportar Stock"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_product_template_shopify
+msgid "Export To Shopify"
+msgstr "Exportar a Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_gt_is_exported
+msgid "Exported"
+msgstr "Exportar"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_fulfillment_service_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_fulfillment_service
+msgid "Fulfillment Service"
+msgstr "Servicio de cumplimiento"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_fullfilment_service
+msgid "Fullfilment Service"
+msgstr "Servicio de cumplimiento"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_fulfillment_service_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_management_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_policy_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_published_scope_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_customer_state_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_tags_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_type_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_vendor_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_details_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_id
+msgid "ID"
+msgstr "ID (identificación)"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_gt_image
+msgid "Image"
+msgstr "Imagen"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_gt_image_name
+msgid "Image Name"
+msgstr "Nombre Imagen"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_gt_image_position
+msgid "Image Position"
+msgstr "Posición Imagen"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_gt_image_src
+msgid "Image Source"
+msgstr "Recurso de Imagen"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_data_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Import"
+msgstr "Importar"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_import_customer
+msgid "Import Customer"
+msgstr "Importar Cliente"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Import Customers"
+msgstr "Importar Clientes"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Import Image"
+msgstr "Importar Imagen"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_import_images
+msgid "Import Images"
+msgstr "Importar Imagenes"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_import_inventory
+msgid "Import Inventory"
+msgstr "Importar Inventario"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_order_workflow_form_view
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_order_workflow_tree_view
+msgid "Import Order Workflow"
+msgstr "Importar Flujo de trabajo para Ordenes"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_import_orders
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Import Orders"
+msgstr "Importar Órdenes"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_import_products
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Import Products"
+msgstr "Importar Productos"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Import Stock"
+msgstr "Importar Stock"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_gt_name
+msgid "Instance Name"
+msgstr "Nombre de la Instancia"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_order_workflow_form_view
+msgid "Inventory"
+msgstr "Inventario"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_management_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_inventory_management
+msgid "Inventory Management"
+msgstr "Gestión del Inventario"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_policy_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_inventory_policy
+msgid "Inventory Policy"
+msgstr "Política de inventario"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_account_invoice
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_order_workflow_form_view
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: globalteckz_shopify
+#: selection:gt.import.order.workflow,invoice_policy:0
+msgid "Invoice based on time and material"
+msgstr "Factura basada en tiempo y material"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_invoice_policy
+msgid "Invoicing Policy"
+msgstr "Política de Facturación"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_fulfillment_service___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_management___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_policy___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_published_scope___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_customer_state___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_tags___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_type___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_vendor___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_details___last_update
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard___last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_last_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_default_last_name
+msgid "Last Name"
+msgstr "Apellido"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_fulfillment_service_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_management_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_policy_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_published_scope_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_customer_state_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_tags_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_type_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_vendor_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_details_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_write_uid
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_write_uid
+msgid "Last Updated by"
+msgstr "Última actualización de"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_fulfillment_service_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_management_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_policy_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_published_scope_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_customer_state_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_tags_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_type_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_vendor_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_details_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_write_date
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_write_date
+msgid "Last Updated on"
+msgstr "Última actualización en"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Load Shopify Store"
+msgstr "Cargar tienda Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_gt_location
+msgid "Location"
+msgstr "Ubicación"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_description
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_details_description
+#: model:ir.ui.view,arch_db:globalteckz_shopify.view_shopify_log_filter
+msgid "Log Description"
+msgstr "Descripción del registro"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_shopify_log_form
+msgid "Magneot Log Line"
+msgstr "Línea de registro Magento"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Manage Customers"
+msgstr "Administrar clientes"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Manage Orders"
+msgstr "Administrar pedidos"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Manage Products"
+msgstr "Gestionar productos"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.view_shopify_log_filter
+msgid "Model"
+msgstr "Modelo"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_l10n_ar_ncm_code
+msgid "NCM Code"
+msgstr "NCM Code"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_customer_state_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_default_name
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_order_workflow_form_view
+msgid "Name"
+msgstr "Nombre"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_customer_note
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_customer_note
+msgid "Note"
+msgstr "Nota"
+
+#. module: globalteckz_shopify
+#: selection:gt.import.order.workflow,ship_expo_shopify:0
+msgid "Oncreation"
+msgstr "En creación"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Open Invoice"
+msgstr "Factura pendiente"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_order_confirmed
+msgid "Order Confirmed"
+msgstr "Orden Confirmada"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_order_currency
+msgid "Order Currency"
+msgstr "Moneda"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_order_id
+msgid "Order ID"
+msgstr "ID Pedido"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_order_status
+msgid "Order Status"
+msgstr "Estado del pedido"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_order_status_url
+msgid "Order Status URL"
+msgstr "URL Estado del Pedido"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_import_order_workflow_gt
+msgid "Order Workflow"
+msgstr "Orden Workflow"
+
+#. module: globalteckz_shopify
+#: selection:gt.import.order.workflow,invoice_policy:0
+msgid "Ordered quantities"
+msgstr "Cantidades ordenadas"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Orders"
+msgstr "Pedidos"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Paid Invoice"
+msgstr "Factura Paga"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_partner_id
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_financial_status
+msgid "Payment Status"
+msgstr "Estado del Pago"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Pending Order"
+msgstr "Orden Pendiente"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_shopify_orders_pending
+msgid "Pending Orders"
+msgstr "Ordenes Pendientes"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_shipment_pending
+msgid "Pending Shipment"
+msgstr "Envío Pendiente"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_phone
+msgid "Phone"
+msgstr "Teléfono"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_pricelist_id
+msgid "Pricelist"
+msgstr "Lista de precios"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_primary_stock_location
+msgid "Primary Location Stock ID"
+msgstr "ID Ubicación Primara de Stock"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_product_product
+msgid "Product"
+msgstr "Producto"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Product Exported"
+msgstr "Producto Exportado"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_gt_product_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_product_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_product_id
+msgid "Product ID"
+msgstr "ID Producto"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_product_image_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_product_image_id
+msgid "Product Images"
+msgstr "Imágenes Producto"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_product_inventory_id
+msgid "Product Inventory ID"
+msgstr "ID Inventario Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Product Not Exported"
+msgstr "Producto no Exportado"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_product_price_compare
+msgid "Product Price Compare"
+msgstr "Precio de Comparación"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_tags_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_product_tags
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_product_tags
+msgid "Product Tags"
+msgstr "Etiquetas del Producto"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_products_exported
+msgid "Product Template Exported"
+msgstr "Plantilla de producto exportada"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_gt_product_temp_id
+msgid "Product Template ID "
+msgstr "ID de plantilla de producto"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_products_not_exported
+msgid "Product Template Not Exported"
+msgstr "Plantilla de producto no exportada"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_type_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_shopify_product_type
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_shopify_product_type
+msgid "Product Type"
+msgstr "Tipo de producto"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.shopify_products_variant_exported
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_products_variant_exported
+msgid "Product Variant Exported"
+msgstr "Variante de producto exportada"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.shopify_products_variant_not_exported
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_products_variant_not_exported
+msgid "Product Variant Not Exported"
+msgstr "Variante de producto no exportada"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_product_photo
+msgid "Product photo"
+msgstr "Foto del producto"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_shopify_products
+msgid "Products"
+msgstr "Productos"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.shopify_product_template_exported
+msgid "Products Template Exported"
+msgstr "Plantilla de productos exportada"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.shopify_product_template_not_exported
+msgid "Products Template Not Exported"
+msgstr "Plantilla de productos no exportada"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_province
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_province_code
+msgid "Province"
+msgstr "Provincia"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_published_scope
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_published_scope
+msgid "Published Scope"
+msgstr "Alcance publicado"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_sale_order
+msgid "Quotation"
+msgstr "Presupuesto"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_real_inventory_update
+msgid "Real Inventory Update"
+msgstr "Actualización de inventario real"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_real_order_status_update
+msgid "Real update order status"
+msgstr "Estado real del pedido de actualización"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_register_payment
+msgid "Register Payment"
+msgstr "Registro de pago"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_requires_shipping
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_requires_shipping
+msgid "Requires Shipping"
+msgstr "Requiere Envio"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_reserve_qty
+msgid "Reserve quantity"
+msgstr "Cantidad de reserva"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_res_id
+msgid "Resource"
+msgstr "Recurso"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_data_shopify
+msgid "Run"
+msgstr "Run"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_sale_journal
+msgid "Sale Journal"
+msgstr "Sale Journal"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_orders_shopify_all
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_orders_shopify_done
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_orders_shopify_pending
+msgid "Sales Orders"
+msgstr "Pedidos de ventas"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_published_scope_name
+msgid "Scope name"
+msgstr "Nombre del alcance"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.view_shopify_log_filter
+msgid "Search Shopify log"
+msgstr "Buscar registro de Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_gt_shopify_instance_ids
+msgid "Select Instance"
+msgstr "Seleccionar instancia"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,help:globalteckz_shopify.field_gt_import_order_workflow_ship_expo_shopify
+msgid "Select the option at which the shipment should be exported to magento"
+msgstr "Seleccione la opción en la que se debe exportar el envío a magento"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_phone
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_default_phone
+msgid "Ship Phone"
+msgstr "Enviar teléfono"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_ship_product
+msgid "Ship Product"
+msgstr "Enviar producto"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_order_workflow_form_view
+msgid "Shipment & Order"
+msgstr "Envío y pedido"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_ship_expo_shopify
+msgid "Shipment export magento"
+msgstr "Envío exportación magento"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_name
+msgid "Shop Name"
+msgstr "Nombre de tienda"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_shop_owner
+msgid "Shop Owner"
+msgstr "Dueño de la tienda"
+
+#. module: globalteckz_shopify
+#: model:ir.module.category,name:globalteckz_shopify.shopify_category
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_product_product_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_product_template_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_res_partner_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_shopify_log_tree
+msgid "Shopify"
+msgstr "Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Shopify API Password"
+msgstr "Shopify API Password"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Shopify API key"
+msgstr "Shopify API key"
+
+#. module: globalteckz_shopify
+#: model:res.groups,name:globalteckz_shopify.gt_shopify_admin_group
+msgid "Shopify Administrador"
+msgstr "Cliente de Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.server,name:globalteckz_shopify.shopify_cron_ir_actions_server
+#: model:ir.cron,cron_name:globalteckz_shopify.shopify_cron
+#: model:ir.cron,name:globalteckz_shopify.shopify_cron
+msgid "Shopify Cron"
+msgstr "Shopify Cron"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_shopify_customer
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_shopify_customer
+msgid "Shopify Customer"
+msgstr "Shopify Cliente"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_customers_parent
+msgid "Shopify Customers"
+msgstr "Shopify Clientes"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.act_shopify_dashboard
+msgid "Shopify Dashboard"
+msgstr "Tablero de Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_shopify_description
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_shopify_description
+msgid "Shopify Description"
+msgstr "Shopify Descripcion"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.view_order_inherit_shopify_form
+msgid "Shopify Details"
+msgstr "Shopify Detalles"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_shopify_exported
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_shopify_exported
+msgid "Shopify Exported"
+msgstr "Shopify exportado"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_gt_image_id
+msgid "Shopify Image ID"
+msgstr "Shopify Image ID"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_gt_shopify_instance
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_fulfillment_service_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_management_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_inventory_policy_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_published_scope_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_tags_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_product_type_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_vendor_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_instance_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_gt_shopify_instance_id
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_tree_view
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_store_tree_view
+msgid "Shopify Instance"
+msgstr "Shopify Instancia"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_shopify_instance
+msgid "Shopify Instance Dashboard view"
+msgstr "Vista del panel de instancia de Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_instances
+msgid "Shopify Instances"
+msgstr "Shopify Instancias"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_account_invoice_gt_shopify_invoice
+msgid "Shopify Invoice"
+msgstr "Shopify Invoice"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_shopify_kanban_instance
+msgid "Shopify Kanban Instance"
+msgstr "Instancia de Shopify Kanban"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_shopify_log_view
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_details_shopify_log_id
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_shopify_log_form
+msgid "Shopify Log"
+msgstr "Shopify Log"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_shopify_log_details_id
+msgid "Shopify Log Details"
+msgstr "Detalles del registro de Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_shopify_log_form
+msgid "Shopify Log Line"
+msgstr "Shopify Log Linea"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_logs
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Shopify Logs"
+msgstr "Shopify Logs"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_shopify_dashboard
+msgid "Shopify Operation"
+msgstr "Operación Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_order
+msgid "Shopify Order"
+msgstr "Shopify Orden"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_shopify_orders
+msgid "Shopify Orders"
+msgstr "Shopify Ordenes"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_shopify_product
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_shopify_product
+msgid "Shopify Product"
+msgstr "Shopify Producto"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_product_product_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_product_template_shopify
+msgid "Shopify Product Image"
+msgstr "Imagen Producto Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.module.category,description:globalteckz_shopify.shopify_category
+msgid "Shopify Settings"
+msgstr "Flujo de trabajo y configuración"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_shipment
+msgid "Shopify Shipment"
+msgstr "Envío de Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_gt_shopify_store
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_store
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_store_form_view
+msgid "Shopify Store"
+msgstr "Shopify Tienda"
+
+#. module: globalteckz_shopify
+#: model:res.groups,name:globalteckz_shopify.gt_shopify_user_group
+msgid "Shopify User"
+msgstr "Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Shops"
+msgstr "Shops"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_state_id
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_default_state_id
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_res_partner_shopify
+msgid "State"
+msgstr "Estado"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_stock_location_id
+msgid "Stock Location"
+msgstr "Ubicación de stock"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_picking_tree_completed
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_picking_tree_pending
+msgid "Stock Operations"
+msgstr "Operaciones de Stock"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_street
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_default_street
+msgid "Street"
+msgstr "Calle"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_res_partner_shopify
+msgid "Street..."
+msgstr "Calle..."
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_street2
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_default_street2
+msgid "Street2"
+msgstr "Calle2"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_tax_exempt
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_tax_exempt
+msgid "Tax Exempt"
+msgstr "Exento de impuestos"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_tax_included
+msgid "Tax Included"
+msgstr "Impuesto incluido"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Template"
+msgstr "Plantilla"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_title
+msgid "Title"
+msgstr "Título"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_data_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Update"
+msgstr "Actualizar"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_update_product
+msgid "Update Product"
+msgstr "Actualizar Producto"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_product_template_shopify
+msgid "Update Product to Odoo"
+msgstr "Actualizar a Odoo"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_product_template_shopify
+msgid "Update Product to Shopify"
+msgstr "Actualizar a Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_update_shipment
+msgid "Update Shipment"
+msgstr "Actualizar envío"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.view_order_inherit_shopify_form
+msgid "Update Shopify Order"
+msgstr "Actualizar Pedido Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_wizard_update_stock
+msgid "Update Stock"
+msgstr "Actualizar Stock"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_product_template_shopify
+msgid "Upgrade Stock to Shopify"
+msgstr "Actualizar Stock a Shopify"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_validate_invoice
+msgid "Validate Invoice"
+msgstr "Validar Factura"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_validate_order
+msgid "Validate Order"
+msgstr "Validar Orden"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "Variant"
+msgstr "Variante"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Variant Exported"
+msgstr "Variante Exportada"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Variant Not Exported"
+msgstr "Variante exportada"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_vendor
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_template_gt_vendor
+msgid "Vendor"
+msgstr "Proveedor"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_vendor_name
+msgid "Vendor name"
+msgstr "Nombre del vendedor"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_verified_email
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_verified_email
+msgid "Verified Email"
+msgstr "Correo electrónico verificado"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+msgid "Waiting Availability"
+msgstr "Esperando disponibilidad"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_warehouse_id
+msgid "Warehouse"
+msgstr "Almacén"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_weight_unit
+msgid "Weight Unit"
+msgstr "Unidad de peso"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_workflow
+#, fuzzy
+msgid "Worfklow"
+msgstr "Worfklow"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
+#, fuzzy
+msgid "Workflow"
+msgstr "Workflow"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_gt_workflow_id
+#, fuzzy
+msgid "Workflow & Settings"
+msgstr "Workflow & Settings"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_order_workflow_form_view
+msgid "Workflow Name"
+msgstr "Workflow Nombre"
+
+#. module: globalteckz_shopify
+#: model:ir.actions.act_window,help:globalteckz_shopify.action_picking_tree_completed
+#: model:ir.actions.act_window,help:globalteckz_shopify.action_picking_tree_pending
+msgid ""
+"You can either do it immediately or mark it as Todo for future processing. "
+"Use your scanner to validate the transferred quantity quicker."
+msgstr ""
+"Puede hacerlo de inmediato o marcarlo como \"para hacer\" para procesarlo "
+"mas adelante. Utilice el escáner de código de barras para validar más "
+"rápidamente la cantidad transferida."
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_res_partner_shopify
+msgid "ZIP"
+msgstr "C.P."
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_zip
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_res_users_gt_default_zip
+msgid "Zip"
+msgstr "C.P."
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_zipcode
+msgid "Zip Code"
+msgstr "Código Postal"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_fulfillment_service
+msgid "gt.fulfillment.service"
+msgstr "gt.fulfillment.service"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_import_order_workflow
+msgid "gt.import.order.workflow"
+msgstr "gt.import.order.workflow"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_inventory_management
+msgid "gt.inventory.management"
+msgstr "gt.inventory.management"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_inventory_policy
+msgid "gt.inventory.policy"
+msgstr "gt.inventory.policy"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_published_scope
+msgid "gt.published.scope"
+msgstr "gt.published.scope"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_shopify_customer_state
+msgid "gt.shopify.customer.state"
+msgstr "gt.shopify.customer.state"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_shopify_product_tags
+msgid "gt.shopify.product.tags"
+msgstr "gt.shopify.product.tags"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_shopify_product_type
+msgid "gt.shopify.product.type"
+msgstr "gt.shopify.product.type"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_shopify_store
+msgid "gt.shopify.store"
+msgstr "gt.shopify.store"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_gt_shopify_vendor
+msgid "gt.shopify.vendor"
+msgstr "gt.shopify.vendor"
+
+#. module: globalteckz_shopify
+#: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
+msgid "http://www.shopify.com"
+msgstr "http://www.shopify.com"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_details_name
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_shopify_log_name
+msgid "name"
+msgstr "Nombre"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_gt_password
+msgid "password"
+msgstr "password"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_shopify_log
+msgid "shopify.log"
+msgstr "shopify.log"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_shopify_log_details
+msgid "shopify.log.details"
+msgstr "shopify.log.details"
+
+#. module: globalteckz_shopify
+#: model:ir.model,name:globalteckz_shopify.model_shopify_wizard
+msgid "shopify.wizard"
+msgstr "shopify.wizard"
