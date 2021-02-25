@@ -54,6 +54,11 @@ msgid "Clickable Goals"
 msgstr "Objetivos pulsables"
 
 #. module: hr_gamification_custom
+#: model:ir.ui.menu,name:hr_gamification_custom.gamification_goal_menu
+msgid "Goals"
+msgstr "Objetivos"
+
+#. module: hr_gamification_custom
 #: model:ir.model.fields,field_description:hr_gamification_custom.field_gamification_tag__create_uid
 #: model:ir.model.fields,field_description:hr_gamification_custom.field_scoring_rule__create_uid
 msgid "Created by"

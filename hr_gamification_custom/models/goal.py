@@ -49,7 +49,7 @@ class Goal(models.Model):
         if self.definition_id.scoring_rules:
             for rule in self.definition_id.scoring_rules:
                 if rule.interval_from <= self.current <= rule.interval_to:
-                    self.current_scoring = self.target_goal * rule.scoring_goal / 100
+                    self.current_scoring = self.definition_id.scoring * rule.scoring_goal / 100
                     break
 
 class Followers(models.Model):

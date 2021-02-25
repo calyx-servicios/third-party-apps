@@ -157,4 +157,5 @@
           </p>
         </field>
     </record>
+    <menuitem id="gamification_goal_menu" parent="hr_gamification.menu_hr_gamification" action="gamification.goal_list_action" groups="hr.group_hr_user"/>
 </odoo>
