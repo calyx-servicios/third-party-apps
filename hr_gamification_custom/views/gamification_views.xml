@@ -143,6 +143,17 @@
         </field>
     </record>
 
+    <record id="challenge_search_view" model="ir.ui.view">
+        <field name="name">Challenge Search</field>
+        <field name="model">gamification.challenge</field>
+        <field name="inherit_id" ref="gamification.challenge_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="name_tag_ids" string="Tag" filter_domain="[('name_tag_ids','=', self)]"/>
+            </xpath>
+        </field>
+    </record>
+
     <record id="gamification.goals_from_challenge_act" model="ir.actions.act_window">
         <field name="res_model">gamification.goal</field>
         <field name="name">Related Goals</field>
