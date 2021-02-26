@@ -7,12 +7,12 @@ class GamificationTag(models.Model):
     _rec_name = "tag_name"
     _order = "sequence"
 
-    tag_name = fields.Char("tag_name")
+    tag_name = fields.Char("Tag Name")
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
 
     def unlink(self):
-        challenge_obj = self.env["challenge"]
+        challenge_obj = self.env["gamification.challenge"]
         rule_ranges = challenge_obj.search([("tag_name", "=", self.id)])
         if rule_ranges:
             raise Warning(

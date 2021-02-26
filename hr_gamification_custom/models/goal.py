@@ -31,6 +31,12 @@ class Goal(models.Model):
     total_scoring = fields.Percent(string="Total Scoring", related="definition_id.scoring", store=True)
     current_scoring = fields.Percent(string="Current Scoring")
     current = fields.Float("Current Value", required=True, default=0, track_visibility='always')
+    tag_id = fields.Many2one(comodel_name="gamification.tag", compute='_compute_tag_id', store=True, string="Tag") 
+
+    @api.depends('tag_id')
+    def _compute_tag_id(self):
+        for record in self:
+            record.tag_id = record.challenge_id.name_tag_ids
 
     def action_approve(self):
         for rec in self:
