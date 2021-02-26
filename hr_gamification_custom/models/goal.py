@@ -32,6 +32,7 @@ class Goal(models.Model):
     current_scoring = fields.Percent(string="Current Scoring")
     current = fields.Float("Current Value", required=True, default=0, track_visibility='always')
     tag_id = fields.Many2one(comodel_name="gamification.tag", compute='_compute_tag_id', store=True, string="Tag") 
+    previous_state = fields.Char("Previous state")
 
     @api.depends('tag_id')
     def _compute_tag_id(self):
@@ -40,15 +41,17 @@ class Goal(models.Model):
 
     def action_approve(self):
         for rec in self:
+            rec.previous_state = rec.state
             rec.state = 'approved'
 
     def action_decline(self):
         for rec in self:
+            rec.previous_state = rec.state
             rec.state = 'declined'
 
     def action_undo(self):
         for rec in self:
-            rec.state = 'draft'
+            rec.state = rec.previous_state
 
     @api.onchange('current')
     def _onchange_current(self):
