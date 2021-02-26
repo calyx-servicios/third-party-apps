@@ -69,11 +69,11 @@
                 <field name="user_id" invisible="1"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
-                <field name="total_scoring" string="Scoring" />
-                <field name="current_scoring" string="Scoring Reached" />
+                <field name="total_scoring" string="Scoring" style="text-align: right;"/>
+                <field name="current_scoring" string="Scoring Reached" style="text-align: right;"/>
                 <field name="current"/>
                 <field name="target_goal"/>
-                <field name="state" />
+                <field name="state" style="text-align: right;"/>
                 <field name="completeness" widget="progressbar"/>
                 <field name="line_id" invisible="1"/>
             </tree>
