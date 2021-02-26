@@ -69,11 +69,11 @@
                 <field name="user_id" invisible="1"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
-                <field name="total_scoring" string="Scoring" style="text-align: right;"/>
-                <field name="current_scoring" string="Scoring Reached" style="text-align: right;"/>
+                <field name="total_scoring" string="Scoring"/>
+                <field name="current_scoring" string="Scoring Reached"/>
                 <field name="current"/>
                 <field name="target_goal"/>
-                <field name="state" style="text-align: right;"/>
+                <field name="state"/>
                 <field name="completeness" widget="progressbar"/>
                 <field name="line_id" invisible="1"/>
             </tree>
@@ -149,8 +149,11 @@
         <field name="inherit_id" ref="gamification.challenge_search_view"/>
         <field name="arch" type="xml">
             <xpath expr="//search" position="inside">
-                <field name="name_tag_ids" string="Tag" filter_domain="[('name_tag_ids','=', self)]"/>
+                <field name="tag_id" string="Tag" filter_domain="[('tag_id','ilike', self)]"/>
             </xpath>
+            <xpath expr="//search/group" position="inside">
+                <filter string="Tags" name="tag_id" domain="[]" context="{'group_by':'tag_id'}"/>                
+            </xpath>  
         </field>
     </record>
 

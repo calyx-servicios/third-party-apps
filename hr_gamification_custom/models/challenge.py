@@ -36,6 +36,13 @@ class Challenge(models.Model):
         string="Tags",
     )
 
+    tag_id = fields.Many2one(comodel_name="gamification.tag", compute='_compute_tag_id', store=True, string="Tag") 
+    
+    @api.depends('name_tag_ids')
+    def _compute_tag_id(self):
+        for record in self:
+            record.tag_id = record.name_tag_ids
+
     @api.onchange('line_ids')
     def on_change_line_ids(self):
         self.total_scoring = 0
