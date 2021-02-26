@@ -105,7 +105,7 @@ class Challenge(models.Model):
         total_scoring = 0
         for user in self.user_ids:
             goal = self.env['gamification.goal'].search([
-            ('user_id', '=', user.id),('state', '!=', "draft")])
+            ('user_id', '=', user.id),('state', '!=', "inprogress")])
             for scorings in goal:
                 total_scoring += scorings.total_scoring 
             if total_scoring + self.total_scoring > 100 :
