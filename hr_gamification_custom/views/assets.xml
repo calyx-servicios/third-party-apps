@@ -4,6 +4,7 @@
         <xpath expr="." position="inside">
             <script type="application/javascript" src="/hr_gamification_custom/static/src/js/basic_fields.js"/>
             <script type="application/javascript" src="/hr_gamification_custom/static/src/js/field_utils_format.js"/>
+            <link rel="stylesheet" href="/hr_gamification_custom/static/src/css/hr_gamification.css"/>
         </xpath>
     </template>
 </odoo>

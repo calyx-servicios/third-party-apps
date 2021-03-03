@@ -31,12 +31,12 @@ msgstr "Activo"
 #. module: hr_gamification_custom
 #: model_terms:ir.ui.view,arch_db:hr_gamification_custom.goal_form_view
 msgid "Approve"
-msgstr "Aprovar"
+msgstr "Aprobar"
 
 #. module: hr_gamification_custom
 #: selection:gamification.goal,state:0
 msgid "Approved"
-msgstr "Approvado"
+msgstr "Aprobado"
 
 #. module: hr_gamification_custom
 #: selection:gamification.goal,state:0
