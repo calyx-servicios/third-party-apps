@@ -100,6 +100,50 @@ class Challenge(models.Model):
         return True
 
     @api.multi
+    def action_check(self):
+        self.env['gamification.goal'].search([
+            ('challenge_id', 'in', self.ids),
+            ('state', '=', 'inprogress')
+        ]).unlink()
+        goal=[]
+        total_scoring = 0
+        today = date.today()
+        for user in self.user_ids:
+            if self.start_date and self.end_date:
+                goal = self.env['gamification.goal'].search([
+                ('user_id', '=', user.id),('state', '!=', "draft"),'|','|',
+                '&',('start_date','<=',self.start_date),('end_date','>=',self.start_date),
+                '&',('start_date','<=',self.end_date),('end_date','>=',self.end_date),
+                '&','&',('start_date','>=',self.start_date),('start_date','<=',self.end_date),
+                '&',('end_date','>=',self.start_date),('end_date','<=',self.end_date)
+                ])
+            else:
+                if self.start_date:
+                    goal = self.env['gamification.goal'].search([
+                    ('user_id', '=', user.id),('state', '!=', "draft"),'|',
+                    '&',('start_date','<=',self.start_date),('end_date','>=',self.start_date),
+                    ('end_date','>=',self.start_date)
+                    ])
+                if self.end_date:
+                    goal = self.env['gamification.goal'].search([
+                    ('user_id', '=', user.id),('state', '!=', "draft"),'|','|',
+                    '&',('start_date','<=',today),('end_date','>=',today),
+                    '&',('start_date','<=',self.end_date),('end_date','>=',self.end_date),
+                    '&','&',('start_date','>=',today),('start_date','<=',self.end_date),
+                    '&',('end_date','>=',today),('end_date','<=',self.end_date)
+                    ])
+                if not self.start_date and not self.end_date:
+                    goal = self.env['gamification.goal'].search([
+                    ('user_id', '=', user.id),('state', '!=', "draft")
+                    ])
+            for scorings in goal:
+                total_scoring += scorings.total_scoring 
+            if total_scoring + self.total_scoring > 100 :
+                raise Warning(_("user cant have a total scoring over 100%"))
+        return self._update_all()
+
+
+    @api.multi
     def action_start(self):
         goal=[]
         total_scoring = 0
@@ -138,7 +182,6 @@ class Challenge(models.Model):
                 raise Warning(_("user cant have a total scoring over 100%"))
 
         return self.write({'state': 'inprogress'})
-
 class ChallengeLine(models.Model):
 
     _inherit = 'gamification.challenge.line'
