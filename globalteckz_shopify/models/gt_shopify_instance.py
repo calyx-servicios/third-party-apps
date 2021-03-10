@@ -153,11 +153,11 @@ class GTShopifyInstance(models.Model):
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
             api_pass = str(self.gt_password)
-            shop_url = shopify_url + 'admin/products.json'
+            shop_url = shopify_url + 'admin/products.json?limit=250'
             response = requests.get( shop_url,auth=(api_key,api_pass))
             product_rs=json.loads(response.text)
             product_items = product_rs['products']
-
+            
             for products in product_items:
                 product_tmpl_obj.gt_create_product_template(products,self,log_id)
         
@@ -276,8 +276,7 @@ class GTShopifyInstance(models.Model):
             logger.error('Exception===================:  %s', exc)
             log_id.write({'description': exc}) 
         return True
-    
-    
+        
     @api.one
     def gt_import_shopify_image(self):
         log_obj = self.env['shopify.log']
