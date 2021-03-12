@@ -253,12 +253,17 @@ msgstr "Etiquetas"
 #: model:ir.model.fields,field_description:hr_gamification_custom.field_scoring_rule__interval_to
 #: model_terms:ir.ui.view,arch_db:hr_gamification_custom.goal_definition_form_view_custom
 msgid "To"
-msgstr "Para"
+msgstr "Hasta"
 
 #. module: hr_gamification_custom
 #: model:ir.model.fields,field_description:hr_gamification_custom.field_gamification_goal__total_scoring
 msgid "Total Scoring"
 msgstr "Scoring Total"
+
+#. module: hr_gamification_custom
+#: model_terms:ir.ui.view,arch_db:hr_gamification_custom.goal_form_view
+msgid "Undo Decision"
+msgstr "Restablecer"
 
 #. module: hr_gamification_custom
 #: model_terms:ir.ui.view,arch_db:hr_gamification_custom.view_gamification_tag_form
