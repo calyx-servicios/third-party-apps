@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='default_code']" position="after">
                 <field name="gt_product_id"/>
+                <field name="gt_product_inventory_tracked" readonly="True"/>
             </xpath>
             <xpath expr="//field[@name='lst_price']" position="after">
                 <field name="gt_product_price_compare" widget="monetary"/>

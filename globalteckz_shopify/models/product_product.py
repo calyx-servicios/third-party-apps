@@ -22,6 +22,8 @@
 from odoo import fields,api,models
 from odoo.exceptions import UserError, ValidationError
 import logging
+import requests
+import json
 logger = logging.getLogger('product')
 
 class ProductProduct(models.Model):
@@ -41,6 +43,7 @@ class ProductProduct(models.Model):
     gt_inventory_management = fields.Many2one('gt.inventory.management', string='Inventory Management')
     gt_product_inventory_id = fields.Char('Product Inventory ID')
     gt_product_price_compare = fields.Float('Product Price Compare')
+    gt_product_inventory_tracked = fields.Boolean('Tracking')
     
 
     @api.constrains('gt_product_price_compare')
@@ -108,16 +111,25 @@ class ProductProduct(models.Model):
                 'gt_product_price_compare': products_response['compare_at_price'],
             }
             self.write(vals)
-            #'barcode' : products_response['barcode'] if 'barcode' in products_response else '',
+
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
-            log_line_obj.create({'name':'Create Product Template','description':exc,'create_date':date.today(),
+            log_line_obj.create({'name':'Create Product Template','description':exc,'create_date': fields.date.today(),
                                       'shopify_log_id':log_id.id})
             log_id.write({'description': 'Something went wrong'}) 
         return True
     
-    
-    
+    @api.multi
+    def _is_inventory_tracking(self, shopify_instance_id):
+        
+        shopify_url = str(shopify_instance_id.gt_location)
+        api_key = str(shopify_instance_id.gt_api_key)
+        api_pass = str(shopify_instance_id.gt_password)
+        shop_url = shopify_url + '/admin/api/2021-01/inventory_items/'+ str(self.gt_product_inventory_id)+ '.json'
+        response = requests.get( shop_url,auth=(api_key,api_pass))
+        product_rs = json.loads(response.text)
+
+        return product_rs['inventory_item']['tracked']
     
 class GtInventoryPolicy(models.Model):
     _name = 'gt.inventory.policy'

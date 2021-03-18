@@ -70,6 +70,7 @@ class ProductTemplate(models.Model):
                                 if (variant['option1'] in variantes) and (variant['option2'] in variantes) and (variant['option3'] in variantes):
                                     product.write({'gt_product_id': variant['id']})
                                     product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                    product.write({'gt_product_inventory_tracked': product._is_inventory_tracking(shopify_instance_id)})
                                     product.write({'gt_shopify_exported': True})
                                     if variant['compare_at_price'] != None:
                                         if variant['compare_at_price'] != 0 and float(variant['compare_at_price']) > float(variant['price']): 
@@ -80,6 +81,7 @@ class ProductTemplate(models.Model):
                                 if (variant['option1'] in variantes) and (variant['option2'] in variantes):
                                     product.write({'gt_product_id': variant['id']})
                                     product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                    product.write({'gt_product_inventory_tracked': product._is_inventory_tracking(shopify_instance_id)})
                                     product.write({'gt_shopify_exported': True})
                                     if variant['compare_at_price'] != None:    
                                         if variant['compare_at_price'] != 0 and float(variant['compare_at_price']) > float(variant['price']): 
@@ -89,6 +91,7 @@ class ProductTemplate(models.Model):
                                 if product.attribute_value_ids.name == variant['option1'] :
                                     product.write({'gt_product_id': variant['id']})
                                     product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                    product.write({'gt_product_inventory_tracked': product._is_inventory_tracking(shopify_instance_id)})
                                     product.write({'gt_shopify_exported': True})
                                     if variant['compare_at_price'] != None:
                                         if variant['compare_at_price'] != 0 and float(variant['compare_at_price']) > float(variant['price']): 
@@ -96,11 +99,12 @@ class ProductTemplate(models.Model):
                         else:
                             for product in product_ids:
                                 product.write({'gt_product_inventory_id': variant['inventory_item_id']})
+                                product.write({'gt_product_inventory_tracked': product._is_inventory_tracking(shopify_instance_id)})
                                 product.write({'gt_shopify_exported': True})
                                 if variant['compare_at_price'] != None:
                                     if variant['compare_at_price'] != 0 and float(variant['compare_at_price']) > float(variant['price']): 
                                         product.write({'gt_product_price_compare': variant['compare_at_price']})
-    
+
 
     @api.multi
     def _get_product_active(self,instance):
@@ -130,7 +134,7 @@ class ProductTemplate(models.Model):
         vendors = []
         tags_lst = []
         type_id = []
-
+        
         try:
             if 'product_type' in products:
                 product_type_id = product_type_obj.search([('name','=',products['product_type']),('gt_shopify_instance_id','=',instance.id)])
@@ -378,6 +382,66 @@ class ProductTemplate(models.Model):
         product_item = json.loads(response.text)
         
         self.gt_create_product_template(product_item['product'], self.gt_shopify_instance_id, log_id)
+
+
+    @api.multi
+    def update_images_shopify(self):
+        
+        log_id = self.env['shopify.log.details']
+        shopify_url = str(self.gt_shopify_instance_id.gt_location)
+        api_key = str(self.gt_shopify_instance_id.gt_api_key)
+        api_pass = str(self.gt_shopify_instance_id.gt_password)
+        
+        shop_url = shopify_url + 'admin/products/'+str(self.gt_product_id)+'/images.json'
+        response = requests.get( shop_url,auth=(api_key,api_pass))
+        product_rs=json.loads(response.text)
+        product_items = product_rs['images']
+
+        for image in product_items:
+            try:
+                if len(image['variant_ids']) == 0:
+                    file_data = urllib.request.urlopen(image['src']).read()
+                    image_path = base64.encodestring(file_data)
+                    vals = {
+                        'gt_image_src': image['src'],
+                        'gt_image_id' : image['id'],
+                        'gt_is_exported' : True,
+                        'gt_image': image_path,
+                        'gt_image_position' : image['position'],
+                        'gt_product_temp_id': self.id,
+                        }
+                    photo_id = photo_obj.search([('gt_image_id','=',image['id']),('gt_product_temp_id','=',self.id)])
+                    if photo_id:
+                        photo_id.write(vals)
+                    else:
+                        photo_obj.create(vals)
+                    image_id_medium = self.write({'image_medium':image_path})
+                    image_id_small = self.write({'image_small':image_path})
+                else:
+                    for product_ids in image['variant_ids']:
+                        product_id = product_obj.search([('gt_product_id','=',product_ids)])
+                        if product_id:
+                            file_data = urllib.request.urlopen(image['src']).read()
+                            image_path = base64.encodestring(file_data)
+                            vals = {
+                                'gt_image_src': image['src'],
+                                'gt_image_id' : image['id'],
+                                'gt_is_exported' : True,
+                                'gt_image': image_path,
+                                'gt_image_position' : image['position'],
+                                'gt_product_id': product_id.id,
+                                }
+                            photo_id = photo_obj.search([('gt_image_id','=',image['id']),('gt_product_id','=',product_id.id)])
+                            if photo_id:
+                                photo_id.write(vals)
+                            else:
+                                photo_obj.create(vals)
+                        variant_id = product_id.write({'image_medium':image_path})
+            except Exception as exc:
+                logger.error('Exception===================:  %s', exc)
+                log_line_obj.create({'name':'Create Image','description':exc,'create_date':date.today(),
+                                          'shopify_log_id':log_id.id})
+                log_id.write({'description': 'Something went wrong'}) 
 
     @api.multi
     def gt_export_shopify_product(self):

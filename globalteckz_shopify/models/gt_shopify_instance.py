@@ -285,6 +285,7 @@ class GTShopifyInstance(models.Model):
         product_tmpl_obj = self.env['product.template']
         product_obj = self.env['product.product']
         photo_obj = self.env['gt.product.photo']
+
         try:
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
@@ -519,6 +520,8 @@ class GTShopifyInstance(models.Model):
                         if 'line_items' in order:
                             items = order['line_items']
                             product_lines = []
+                            product_untracked_lines = []
+
                             for lines in items:
                                 product = prod_obj.search([('gt_product_id','=',lines['variant_id'])])
                                 if product:
@@ -537,37 +540,74 @@ class GTShopifyInstance(models.Model):
                                         else:
                                             tax_id = tax_obj.create({'name':tax_line['title'],'amount':tax_line['rate'] * 100,'type_tax_use':'sale'})
                                         tax_list.append(tax_id.id)
-                                product_lines.append((0,0,{'product_id': product_id.id,'template_id': product_id.product_tmpl_id.id,'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],'price_unit':lines['price'],'product_uom_qty': lines['quantity'],}))
-                    sale_id = sale_obj.search([('name','=',order['order_number']),('gt_shopify_order_id','=',order['id'])])
-                    if not sale_id:
-                        order = sale_obj.create({
-                            'name':order['order_number'],
-                            'partner_id':customer_id.id, 
-                            'order_line': product_lines,
-                            'warehouse_id': self.gt_workflow_id.warehouse_id.id,
-                            'gt_shopify_instance_id': self.id, 
-                            'gt_shopify_order': True,
-                            'payment_term_id':payment_id,
-                            'gt_shopify_order_id': order['id'],
-                            'gt_shopify_order_status_url':order_stauts_url,
-                            'gt_shopify_order_confirmed':order_confirm,
-                            'gt_shopify_order_currency':order_currency,
-                            'gt_shopify_tax_included':tax_incl,
-                            'gt_shopify_financial_status':order['financial_status'],
-                            'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
-                            'gt_shopify_order_status': self._get_shopify_status(order['id']),
-                            'email_partner': customer_id.email,
-                        })
+                                
+                                if product_id.gt_product_inventory_tracked:
+                                    product_lines.append((0,0,{'product_id': product_id.id,'template_id': product_id.product_tmpl_id.id,'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],'price_unit':lines['price'],'product_uom_qty': lines['quantity'],}))
+                                else:
+                                    product_untracked_lines.append((0,0,{'product_id': product_id.id,'template_id': product_id.product_tmpl_id.id,'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],'price_unit':lines['price'],'product_uom_qty': lines['quantity'],}))
+
+                    # En caso que la SO contenga productos tanto productos con seguimiento de inventario como no.
+                    # Se crearan 2 ordenes de venta para utilizar almacenes diferentes. Ya que los que deban ir a fabricacion
+                    # deben estar asiciados a un almacen que tenga configurada esa ruta.
+
+                    sale_ids = sale_obj.search([('name','=',order['order_number']),('gt_shopify_order_id','=',order['id'])])
+                    if not sale_ids:
+                        if product_lines:
+                            order = sale_obj.create({
+                                'name':order['order_number'],
+                                'partner_id':customer_id.id, 
+                                'order_line': product_lines,
+                                'warehouse_id': self.gt_workflow_id.warehouse_id.id,
+                                'gt_shopify_instance_id': self.id, 
+                                'gt_shopify_order': True,
+                                'payment_term_id':payment_id,
+                                'gt_shopify_order_id': order['id'],
+                                'gt_shopify_order_status_url':order_stauts_url,
+                                'gt_shopify_order_confirmed':order_confirm,
+                                'gt_shopify_order_currency':order_currency,
+                                'gt_shopify_tax_included':tax_incl,
+                                'gt_shopify_financial_status':order['financial_status'],
+                                'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
+                                'gt_shopify_order_status': self._get_shopify_status(order['id']),
+                                'email_partner': customer_id.email,
+                            })
+                            
+                            if order.state in ['draft','sent'] and order.gt_shopify_financial_status == 'paid':
+                                order.action_confirm()
+
+                        if product_untracked_lines:
+                            order_manufacturing = sale_obj.create({
+                                'name':order['order_number'],
+                                'partner_id':customer_id.id, 
+                                'order_line': product_untracked_lines,
+                                'warehouse_id': self.gt_workflow_id.warehouse_manufacturing_id.id,
+                                'gt_shopify_instance_id': self.id, 
+                                'gt_shopify_order': True,
+                                'payment_term_id':payment_id,
+                                'gt_shopify_order_id': order['id'],
+                                'gt_shopify_order_status_url':order_stauts_url,
+                                'gt_shopify_order_confirmed':order_confirm,
+                                'gt_shopify_order_currency':order_currency,
+                                'gt_shopify_tax_included':tax_incl,
+                                'gt_shopify_financial_status':order['financial_status'],
+                                'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
+                                'gt_shopify_order_status': self._get_shopify_status(order['id']),
+                                'email_partner': customer_id.email,
+                            })
+
+                            if order_manufacturing.state in ['draft','sent'] and order_manufacturing.gt_shopify_financial_status == 'paid':
+                                order_manufacturing.action_confirm()
                         
-                        if order.state in ['draft','sent'] and order.gt_shopify_financial_status == 'paid':
-                            order.action_confirm()
+
+                        order_manufacturing
 
                     else:
-                        sale_id.write({'gt_shopify_financial_status': order['financial_status']})                        
-                        sale_id.write({'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status']})
-                        sale_id.write({'gt_shopify_order_status': self._get_shopify_status(order['id'])})
-                        if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
-                            sale_id.action_confirm()
+                        for sale_id in sale_ids:
+                            sale_id.write({'gt_shopify_financial_status': order['financial_status']})                        
+                            sale_id.write({'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status']})
+                            sale_id.write({'gt_shopify_order_status': self._get_shopify_status(order['id'])})
+                            if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
+                                sale_id.action_confirm()
 
                 except Exception as exc:
                     logger.error('Exception===================:  %s', exc)
