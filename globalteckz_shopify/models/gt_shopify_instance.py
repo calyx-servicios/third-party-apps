@@ -598,9 +598,6 @@ class GTShopifyInstance(models.Model):
                             if order_manufacturing.state in ['draft','sent'] and order_manufacturing.gt_shopify_financial_status == 'paid':
                                 order_manufacturing.action_confirm()
                         
-
-                        order_manufacturing
-
                     else:
                         for sale_id in sale_ids:
                             sale_id.write({'gt_shopify_financial_status': order['financial_status']})                        

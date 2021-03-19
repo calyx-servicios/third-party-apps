@@ -311,7 +311,8 @@ class ProductTemplate(models.Model):
         product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('product_tmpl_id.id', '=', self.id )])
         for products in product_ids:
             qty_available = self.env['stock.quant'].search([('product_id','=',products.id),('location_id','=',self.gt_shopify_instance_id.gt_workflow_id.stock_location_id.id)])
-            if qty_available.quantity >= 0:
+            quantity = qty_available.quantity - qty_available.reserved_quantity
+            if quantity >= 0:
                 vals =  {
                     "location_id": products._get_primary_stock_location(),
                     "inventory_item_id": products.gt_product_inventory_id,
