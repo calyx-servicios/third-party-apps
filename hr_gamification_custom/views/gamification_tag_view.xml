@@ -47,6 +47,6 @@
         </field>
     </record>
 
-    <menuitem id="menu_gamification_tag" groups="base.group_no_one" parent="hr.menu_human_resources_configuration" sequence="25" action="action_gamification_tag_view"/>
+    <menuitem id="menu_gamification_tag" groups="hr_gamification_custom.group_objectives_management,hr_gamification_custom.group_objectives_approver" parent="hr.menu_human_resources_configuration" sequence="25" action="action_gamification_tag_view"/>
 
 </odoo>

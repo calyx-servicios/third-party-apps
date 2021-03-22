@@ -35,9 +35,13 @@ class Challenge(models.Model):
         comodel_name="gamification.tag",
         string="Tags",
     )
-
     tag_id = fields.Many2one(comodel_name="gamification.tag", compute='_compute_tag_id', store=True, string="Tag") 
     
+    @api.onchange('manager_id')
+    def onchange_manager_id(self):
+        users = self.env.ref('hr_gamification_custom.group_objectives_approver').users.ids
+        return {'domain': {'manager_id': [('id', 'in', users)]}}
+
     @api.depends('name_tag_ids')
     def _compute_tag_id(self):
         for record in self:
@@ -182,8 +186,11 @@ class Challenge(models.Model):
                 raise Warning(_("user cant have a total scoring over 100%"))
 
         return self.write({'state': 'inprogress'})
+
 class ChallengeLine(models.Model):
 
     _inherit = 'gamification.challenge.line'
 
     scoring = fields.Percent(string="Scoring", related="definition_id.scoring")
+
+

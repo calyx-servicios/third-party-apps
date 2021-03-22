@@ -33,18 +33,22 @@ class Goal(models.Model):
     current = fields.Float("Current Value", required=True, default=0, track_visibility='always')
     tag_id = fields.Many2one(comodel_name="gamification.tag", compute='_compute_tag_id', store=True, string="Tag") 
     previous_state = fields.Char("Previous state")
-
+      
     @api.depends('tag_id')
     def _compute_tag_id(self):
         for record in self:
             record.tag_id = record.challenge_id.name_tag_ids
 
     def action_approve(self):
+        if self.env.uid != self.challenge_id.manager_id.id:
+            raise ValidationError("you are not the designed approver")
         for rec in self:
             rec.previous_state = rec.state
             rec.state = 'approved'
 
     def action_decline(self):
+        if self.env.uid != self.challenge_id.manager_id.id:
+            raise ValidationError("you are not the designed approver")
         for rec in self:
             rec.previous_state = rec.state
             rec.state = 'declined'

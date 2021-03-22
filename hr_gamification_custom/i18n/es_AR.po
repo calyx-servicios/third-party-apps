@@ -15,6 +15,38 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
+#. module: hr_gamification_custom
+#: model:res.groups,name:hr_gamification_custom.group_objectives_approver
+msgid "Approver"
+msgstr "Aprobador"
+
+#. module: hr_gamification_custom
+#: model:ir.module.category,description:hr_gamification_custom.module_category_objectives
+msgid "Category for Objectives"
+msgstr "Categoría para objetivos"
+
+#. module: hr_gamification_custom
+#: model:res.groups,name:hr_gamification_custom.group_objectives_management
+msgid "Management"
+msgstr "Administrador"
+
+#. module: hr_gamification_custom
+#: model:res.groups,name:hr_gamification_custom.group_objectives_manager
+msgid "Manager"
+msgstr "Responsable"
+
+#. module: hr_gamification_custom
+#: model:ir.actions.act_window,name:hr_gamification_custom.minimun_objective_wizard
+#: model:ir.ui.menu,name:hr_gamification_custom.minimun_objective_check
+#: model_terms:ir.ui.view,arch_db:hr_gamification_custom.minimun_objective_form
+msgid "Minimun Objective Control"
+msgstr "Control Minimos de Objetivos Asignados."
+
+#. module: hr_gamification_custom
+#: model:ir.module.category,name:hr_gamification_custom.module_category_objectives
+msgid "Objectives Managment"
+msgstr "Gestión de objetivos"
+
 #. module: hr_gamification
 #: model:ir.actions.act_window,name:hr_gamification.challenge_list_action2
 #: model:ir.ui.menu,name:hr_gamification.gamification_challenge_menu_hr
