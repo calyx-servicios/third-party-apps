@@ -10,7 +10,7 @@
                         <field name="date_to"/>
                     </group>
                     <footer>
-                        <button string="Approve" type="object" name="check_objective_minimun"/>
+                        <button string="Check" type="object" name="check_objective_minimun"/>
                     </footer>
                 </form>
             </field>
