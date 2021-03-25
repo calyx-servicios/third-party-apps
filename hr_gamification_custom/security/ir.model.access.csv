@@ -1,3 +1,65 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_gamification_tag,gamification.tag,model_gamification_tag,hr.group_hr_user,1,1,1,1
-access_scoring_rule,scoring.rule,model_scoring_rule,hr.group_hr_user,1,1,1,1
+
+gamification_tag_approver,"Gamification Tag Approver",model_gamification_tag,group_objectives_approver,1,1,1,1
+gamification_tag_management,"Gamification Tag Management",model_gamification_tag,group_objectives_management,1,1,1,1
+gamification_tag_manager,"Gamification Tag Manager",model_gamification_tag,group_objectives_manager,1,1,1,1
+
+scoring_rule_approver,"Scoring Rule Approver",model_scoring_rule,group_objectives_approver,1,1,1,1
+scoring_rule_management,"Scoring Rule Management",model_scoring_rule,group_objectives_management,1,1,1,1
+scoring_rule_manager,"Scoring Rule Manager",model_scoring_rule,group_objectives_manager,1,1,1,1
+
+goal_approver,"Goal Approver",gamification.model_gamification_goal,group_objectives_approver,1,1,1,1
+goal_management,"Goal Management",gamification.model_gamification_goal,group_objectives_management,1,1,1,1
+goal_manager,"Goal Manager",gamification.model_gamification_goal,group_objectives_manager,1,1,1,1
+
+goal_definition_approver,"Goal Definition Approver",gamification.model_gamification_goal_definition,group_objectives_approver,1,1,1,1
+goal_definition_management,"Goal Definition Management",gamification.model_gamification_goal_definition,group_objectives_management,1,1,1,1
+goal_definition_manager,"Goal Definition Manager",gamification.model_gamification_goal_definition,group_objectives_manager,1,1,1,1
+
+challenge_approver,"Goal Challenge Approver",gamification.model_gamification_challenge,group_objectives_approver,1,1,1,1
+challenge_management,"Goal Challenge Management",gamification.model_gamification_challenge,group_objectives_management,1,1,1,1
+challenge_manager,"Goal Challenge Manager",gamification.model_gamification_challenge,group_objectives_manager,1,1,1,1
+
+challenge_line_approver,"Challenge Line Approver",gamification.model_gamification_challenge_line,group_objectives_approver,1,1,1,1
+challenge_line_management,"Challenge Line Management",gamification.model_gamification_challenge_line,group_objectives_management,1,1,1,1
+challenge_line_manager,"Challenge Line Manager",gamification.model_gamification_challenge_line,group_objectives_manager,1,1,1,1
+
+badge_approver,"Badge Approver",gamification.model_gamification_badge,group_objectives_approver,1,1,1,1
+badge_management,"Badge Management",gamification.model_gamification_badge,group_objectives_management,1,1,1,1
+badge_manager,"Badge Manager",gamification.model_gamification_badge,group_objectives_manager,1,1,1,1
+
+badge_user_approver,"Badge-user Approver",gamification.model_gamification_badge_user,group_objectives_approver,1,1,1,1
+badge_user_management,"Badge-user Management",gamification.model_gamification_badge_user,group_objectives_management,1,1,1,1
+badge_user_manager,"Badge-user Manager",gamification.model_gamification_badge_user,group_objectives_manager,1,1,1,1
+
+challenge_officer,"Challenge Officer",gamification.model_gamification_challenge,hr.group_hr_user,0,0,0,0
+challenge_line_officer,"Challenge Line Officer",gamification.model_gamification_challenge_line,hr.group_hr_user,0,0,0,0
+badge_officer,"Badge Officer",gamification.model_gamification_badge,hr.group_hr_user,0,0,0,0
+badge_user_officer,"Badge-user Officer",gamification.model_gamification_badge_user,hr.group_hr_user,0,0,0,0
+
+goal_employee,"Goal Employee",model_gamification_goal,base.group_user,0,0,0,0
+goal_manager,"Goal Manager",model_gamification_goal,base.group_erp_manager,0,0,0,0
+goal_portal,"Goal Portal",gamification.model_gamification_goal,base.group_portal,0,0,0,0
+
+goal_definition_employee,"Goal Definition Employee",model_gamification_goal_definition,base.group_user,0,0,0,0
+goal_definition_manager,"Goal Definition Manager",model_gamification_goal_definition,base.group_erp_manager,0,0,0,0
+goal_definition_portal,"Goal Definition Portal",gamification.model_gamification_goal_definition,base.group_portal,0,0,0,0
+
+challenge_employee,"Goal Challenge Employee",model_gamification_challenge,base.group_user,0,0,0,0
+challenge_manager,"Goal Challenge Manager",model_gamification_challenge,base.group_erp_manager,0,0,0,0
+challenge_portal,"Goal Challenge Portal",gamification.model_gamification_challenge,base.group_portal,0,0,0,0
+
+challenge_line_employee,"Challenge Line Employee",model_gamification_challenge_line,base.group_user,0,0,0,0
+challenge_line_manager,"Challenge Line Manager",model_gamification_challenge_line,base.group_erp_manager,0,0,0,0
+challenge_line_portal,"Challenge Line Portal",gamification.model_gamification_challenge_line,base.group_portal,0,0,0,0
+
+badge_employee,"Badge Employee",gamification.model_gamification_badge,base.group_user,0,0,0,0
+badge_manager,"Badge Manager",gamification.model_gamification_badge,base.group_erp_manager,0,0,0,0
+badge_portal,"Badge Portal",gamification.model_gamification_badge,base.group_portal,0,0,0,0
+badge_public,"Badge Public",gamification.model_gamification_badge,base.group_public,0,0,0,0
+
+badge_user_employee,"Badge-user Employee",gamification.model_gamification_badge_user,base.group_user,0,0,0,0
+badge_user_manager,"Badge-user Manager",gamification.model_gamification_badge_user,base.group_erp_manager,0,0,0,0
+badge_user_portal,"Badge-user Portal",gamification.model_gamification_badge_user,base.group_portal,0,0,0,0
+badge_user_public,"Badge-user Public",gamification.model_gamification_badge_user,base.group_public,0,0,0,0
+

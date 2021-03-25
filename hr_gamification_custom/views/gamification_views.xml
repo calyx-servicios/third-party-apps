@@ -9,6 +9,7 @@
             </xpath>
             <xpath expr="//field[@name='user_ids']" position="attributes">
                 <attribute name="readonly">False</attribute>
+                <attribute name="groups"></attribute>
             </xpath>
             <xpath expr="//field[@name='line_ids']/tree/field[@name='definition_full_suffix']" position="attributes">
                 <attribute name="invisible">1</attribute>
@@ -20,7 +21,7 @@
                 <field name="total_scoring" readonly="1" force_save="1"/>
             </xpath>
             <xpath expr="//field[@name='end_date']" position="after">
-                <field name="name_tag_ids" groups="base.group_no_one" widget="many2many_tags"/>
+                <field name="name_tag_ids" widget="many2many_tags"/>
             </xpath>
         </field>
     </record>
@@ -40,9 +41,9 @@
                 <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,reached,approved,declined" />
             </xpath>
             <xpath expr="//header/button[@name='action_cancel']" position="after">
-                <button string="Approve" type="object" name="action_approve" states="failed,reached" groups="base.group_no_one" />
-                <button string="Decline" type="object" name="action_decline" states="failed,reached" groups="base.group_no_one" />
-                <button string="Undo Decision" type="object" name="action_undo" states="approved,declined" groups="base.group_no_one" />            
+                <button string="Approve" type="object" name="action_approve" states="failed,reached" groups="hr_gamification_custom.group_objectives_approver" />
+                <button string="Decline" type="object" name="action_decline" states="failed,reached" groups="hr_gamification_custom.group_objectives_approver" />
+                <button string="Undo Decision" type="object" name="action_undo" states="approved,declined" groups="hr_gamification_custom.group_objectives_approver" />            
             </xpath>
             <xpath expr="//field[@name='end_date']" position="attributes">
                 <attribute name="attrs">{'readonly': ['|',('state', '=', 'declined'),('state', '=', 'approved')]}</attribute>
@@ -64,17 +65,17 @@
         <field name="name">Goal List</field>
         <field name="model">gamification.goal</field>
         <field name="arch" type="xml">
-            <tree string="Goal List" decoration-danger="state == 'failed' or state == 'declined'" decoration-success="state == 'reached' or state == 'approved'" decoration-muted="state == 'canceled'" create="false">
+            <tree string="Goal List" decoration-danger="state == 'failed' or state == 'declined'" decoration-success="state == 'reached' or state == 'approved'" decoration-muted="state == 'canceled'" create="false" class="tree_field_scoring">
                 <field name="definition_id" invisible="1"/>
                 <field name="user_id" invisible="1"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
-                <field name="total_scoring" string="Scoring" style="text-align: right;"/>
-                <field name="current_scoring" string="Scoring Reached" style="text-align: right;"/>
+                <field name="total_scoring" string="Scoring" class="align_left"/>
+                <field name="current_scoring" string="Scoring Reached" class="align_left"/>
                 <field name="current"/>
                 <field name="target_goal"/>
-                <field name="state"/>
-                <field name="completeness" widget="progressbar" style="text-align: right;"/>
+                <field name="state" />
+                <field name="completeness" widget="progressbar"/>
                 <field name="line_id" invisible="1"/>
             </tree>
         </field>
@@ -185,5 +186,5 @@
           </p>
         </field>
     </record>
-    <menuitem id="gamification_goal_menu" parent="hr_gamification.menu_hr_gamification" action="gamification.goal_list_action" groups="hr.group_hr_user"/>
+    <menuitem id="gamification_goal_menu" parent="hr_gamification.menu_hr_gamification" action="gamification.goal_list_action" groups="hr_gamification_custom.group_objectives_management,hr_gamification_custom.group_objectives_approver,hr_gamification_custom.group_objectives_manager"/>
 </odoo>

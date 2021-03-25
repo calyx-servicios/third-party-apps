@@ -4,10 +4,13 @@
     'name': 'HR Gamification custom',
     'version': '1.0',
     'category': 'Human Resources',
-    'depends': ['hr_gamification'],
+    'depends': ['hr_gamification','gamification'],
     'description': """  """,
     'data': [
+
+        'security/security.xml',
         'security/ir.model.access.csv',
+        'wizards/minimun_objective_control_view.xml',
         'views/assets.xml',
         'views/gamification_views.xml',
         'views/gamification_tag_view.xml',

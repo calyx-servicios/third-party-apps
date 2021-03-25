@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<odoo>
+        <record id="minimun_objective_form" model="ir.ui.view">
+            <field name="name">minimun.objective.control.view</field>
+            <field name="model">minimun.objective.control</field>
+            <field name="arch" type="xml">
+                <form string="Minimun Objective Control">
+                    <group class="oe_title">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <footer>
+                        <button string="Check" type="object" name="check_objective_minimun"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="minimun_objective_wizard" model="ir.actions.act_window">
+            <field name="name">Minimun Objective Control</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">minimun.objective.control</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="minimun_objective_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="minimun_objective_check" parent="hr_gamification.menu_hr_gamification" action="minimun_objective_wizard" groups="hr_gamification_custom.group_objectives_management,hr_gamification_custom.group_objectives_approver"/>
+
+</odoo>
