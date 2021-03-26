@@ -23,7 +23,7 @@ class MinimunObjectiveControl(models.TransientModel):
                 ])
             for scorings in goal:
                 total_scoring += scorings.total_scoring 
-            if total_scoring != 100:
+            if total_scoring != 100 and user.has_group('hr_gamification_custom.group_objectives_manager'):
                 incomplete_users += "\n" + user.name
         if incomplete_users:
             raise ValidationError(_("the following users doesnt have 100 scoring %s")% incomplete_users)
