@@ -144,6 +144,7 @@ msgid "Formating Options"
 msgstr "Opciones de formateo"
 
 #. module: hr_gamification_custom
+#: model:ir.model.fields,field_description:hr_gamification_custom.field_minimun_objective_control__date_from
 #: model:ir.model.fields,field_description:hr_gamification_custom.field_scoring_rule__interval_from
 #: model_terms:ir.ui.view,arch_db:hr_gamification_custom.goal_definition_form_view_custom
 msgid "From"
@@ -282,6 +283,7 @@ msgid "Tags"
 msgstr "Etiquetas"
 
 #. module: hr_gamification_custom
+#: model:ir.model.fields,field_description:hr_gamification_custom.field_minimun_objective_control__date_to
 #: model:ir.model.fields,field_description:hr_gamification_custom.field_scoring_rule__interval_to
 #: model_terms:ir.ui.view,arch_db:hr_gamification_custom.goal_definition_form_view_custom
 msgid "To"
@@ -344,3 +346,16 @@ msgstr "Meta del Scoring"
 #: model:ir.model.fields,field_description:hr_gamification_custom.field_gamification_tag__tag_name
 msgid "tag_name"
 msgstr ""
+
+#. module: hr_gamification_custom
+#: code:addons/hr_gamification_custom/wizards/minimun_objective_control.py:29
+#, python-format
+msgid "the following users doesnt have 100 scoring %s"
+msgstr "los siguientes usuarion no tiene el 100% de scoring"
+
+#. module: hr_gamification_custom
+#: code:addons/hr_gamification_custom/models/challenge.py:146
+#: code:addons/hr_gamification_custom/models/challenge.py:186
+#, python-format
+msgid "user cant have a total scoring over 100%"
+msgstr "un usuario no puede tener mas del 100% de scoring"

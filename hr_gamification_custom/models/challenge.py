@@ -90,6 +90,7 @@ class Challenge(models.Model):
                     'line_id': line.id,
                     'target_goal': line.target_goal,
                     'state': 'inprogress',
+                    'tag_id': self.tag_id.id,
                 }
                 if start_date:
                     values['start_date'] = start_date
