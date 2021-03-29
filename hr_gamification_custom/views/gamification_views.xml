@@ -40,6 +40,9 @@
             <xpath expr="//field[@name='state']" position="replace">
                 <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,reached,approved,declined" />
             </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="replace">
+                <button string="Reset Completion" type="object" name="action_cancel" states="failed,reached" groups="base.group_user"/> 
+            </xpath>
             <xpath expr="//header/button[@name='action_cancel']" position="after">
                 <button string="Approve" type="object" name="action_approve" states="failed,reached" groups="hr_gamification_custom.group_objectives_approver" />
                 <button string="Decline" type="object" name="action_decline" states="failed,reached" groups="hr_gamification_custom.group_objectives_approver" />
