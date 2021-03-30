@@ -316,7 +316,7 @@ class ProductTemplate(models.Model):
                 vals =  {
                     "location_id": products._get_primary_stock_location(),
                     "inventory_item_id": products.gt_product_inventory_id,
-                    "available": int(qty_available.quantity),
+                    "available": int(quantity),
                 }
                 shop_url = shopify_url + 'admin/api/2021-01/inventory_levels/set.json'
                 response = requests.post(shop_url,auth=(api_key,api_pass),data=vals)
