@@ -152,6 +152,7 @@ class SearchAssistant(models.TransientModel):
                     sale_order = sale_obj.create(
                         {'partner_id': self.partner_id.id,
                          'team_id': self.team_id.id,
+                         'warehouse_id': self.warehouse_id.id,
                          'email_partner': self.partner_id.email})
                          
                     for line in search_wizard.line_ids:
