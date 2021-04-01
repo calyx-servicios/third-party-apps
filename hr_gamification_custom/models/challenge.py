@@ -145,6 +145,7 @@ class Challenge(models.Model):
                 total_scoring += scorings.total_scoring 
             if total_scoring + self.total_scoring > 100 :
                 raise Warning(_("user cant have a total scoring over 100%"))
+            total_scoring = 0
         return self._update_all()
 
 
@@ -185,7 +186,7 @@ class Challenge(models.Model):
                 total_scoring += scorings.total_scoring 
             if total_scoring + self.total_scoring > 100 :
                 raise Warning(_("user cant have a total scoring over 100%"))
-
+            total_scoring = 0
         return self.write({'state': 'inprogress'})
 
 class ChallengeLine(models.Model):
