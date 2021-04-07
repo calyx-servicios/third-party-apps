@@ -21,12 +21,14 @@
 
 from odoo import fields,models, api
 
+import requests
+import json
+
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
     
     
     gt_shopify_order = fields.Boolean(string='Shopify Order',readonly=True)
-    gt_shopify_shipped = fields.Boolean(string='Shipped',readonly=True)
     gt_shopify_order_id = fields.Char(string='Order ID',readonly=True)
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance',readonly=True)
     gt_shopify_order_confirmed = fields.Boolean(string='Order Confirmed',readonly=True)
@@ -34,18 +36,25 @@ class SaleOrder(models.Model):
     gt_shopify_order_cancel_reason = fields.Text(string='Cancel Reason')
     gt_shopify_order_currency = fields.Char(string='Order Currency', readonly=True)
     gt_shopify_tax_included = fields.Boolean(string='Tax Included', readonly=True)
-    gt_shopify_close_order = fields.Boolean(string='Order Closed')
-    
+    gt_shopify_financial_status = fields.Char('Payment Status',readonly=True)
+    gt_shopify_fulfillment_status = fields.Char('Delivery Status',readonly=True)
+    gt_shopify_order_status = fields.Char('Order Status',readonly=True)
     
     
     
     @api.multi
-    def gt_close_shopify_order(self):
-        print( True)
+    def gt_update_shopify_order(self):
         
+        shopify_url = str(self.gt_shopify_instance_id.gt_location)
+        api_key = str(self.gt_shopify_instance_id.gt_api_key)
+        api_pass = str(self.gt_shopify_instance_id.gt_password)
+        shop_url = shopify_url + 'admin/api/2021-01/orders.json?status=any&ids='+ str(self.gt_shopify_order_id)
+        response = requests.get( shop_url,auth=(api_key,api_pass))
+        order = json.loads(response.text)
+
+        self.write({'gt_shopify_financial_status': order['orders'][0]['financial_status']})                        
+        self.write({'gt_shopify_fulfillment_status': 'Not ready'if order['orders'][0]['fulfillment_status'] == None else order['orders'][0]['fulfillment_status']})
+        self.write({'gt_shopify_order_status': self.gt_shopify_instance_id._get_shopify_status(self.gt_shopify_order_id)})
         
-    @api.multi
-    def gt_reopen_shopify_order(self):
-        print (True)
-    
-    
+        if self.state in ['draft','sent'] and self.gt_shopify_financial_status == 'paid':
+            self.action_confirm()

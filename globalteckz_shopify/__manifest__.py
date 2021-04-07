@@ -55,6 +55,8 @@ oodo shopify integration
     """,
     'depends': ['sale','stock','base','delivery','account'],
     'data': [
+            'security/shopify_security.xml',
+            'security/ir.model.access.csv',
             'views/gt_shopify_instance_view.xml',
             'views/gt_shopify_store.xml',
             'views/product_template_view.xml',
@@ -68,7 +70,7 @@ oodo shopify integration
             'views/gt_dashboard_view.xml',
             'views/stock_picking_view.xml',
             'views/gt_shopify_menu.xml',
-            
+            'views/data/shopify_cron.xml',
             ],
     'application': True,
     'installable': True,

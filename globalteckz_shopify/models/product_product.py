@@ -20,7 +20,10 @@
 
 
 from odoo import fields,api,models
+from odoo.exceptions import UserError, ValidationError
 import logging
+import requests
+import json
 logger = logging.getLogger('product')
 
 class ProductProduct(models.Model):
@@ -38,9 +41,24 @@ class ProductProduct(models.Model):
     gt_shopify_exported = fields.Boolean(string='Shopify Exported')
     gt_fullfilment_service = fields.Many2one('gt.fulfillment.service', string='Fullfilment Service')
     gt_inventory_management = fields.Many2one('gt.inventory.management', string='Inventory Management')
+    gt_product_inventory_id = fields.Char('Product Inventory ID')
+    gt_product_price_compare = fields.Float('Product Price Compare')
+    gt_product_inventory_tracked = fields.Boolean('Tracking')
     
-    
-    
+
+    @api.constrains('gt_product_price_compare')
+    def _check_gt_product_price_compare(self):
+        if self.lst_price >= self.gt_product_price_compare:
+            raise ValidationError('The "Product Price Compare" must be greater than the list price.')
+
+    @api.multi
+    def _get_primary_stock_location(self):
+        stores = self.env['gt.shopify.store'].search([])
+        for store in stores:
+            if store.gt_shopify_instance_id.id == self.product_tmpl_id.gt_shopify_instance_id.id:
+                return store.primary_stock_location
+
+
     @api.multi
     def update_variant(self,products_response,instance,log_id):
         policy_obj = self.env['gt.inventory.policy']
@@ -77,32 +95,41 @@ class ProductProduct(models.Model):
                     weights = weight_id.id
                 else:
                     weights = uom_obj.create({'name':str(products_response['weight_unit']),'gt_shopify_instance_id':instance.id}).id
+            
             vals = {
                 'gt_requires_shipping': str(products_response['requires_shipping']) if 'requires_shipping' in products_response else '',
                 'gt_product_id': products_response['id'] if 'id' in products_response else '',
                 'weight': products_response['weight'] if 'weight' in products_response else '',
                 'default_code' : products_response['sku'] if 'sku' in products_response else '',
                 'gt_fulfillment_service' : products_response['fulfillment_service'] if 'fulfillment_service' in products_response else '',
-                'uom_id' : weights,
-                'uom_po_id': weights,
                 'gt_inventory_policy': policies,
-                'barcode' : products_response['barcode'] if 'barcode' in products_response else '',
                 'gt_shopify_instance_id': instance.id,
                 'gt_shopify_exported': True,
                 'gt_shopify_product':True,
                 'gt_fullfilment_service': fullfilment,
                 'gt_inventory_management':management,
+                'gt_product_price_compare': products_response['compare_at_price'],
             }
             self.write(vals)
+
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
-            log_line_obj.create({'name':'Create Product Template','description':exc,'create_date':date.today(),
+            log_line_obj.create({'name':'Create Product Template','description':exc,'create_date': fields.date.today(),
                                       'shopify_log_id':log_id.id})
             log_id.write({'description': 'Something went wrong'}) 
         return True
     
-    
-    
+    @api.multi
+    def _is_inventory_tracking(self, shopify_instance_id):
+        
+        shopify_url = str(shopify_instance_id.gt_location)
+        api_key = str(shopify_instance_id.gt_api_key)
+        api_pass = str(shopify_instance_id.gt_password)
+        shop_url = shopify_url + '/admin/api/2021-01/inventory_items/'+ str(self.gt_product_inventory_id)+ '.json'
+        response = requests.get( shop_url,auth=(api_key,api_pass))
+        product_rs = json.loads(response.text)
+
+        return product_rs['inventory_item']['tracked']
     
 class GtInventoryPolicy(models.Model):
     _name = 'gt.inventory.policy'
