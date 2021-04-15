@@ -8,7 +8,7 @@
     'description': """  """,
     'data': [
 
-        'security/security.xml',
+        'security/gamification_security.xml',
         'security/ir.model.access.csv',
         'wizards/minimun_objective_control_view.xml',
         'views/assets.xml',
