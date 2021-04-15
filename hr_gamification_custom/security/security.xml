@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="module_category_objectives" model="ir.module.category">
             <field name="name">Objectives Managment</field>
             <field name="description">Category for Objectives</field>
