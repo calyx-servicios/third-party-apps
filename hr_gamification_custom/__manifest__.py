@@ -7,7 +7,6 @@
     'depends': ['hr_gamification','gamification'],
     'description': """  """,
     'data': [
-
         'security/gamification_security.xml',
         'security/ir.model.access.csv',
         'wizards/minimun_objective_control_view.xml',
