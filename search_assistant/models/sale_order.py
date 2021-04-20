@@ -14,7 +14,7 @@ class SaleOrder(models.Model):
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'search.assistant',
-            'context':{'active_model':'sale.order'},
+            'context':{'active_model':'sale.order','default_team_id': self.team_id.id},
             'active_id': self.id,
             'target': 'new',
         }

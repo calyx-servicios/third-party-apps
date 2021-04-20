@@ -5,7 +5,7 @@
         <record id="shopify_category" model="ir.module.category" >
             <field name="name">Shopify</field>
             <field name="sequence">1</field>
-            <field name="description">Shopify Settings</field>
+            <field name="description">Shopify Vendedor</field>
         </record>
 
         <record id ="gt_shopify_user_group" model="res.groups">
@@ -14,7 +14,7 @@
         </record>   
 
         <record id ="gt_shopify_admin_group" model="res.groups">
-            <field name="name">Shopify Administrador</field>
+            <field name="name">Shopify Admin</field>
             <field name="category_id" ref="shopify_category"/>
             <field name="users" eval="[(4, ref('base.user_root'))]"/>
             <field name="implied_ids" eval="[(4, ref('gt_shopify_user_group'))]"/>

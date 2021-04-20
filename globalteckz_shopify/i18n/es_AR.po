@@ -1023,7 +1023,7 @@ msgstr "Shopify API key"
 #. module: globalteckz_shopify
 #: model:res.groups,name:globalteckz_shopify.gt_shopify_admin_group
 msgid "Shopify Administrador"
-msgstr "Cliente de Shopify"
+msgstr "Admin Shopify"
 
 #. module: globalteckz_shopify
 #: model:ir.actions.server,name:globalteckz_shopify.shopify_cron_ir_actions_server

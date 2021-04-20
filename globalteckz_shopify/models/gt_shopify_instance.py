@@ -549,11 +549,10 @@ class GTShopifyInstance(models.Model):
                     # En caso que la SO contenga productos tanto productos con seguimiento de inventario como no.
                     # Se crearan 2 ordenes de venta para utilizar almacenes diferentes. Ya que los que deban ir a fabricacion
                     # deben estar asiciados a un almacen que tenga configurada esa ruta.
-
                     sale_ids = sale_obj.search([('name','=',order['order_number']),('gt_shopify_order_id','=',order['id'])])
                     if not sale_ids:
                         if product_lines:
-                            order = sale_obj.create({
+                            sale_order = sale_obj.create({
                                 'name':order['order_number'],
                                 'partner_id':customer_id.id, 
                                 'order_line': product_lines,
@@ -571,12 +570,9 @@ class GTShopifyInstance(models.Model):
                                 'gt_shopify_order_status': self._get_shopify_status(order['id']),
                                 'email_partner': customer_id.email,
                             })
-                            
-                            if order.state in ['draft','sent'] and order.gt_shopify_financial_status == 'paid':
-                                order.action_confirm()
 
                         if product_untracked_lines:
-                            order_manufacturing = sale_obj.create({
+                            sale_order_manufacturing = sale_obj.create({
                                 'name':order['order_number'],
                                 'partner_id':customer_id.id, 
                                 'order_line': product_untracked_lines,
@@ -595,16 +591,15 @@ class GTShopifyInstance(models.Model):
                                 'email_partner': customer_id.email,
                             })
 
-                            if order_manufacturing.state in ['draft','sent'] and order_manufacturing.gt_shopify_financial_status == 'paid':
-                                order_manufacturing.action_confirm()
-                        
                     else:
+
                         for sale_id in sale_ids:
                             sale_id.write({'gt_shopify_financial_status': order['financial_status']})                        
                             sale_id.write({'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status']})
                             sale_id.write({'gt_shopify_order_status': self._get_shopify_status(order['id'])})
                             if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
                                 sale_id.action_confirm()
+
 
                 except Exception as exc:
                     logger.error('Exception===================:  %s', exc)
