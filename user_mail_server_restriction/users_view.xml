@@ -9,7 +9,7 @@
                 <group name="messaging" position="before">
                     <group string="Server Mail User Restrictions">
                         <field name="mail_server_ids" widget="many2many_tags"/>
-                        <field name="default_mail_server_id"/>
+                        <field name="default_mail_server_id" domain="[('id', 'in', mail_server_ids)]"/>
                     </group>
                 </group>
             </field>
