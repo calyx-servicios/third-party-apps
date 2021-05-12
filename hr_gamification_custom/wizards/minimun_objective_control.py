@@ -23,7 +23,7 @@ class MinimunObjectiveControl(models.TransientModel):
                 ])
             for scorings in goal:
                 total_scoring += scorings.total_scoring 
-            if total_scoring != 100 and user.has_group('hr_gamification_custom.group_objectives_manager'):
+            if total_scoring < 100 and user.has_group('hr_gamification_custom.group_objectives_manager'):
                 incomplete_users += "\n" + user.name
             total_scoring = 0
         if incomplete_users:
