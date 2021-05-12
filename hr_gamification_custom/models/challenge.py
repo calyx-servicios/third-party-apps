@@ -184,7 +184,7 @@ class Challenge(models.Model):
                     ])
             for scorings in goal:
                 total_scoring += scorings.total_scoring 
-            if total_scoring + self.total_scoring > 100 :
+            if round(total_scoring + self.total_scoring, 2) > 100 :
                 raise Warning(_("user cant have a total scoring over 100%"))
             total_scoring = 0
         return self.write({'state': 'inprogress'})
