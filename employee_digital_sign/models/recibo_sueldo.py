@@ -26,13 +26,7 @@ class ReciboSueldo(models.Model):
         if self.empleado_id.user_id.id != self._uid:
             raise UserError("No puede firmar el recibo de otro empleado")
 
-        if self.empleado_id.digital_signature is None and self.empleado_id.digital_signature_file is None:
-            raise UserError("Debe definir su firma")
-
-        if self.empleado_id.digital_signature_file is None:
-            digital_signature = self.empleado_id.digital_signature
-        else:
-            digital_signature = self.default_sing()
+        digital_signature = self.default_sing()
 
         recibo = base64.b64decode(self.recibo)
 
