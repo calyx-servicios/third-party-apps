@@ -39,7 +39,7 @@ class ReciboSueldo(models.Model):
         docs = fitz.open("pdf", recibo)  # some existing PDF
         # page = doc[0]  # load page (0-based)
         sign_pos = self.env['config.sign'].search([('id', '>=', 0)], limit=1)
-        rect = fitz.Rect(sign_pos.sign_position_b, sign_pos.sign_position_b, sign_pos.sign_position_b, sign_pos.sign_position_b)  # where we want to put the image
+        rect = fitz.Rect(280,-800 ,380 , 900)  # where we want to put the image
 
         file_encoded = base64.b64decode(digital_signature)
         pix = fitz.Pixmap(file_encoded)
