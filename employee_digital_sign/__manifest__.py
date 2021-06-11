@@ -8,10 +8,10 @@
     'category': 'Employee',
     'version': '2.0',
 
-    'depends': [],
+    'depends': ['employee_salary'],
 
     'data': [
-        # 'views/config_sign_views.xml',
+        'views/config_sign_views.xml',
     ],
     'demo': [
         'demo/demo.xml',
