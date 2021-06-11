@@ -7,7 +7,7 @@ import os
 from odoo.exceptions import UserError
 from PIL import Image
 import io
-
+from io import BytesIO
 
 class ReciboSueldo(models.Model):
     _inherit = 'hr.recibo.sueldo'
