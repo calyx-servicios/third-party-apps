@@ -4,7 +4,7 @@
     <record id="view_config_sign_form" model="ir.ui.view">
         <field name="model">config.sign</field>
         <field name="arch" type="xml">
-            <form string="Type">
+            <form string="Type" create="false">
                 <sheet>
                 <h2>Contract Sign Configuration</h2>
                     <group>
@@ -28,6 +28,17 @@
                     </group>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <record id="action_account_cashbox_account_tree" model="ir.ui.view">
+        <field name="name">Sign Configuration</field>
+        <field name="model">config.sign</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="create_date" string="Created"/>
+                <field name="write_date" string="Last Edited"/>
+            </tree>
         </field>
     </record>
 
