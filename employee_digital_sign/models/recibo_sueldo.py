@@ -17,7 +17,7 @@ class ReciboSueldo(models.Model):
         output = BytesIO()    
         img = Image.new('RGBA', (100, 30), color = 'white')
         d = ImageDraw.Draw(img)
-        d.text((10,10),str(self.name), fill='black')
+        d.text((10,10),str(self.empleado_id.name), fill='black')
         img.save(output,format="JPEG")
         sing = base64.b64encode(output.getvalue())
         return sing
