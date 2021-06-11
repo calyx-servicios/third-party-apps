@@ -11,7 +11,7 @@
     'depends': [],
 
     'data': [
-        'views/config_sign_views.xml',
+        # 'views/config_sign_views.xml',
     ],
     'demo': [
         'demo/demo.xml',
