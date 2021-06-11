@@ -31,7 +31,7 @@
         </field>
     </record>
 
-    <record id="action_account_cashbox_account_tree" model="ir.ui.view">
+    <record id="view_config_sign_tree" model="ir.ui.view">
         <field name="name">Sign Configuration</field>
         <field name="model">config.sign</field>
         <field name="arch" type="xml">
@@ -47,7 +47,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">config.sign</field>
         <field name="view_mode">form,tree</field>
-        <field name="view_id" ref="view_config_sign_form"/>
+        <field name="view_id" ref="view_config_sign_tree"/>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">Click to set a new Firm Configuration.</p>
         </field>
