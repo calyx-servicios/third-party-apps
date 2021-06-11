@@ -15,10 +15,10 @@ class ReciboSueldo(models.Model):
     @api.model
     def _default_sing(self):
         output = BytesIO()    
-        img = Image.new('RGBA', (100, 30), color = 'white')
+        img = Image.new('RGB', (100, 30), color = 'white')
         d = ImageDraw.Draw(img)
         d.text((10,10),str(self.empleado_id.name), fill='black')
-        img.save(output,format="JPEG")
+        img.save(output,format="RGB")
         sing = base64.b64encode(output.getvalue())
         return sing
 
