@@ -5,7 +5,7 @@ import fitz
 import base64
 import os
 from odoo.exceptions import UserError
-from PIL import Image
+from PIL import Image, ImageDraw
 import io
 from io import BytesIO
 
