@@ -16,11 +16,6 @@ msgstr "Última actualización el"
 
 #. module: employee_digital_sign
 #: model_terms:ir.ui.view,arch_db:employee_digital_sign.view_config_sign_form
-msgid "Localiced Firm"
-msgstr ""
-
-#. module: employee_digital_sign
-#: model_terms:ir.ui.view,arch_db:employee_digital_sign.view_config_sign_form
 msgid "Position"
 msgstr "Posición"
 
