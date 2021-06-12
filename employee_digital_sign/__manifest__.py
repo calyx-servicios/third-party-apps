@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Firma digital",
-    'summary': """ Firma digital """,
-    'description': """ Agrega la posibilidad de configurar donde se firmara el recibo """,
+    'name': "Digital signature",
+    'summary': """Adds the ability to configure where the receipt will be signed, 
+    and automatically generate a signature from the username. """,
     'author': "Calix",
     'website': "www.calyxservicios.com.ar",
     'category': 'Employee',
@@ -11,7 +11,9 @@
     'depends': ['employee_salary'],
 
     'data': [
+        'security/ir.model.access.csv',
         'views/config_sign_views.xml',
+        'views/employee_views.xml',
     ],
     'demo': [
         'demo/demo.xml',

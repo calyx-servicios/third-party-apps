@@ -9,7 +9,7 @@
                 <h2>Contract Sign Configuration</h2>
                     <group>
                         <group>
-                            <div class="col-12 col-lg-6 o_setting_box" title="Localiced Firm">
+                            <div class="col-12 col-lg-6 o_setting_box">
                                 <label for="sign_position_a" string="Position"/>
                                 <div class="text-muted">
                                     Select the position where the sign will be added

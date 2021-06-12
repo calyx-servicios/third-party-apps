@@ -1,0 +1,67 @@
+
+#. module: employee_digital_sign
+#: model:ir.model.fields,field_description:employee_digital_sign.field_config_sign____last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: employee_digital_sign
+#: model:ir.model.fields,field_description:employee_digital_sign.field_config_sign__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: employee_digital_sign
+#: model:ir.model.fields,field_description:employee_digital_sign.field_config_sign__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: employee_digital_sign
+#: model_terms:ir.ui.view,arch_db:employee_digital_sign.view_config_sign_form
+msgid "Localiced Firm"
+msgstr ""
+
+#. module: employee_digital_sign
+#: model_terms:ir.ui.view,arch_db:employee_digital_sign.view_config_sign_form
+msgid "Position"
+msgstr "Posición"
+
+#. module: employee_digital_sign
+#: model_terms:ir.ui.view,arch_db:employee_digital_sign.view_config_sign_form
+msgid "Select the position where the sign will be added"
+msgstr "Seleccione la posición donde se agregará la firma"
+
+#. module: employee_digital_sign
+#: model:ir.actions.act_window,name:employee_digital_sign.action_config_sign_view
+#: model:ir.model,name:employee_digital_sign.model_config_sign
+#: model:ir.ui.menu,name:employee_digital_sign.menu_config_sign
+msgid "Sign Configuration"
+msgstr "Configuración de firma"
+
+#. module: employee_digital_sign
+#: model:ir.model.fields,field_description:employee_digital_sign.field_config_sign__sign_position_a
+msgid "Sign Position A"
+msgstr "Posición de la firma x,A"
+
+#. module: employee_digital_sign
+#: model:ir.model.fields,field_description:employee_digital_sign.field_config_sign__sign_position_b
+msgid "Sign Position B"
+msgstr "Posición de la firma y,A"
+
+#. module: employee_digital_sign
+#: model:ir.model.fields,field_description:employee_digital_sign.field_config_sign__sign_position_c
+msgid "Sign Position C"
+msgstr "Posición de la firma x,B"
+
+#. module: employee_digital_sign
+#: model:ir.model.fields,field_description:employee_digital_sign.field_config_sign__sign_position_d
+msgid "Sign Position D"
+msgstr "Posición de la firma y,B"
+
+#. module: employee_digital_sign
+#: model_terms:ir.ui.view,arch_db:employee_digital_sign.view_config_sign_form
+msgid "Type"
+msgstr "Tipo"
+
+#. module: employee_digital_sign
+#: model:ir.model,name:employee_digital_sign.model_hr_recibo_sueldo
+msgid "hr.recibo.sueldo"
+msgstr ""

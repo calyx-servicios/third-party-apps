@@ -12,6 +12,7 @@ from io import BytesIO
 class ReciboSueldo(models.Model):
     _inherit = 'hr.recibo.sueldo'
 
+# this function returns an image, with the employee's name, encoded
     def default_sing(self):
         output = BytesIO()    
         img = Image.new('RGB', (100, 30), color = 'white')
@@ -31,7 +32,7 @@ class ReciboSueldo(models.Model):
         recibo = base64.b64decode(self.recibo)
 
         docs = fitz.open("pdf", recibo)  # some existing PDF
-        # page = doc[0]  # load page (0-based)
+        
         sign_pos = self.env['config.sign'].search([('id', '=', 1)], limit=1)
         rect = fitz.Rect(int(sign_pos.sign_position_a),int(sign_pos.sign_position_b) ,int(sign_pos.sign_position_c) ,int(sign_pos.sign_position_d))  # where we want to put the image
 
