@@ -11,6 +11,7 @@
     'depends': ['employee_salary'],
 
     'data': [
+        'data/config_sign.xml',
         'security/ir.model.access.csv',
         'views/config_sign_views.xml',
         'views/employee_views.xml',

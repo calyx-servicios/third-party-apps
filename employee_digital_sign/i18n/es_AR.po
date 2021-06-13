@@ -60,3 +60,8 @@ msgstr "Tipo"
 #: model:ir.model,name:employee_digital_sign.model_hr_recibo_sueldo
 msgid "hr.recibo.sueldo"
 msgstr ""
+
+#. module: employee_digital_sign
+#: model_terms:ir.ui.view,arch_db:employee_digital_sign.view_config_sign_form
+msgid "Contract Sign Configuration"
+msgstr "Configuración de firma de contrato"
