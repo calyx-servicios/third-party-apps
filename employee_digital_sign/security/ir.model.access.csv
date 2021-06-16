@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-
-Configuracion Firma manager,config.sign,employee_digital_sign.model_config_sign,hr.group_hr_manager,1,1,1,1
-Configuracion Firma user,config.sign,employee_digital_sign.model_config_sign,hr.group_hr_user,1,0,0,0
-Configuracion Firma client,config.sign,employee_digital_sign.model_config_sign,employee_salary.group_hr_client,1,0,0,0
