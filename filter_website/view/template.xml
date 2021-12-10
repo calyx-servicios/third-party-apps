@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="products" name="template_name" inherit_id="website_sale.products">
+            <xpath expr="//div[hasclass('products_pager')]//t//t[@t-set='_classes']" position="replace">
+                <t t-set="_classes" t-valuef="w-100 mt-2"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>
