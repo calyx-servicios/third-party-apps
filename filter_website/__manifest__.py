@@ -16,5 +16,6 @@
     "depends": [],
     "data": [
         "view/template.xml",
+        "view/assets.xml",
     ],
 }
