@@ -5,8 +5,8 @@
             <xpath expr="//div[hasclass('products_pager')]//t//t[@t-set='_classes']" position="replace">
                 <t t-set="_classes" t-valuef="w-100 mt-2"/>
             </xpath>
-            <xpath expr="//t[@t-call='website_sale.product_price']" position="before">
-                <span t-field="product.description_sale" class="text-muted short-rec mt-3" placeholder="A short description that will also appear on documents." />
+            <xpath expr="//h1[@t-field='product.name']" position="after">
+                <p t-field="product.description_sale" class="text-muted short-rec mt-3" placeholder="A short description that will also appear on documents." />
             </xpath>
         </template>
     </data>
