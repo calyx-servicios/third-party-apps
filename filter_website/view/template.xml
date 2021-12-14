@@ -5,9 +5,11 @@
             <xpath expr="//div[hasclass('products_pager')]//t//t[@t-set='_classes']" position="replace">
                 <t t-set="_classes" t-valuef="w-100 mt-2"/>
             </xpath>
-            <!-- <xpath expr="t[@t-call='website_sale.product_price']" position="before"> -->
-                <!-- <p class="text-muted short-rec mt-3" placeholder="A short description that will also appear on documents.">This description is an example</p> -->
-            <!-- </xpath> -->
+        </template>
+        <template id="product" name="template_name" inherit_id="website_sale.product">
+            <xpath expr="//t[@t-call='website_sale.product_price']" position="before">
+                <p t-field="product.description_sale" class="text-muted mt-3" placeholder="A short description that will also appear on documents." />
+            </xpath>
         </template>
     </data>
 </odoo>
