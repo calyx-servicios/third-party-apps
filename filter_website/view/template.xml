@@ -5,7 +5,7 @@
             <xpath expr="//div[hasclass('products_pager')]//t//t[@t-set='_classes']" position="replace">
                 <t t-set="_classes" t-valuef="w-100 mt-2"/>
             </xpath>
-            <xpath expr="//div[hasclass('js_product')]" position="after">
+            <xpath expr="//t[@t-call='website_sale.product_price']" position="after">
                 <div itemprop="description" t-field="product.website_description" class="oe_structure mt16" id="product_full_description"/>
             </xpath>
         </template>
