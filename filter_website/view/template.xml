@@ -7,7 +7,7 @@
             </xpath>
         </template>
         <template id="product" name="template_name" inherit_id="website_sale.product">
-            <xpath expr="//t[@t-call='website_sale.product_price']" position="before">
+            <xpath expr="//h1" position="after">
                 <p t-field="product.description_sale" class="text-muted description-p mt-3" placeholder="A short description that will also appear on documents." />
             </xpath>
         </template>
