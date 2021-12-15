@@ -11,6 +11,13 @@
 .navbar-expand-md .navbar-nav {
     align-items: center !important;
 }
+a.nav-link[href="/web/login"]{
+    visibility: hidden;
+    &::after{
+        content: "Iniciar Sesion";
+        visibility: visible;
+    }
+}
 a.nav-link[href="/shop"]{
     color: black !important;
     font-weight: bolder;
