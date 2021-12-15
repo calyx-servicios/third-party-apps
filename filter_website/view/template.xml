@@ -14,7 +14,18 @@
                 <p t-field="product.description_sale" class="text-muted description-p" placeholder="A short description that will also appear on documents." />
                 <hr/>
             </xpath>
-
+        </template>
+        <template id="template_footer_centered" name="template_name" inherit_id="website.template_footer_centered">
+            <xpath expr="//a[hasclass('s_share_linkedin')]" position="replace">
+                <a href="/website/social/youtube" class="s_share_youtube" target="_blank">
+                    <i class="fa fa-youtube rounded-circle rounded shadow-sm"/>
+                </a>
+            </xpath>
+            <xpath expr="//h5[hasclass('s_share_title')]" position="after">
+                <a href="/website/social/linkedin" class="s_share_linkedin icon-btn" target="_blank">
+                    <i class="fa fa-linkedin rounded-circle rounded shadow-sm"/>
+                </a>
+            </xpath>
         </template>
     </data>
 </odoo>
