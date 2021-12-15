@@ -21,7 +21,7 @@
                     <i class="fa fa-youtube rounded-circle rounded shadow-sm"/>
                 </a>
             </xpath>
-            <xpath expr="//h5" position="after">
+            <xpath expr="//a[hasclass('s_share_facebook')]" position="before">
                 <a href="/website/social/linkedin" class="s_share_linkedin icon-btn" target="_blank">
                     <i class="fa fa-linkedin rounded-circle rounded shadow-sm"/>
                 </a>
