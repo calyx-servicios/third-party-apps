@@ -27,5 +27,16 @@
                 </a>
             </xpath>
         </template>
+        <template id="submenu" name="template_name" inherit_id="website.submenu">
+            <xpath expr="//t[@t-set='has_visible_submenu']//li" position="after">
+                <a t-att-href="/shop"
+                t-att-class="nav-link btn-fill-primary btn-primary btn-lg"
+                role="menuitem"
+                t-ignore="true"
+                t-att-target="'_blank' if submenu.new_window else None">
+                <span t-field="submenu.name"/>
+                </a>
+            </xpath>
+        </template>
     </data>
 </odoo>
