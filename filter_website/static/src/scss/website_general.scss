@@ -5,6 +5,9 @@
 .variant_attribute {
     display: none !important;
 }
+.menu-shop-tool{
+    display: none;
+}
 a.nav-link[href="/shop"]{
     color: black !important;
     font-size: initial;
@@ -12,4 +15,10 @@ a.nav-link[href="/shop"]{
     border-color: #FFC500;
     line-height: 1.5;
     border-radius: 0.3rem;
+    margin-top: 6px;
+    &:hover{
+        .menu-shop-tool{
+            display: flex;
+        }
+    }
 }
