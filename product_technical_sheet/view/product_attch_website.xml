@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="product_attachments" inherit_id="website_sale.product" name="product attachments">
+        <xpath expr="//div[hasclass('js_product')]" position="after">
+            <hr class=""/>
+            <a class="mb-3 " href="/features_technical_download" target="_blank">
+                <span class="fa fa-download"><span class="ml-2">Descargar Ficha Tecnica</span></span>
+            </a>
+        </xpath>
+    </template>
+</odoo>
