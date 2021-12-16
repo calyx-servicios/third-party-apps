@@ -11,7 +11,7 @@
 
             </xpath>
             <xpath expr="//h1" position="after">
-                <p t-field="product.website_description" class="text-muted description-p" placeholder="A short description that will also appear on documents." />
+                <p t-field="product.description_sale" class="text-muted description-p" placeholder="A short description that will also appear on documents." />
                 <hr/>
             </xpath>
         </template>
