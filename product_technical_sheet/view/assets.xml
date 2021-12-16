@@ -2,7 +2,7 @@
 <odoo>
     <template id="assets_frontend" inherit_id="web.assets_frontend">
         <xpath expr="link[last()]" position="after">
-            <link rel="stylesheet" type="text/scss" href="/product_features_technical/static/src/scss/website_attach.scss"/>
+            <link rel="stylesheet" type="text/scss" href="/product_technical_sheet/static/src/scss/website_attach.scss"/>
         </xpath>
     </template>
 </odoo>
