@@ -14,7 +14,7 @@
 a.nav-link[href="/web/login"]{
     visibility: hidden;
     &::after{
-        content: "Iniciar Sesion";
+        content: "Iniciar Sesión";
         visibility: visible;
     }
 }
