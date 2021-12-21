@@ -13,7 +13,7 @@
     "application": False,
     "installable": True,
     "external_dependencies": {"python": [], "bin": []},
-    "depends": ['product'],
+    "depends": ['product','website'],
     "data": [
         "view/product_feature_view.xml",
         "view/product_attch_website.xml",
