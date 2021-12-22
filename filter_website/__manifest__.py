@@ -17,5 +17,6 @@
     "data": [
         "view/template.xml",
         "view/assets.xml",
+        "view/menu_shop.xml"
     ],
 }
