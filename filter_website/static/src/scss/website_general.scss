@@ -5,9 +5,6 @@
 .variant_attribute {
     display: none !important;
 }
-.menu-shop-tool{
-    display: none;
-}
 .navbar-expand-md .navbar-nav {
     align-items: center !important;
 }
@@ -18,20 +15,21 @@ a.nav-link[href="/web/login"]{
         visibility: visible;
     }
 }
+.menu-shop-tool{
+    position: relative;
+}
 a.nav-link[href="/shop"]{
     color: black !important;
-    font-weight: bolder;
     font-size: initial;
     background-color: #FFC500;
     border-color: #FFC500;
     line-height: 1.5;
     border-radius: 0.3rem;
-    margin-top: 6px;
     &:hover{
-        .menu-shop-tool{
-            display: flex;
+        ~ div section.menu-shop-tool{
+            display: flex !important;
         }
-    }
+    }    
 }
 #product_attributes_simple{
     display: none;
@@ -47,4 +45,10 @@ img.o_we_custom_image {
 }
 div.card.h-100{
     border: 1px solid #FFC500;
+}
+.button-shop{
+    width: 10em;
+    margin-right: 4em;
+    text-align: center;
+    font-weight: bolder;
 }

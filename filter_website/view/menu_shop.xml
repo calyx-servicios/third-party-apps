@@ -1,30 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <template id="template_id" name="template_name">
-        <section class="menu-shop-tool py-4">
-        <div class="container">
-            <div class="row">
-                <t t-set="menu1_title">First Menu</t>
-                <t t-set="menu2_title">Second Menu</t>
-                <t t-set="menu3_title">Third Menu</t>
-                <t t-set="menu4_title">Last Menu</t>
-                <t t-foreach="[menu1_title, menu2_title, menu3_title, menu4_title]" t-as="menu_title">
-                    <div class="col-lg-3 py-2 text-center">
-                        <h4 class="o_default_snippet_text" t-esc="menu_title"/>
-                        <nav class="nav flex-column">
-                            <t t-foreach="3" t-as="i">
-                                <t t-set="text">Menu Item %s</t>
-                                <t t-set="text" t-value="text % (i + 1)"/>
-                                <a href="#" class="nav-link o_default_snippet_text" data-name="Menu Item"
-                                   t-esc="text"/>
+    <template id="user_dropdown" name="Shop Menu" inherit_id="portal.user_dropdown">
+        <xpath expr="//li//a" position="before">
+        <li class="nav-item dropdown position-static show">
+            <a href="/shop" class="nav-link button-shop dropdown-toggle o_mega_menu_toggle" role="menuitem" data-toggle="dropdown" t-ignore="true">
+            <span>SHOP</span></a>
+            <div class="dropdown-menu o_mega_menu dropdown-menu-left show" >
+                <section class="menu-shop-tool py-4">
+                    <div class="container">
+                        <div class="row">
+                            <t t-set="menu1_title">Categorías</t>
+                            <t t-set="menu2_title">Fases Constructivas</t>
+                            <t t-set="menu3_title">Marca</t>
+                            <t t-set="menu4_title">Ofertas</t>
+                            <t t-foreach="[menu1_title]" t-as="menu_title">
+                                <div class="col-lg-3 py-2 text-center">
+                                    <h4 class="o_default_snippet_text" t-esc="menu_title"/>
+                                    <nav class="nav flex-column">
+                                        <a type="button" class="">Epps</a>
+                                        <a type="button" class="">Carpinteria metalica</a>
+                                        <a type="button" class="">Estructura y Albañileria</a>
+                                        <a type="button" class="">Acabados de Arquitectura</a>
+                                        <a type="button" class="">Carpinteria de madera y similares</a>
+                                    </nav>
+                                </div>
                             </t>
-                        </nav>
+                            <t t-foreach="[menu2_title]" t-as="menu_title">
+                                <div class="col-lg-3 py-2 text-center">
+                                    <h4 class="o_default_snippet_text" t-esc="menu_title"/>
+                                    <nav class="nav flex-column">
+                                        <a type="button" class="">Epps</a>
+                                        <a type="button" class="">Pinturas</a>
+                                        <a type="button" class="">Seguridad</a>
+                                        <a type="button" class="">Herramientas</a>
+                                        <a type="button" class="">Carpinteria metalica</a>
+                                    </nav>
+                                </div>
+                            </t>
+                            <t t-foreach="[menu3_title]" t-as="menu_title">
+                                <div class="col-lg-3 py-2 text-center">
+                                    <h4 class="o_default_snippet_text" t-esc="menu_title"/>
+                                    <nav class="nav flex-column">
+                                        <a type="button" class="">Alex</a>
+                                        <a type="button" class="">Vasef</a>
+                                        <a type="button" class="">Navia Conduit</a>
+                                        <a type="button" class="">Obo Bettermann</a>
+                                        <a type="button" class="">Navialedlighting</a>
+                                    </nav>
+                                </div>
+                            </t>
+                            <t t-foreach="[menu4_title]" t-as="menu_title">
+                                <div class="col-lg-3 py-2 text-center">
+                                    <h4 class="o_default_snippet_text" t-esc="menu_title"/>
+                                    <nav class="nav flex-column">
+                                        <a type="button" class="">Sold Out</a>
+                                        <a type="button" class="">Sale alex</a>
+                                        <a type="button" class="">Sale Navia Conduit</a>
+                                        <a type="button" class="">Sale Obo Bettermann</a>
+                                        <a type="button" class="">Sale Navialedlighting</a>
+                                    </nav>
+                                </div>
+                            </t>
+                        </div>
                     </div>
-                </t>
+                </section>
             </div>
-        </div>
-    </section>
+        </li> 
+        </xpath>
     </template>
-
 </odoo>
