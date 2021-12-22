@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="user_dropdown" name="Shop Menu" inherit_id="portal.user_dropdown">
-        <xpath expr="//li//a" position="before">
+        <xpath expr="//li" position="before">
         <li class="nav-item dropdown position-static show">
             <a href="/shop" class="nav-link button-shop dropdown-toggle o_mega_menu_toggle" role="menuitem" data-toggle="dropdown" t-ignore="true">
             <span>SHOP</span></a>
-            <div class="dropdown-menu o_mega_menu dropdown-menu-left show" style="margin-top:3rem !important;" >
+            <div class="dropdown-menu o_mega_menu dropdown-menu-left show" style="margin-top:3rem !important;top:1 !important;" >
                 <section class="menu-shop-tool py-4">
                     <div class="container">
                         <div class="row">
