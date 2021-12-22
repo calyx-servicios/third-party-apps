@@ -5,7 +5,7 @@
         <li class="nav-item dropdown position-static show">
             <a href="/shop" class="nav-link button-shop dropdown-toggle o_mega_menu_toggle" role="menuitem" data-toggle="dropdown" t-ignore="true">
             <span>SHOP</span></a>
-            <div class="dropdown-menu o_mega_menu dropdown-menu-left show" >
+            <div class="dropdown-menu o_mega_menu dropdown-menu-left show" style="margin-top:3rem !important;" >
                 <section class="menu-shop-tool py-4">
                     <div class="container">
                         <div class="row">
@@ -17,11 +17,11 @@
                                 <div class="col-lg-3 py-2 text-center">
                                     <h4 class="o_default_snippet_text" t-esc="menu_title"/>
                                     <nav class="nav flex-column">
-                                        <a type="button" class="btn-menu">Epps</a>
-                                        <a type="button" class="btn-menu">Carpinteria metalica</a>
-                                        <a type="button" class="btn-menu">Estructura y Albañileria</a>
-                                        <a type="button" class="btn-menu">Acabados de Arquitectura</a>
                                         <a type="button" class="btn-menu">Carpinteria de madera y similares</a>
+                                        <a type="button" class="btn-menu">Acabados de Arquitectura</a>
+                                        <a type="button" class="btn-menu">Estructura y Albañileria</a>
+                                        <a type="button" class="btn-menu">Carpinteria metalica</a>
+                                        <a type="button" class="btn-menu">Epps</a>
                                         <a type="button" class="btn-menu">Ver todo</a>
                                     </nav>
                                 </div>
@@ -30,11 +30,11 @@
                                 <div class="col-lg-3 py-2 text-center">
                                     <h4 class="o_default_snippet_text" t-esc="menu_title"/>
                                     <nav class="nav flex-column">
-                                        <a type="button" class="btn-menu">Epps</a>
-                                        <a type="button" class="btn-menu">Pinturas</a>
-                                        <a type="button" class="btn-menu">Seguridad</a>
-                                        <a type="button" class="btn-menu">Herramientas</a>
                                         <a type="button" class="btn-menu">Carpinteria metalica</a>
+                                        <a type="button" class="btn-menu">Herramientas</a>
+                                        <a type="button" class="btn-menu">Seguridad</a>
+                                        <a type="button" class="btn-menu">Pinturas</a>
+                                        <a type="button" class="btn-menu">Epps</a>
                                         <a type="button" class="btn-menu">Ver todo</a>
                                     </nav>
                                 </div>
@@ -43,11 +43,11 @@
                                 <div class="col-lg-3 py-2 text-center">
                                     <h4 class="o_default_snippet_text" t-esc="menu_title"/>
                                     <nav class="nav flex-column">
-                                        <a type="button" class="btn-menu">Alex</a>
-                                        <a type="button" class="btn-menu">Vasef</a>
-                                        <a type="button" class="btn-menu">Navia Conduit</a>
-                                        <a type="button" class="btn-menu">Obo Bettermann</a>
                                         <a type="button" class="btn-menu">Navialedlighting</a>
+                                        <a type="button" class="btn-menu">Obo Bettermann</a>
+                                        <a type="button" class="btn-menu">Navia Conduit</a>
+                                        <a type="button" class="btn-menu">Vasef</a>
+                                        <a type="button" class="btn-menu">Alex</a>
                                         <a type="button" class="btn-menu">Ver todo</a>
                                     </nav>
                                 </div>
@@ -56,11 +56,11 @@
                                 <div class="col-lg-3 py-2 text-center">
                                     <h4 class="o_default_snippet_text" t-esc="menu_title"/>
                                     <nav class="nav flex-column">
-                                        <a type="button" class="btn-menu">Sold Out</a>
-                                        <a type="button" class="btn-menu">Sale alex</a>
-                                        <a type="button" class="btn-menu">Sale Navia Conduit</a>
-                                        <a type="button" class="btn-menu">Sale Obo Bettermann</a>
                                         <a type="button" class="btn-menu">Sale Navialedlighting</a>
+                                        <a type="button" class="btn-menu">Sale Obo Bettermann</a>
+                                        <a type="button" class="btn-menu">Sale Navia Conduit</a>
+                                        <a type="button" class="btn-menu">Sale alex</a>
+                                        <a type="button" class="btn-menu">Sold Out</a>
                                         <a type="button" class="btn-menu">Ver todo</a>
                                     </nav>
                                 </div>

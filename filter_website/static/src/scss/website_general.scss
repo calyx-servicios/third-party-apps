@@ -54,4 +54,8 @@ div.card.h-100{
 }
 .btn-menu{
     color: black !important;
+    font-size: large;
+    &:hover{
+        color: #FFC500 !important;
+    }
 }
