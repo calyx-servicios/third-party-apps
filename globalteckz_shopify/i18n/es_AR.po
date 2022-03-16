@@ -1,21 +1,19 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* globalteckz_shopify
+#	* globalteckz_shopify
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-25 17:41+0000\n"
-"PO-Revision-Date: 2021-02-25 15:17-0300\n"
+"POT-Creation-Date: 2022-03-16 08:11+0000\n"
+"PO-Revision-Date: 2022-03-16 08:11+0000\n"
+"Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
-"Last-Translator: \n"
-"Language: es_AR\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
 
 #. module: globalteckz_shopify
 #: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
@@ -101,7 +99,7 @@ msgstr "Cancelar Orden"
 #. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_order_cancel_reason
 msgid "Cancel Reason"
-msgstr "Cancel Reason"
+msgstr "Cancelar Razon"
 
 #. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_city
@@ -128,11 +126,6 @@ msgstr "Clic para añadir una nueva etiqueta."
 #: model:ir.actions.act_window,help:globalteckz_shopify.shopify_product_template_not_exported
 msgid "Click to define a new product."
 msgstr "Clic para definir un nuevo producto."
-
-#. module: globalteckz_shopify
-#: model:ir.model.fields,help:globalteckz_shopify.field_product_product_l10n_ar_ncm_code
-msgid "Code according to the Common Nomenclator of MERCOSUR"
-msgstr "Code according to the Common Nomenclator of MERCOSUR"
 
 #. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_product_photo_color
@@ -290,6 +283,7 @@ msgid "Customer state"
 msgstr "Estado del Cliente"
 
 #. module: globalteckz_shopify
+#: model:ir.actions.act_window,name:globalteckz_shopify.action_customers_shopify_all
 #: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_customers
 #: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
 msgid "Customers"
@@ -666,11 +660,6 @@ msgid "Model"
 msgstr "Modelo"
 
 #. module: globalteckz_shopify
-#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_l10n_ar_ncm_code
-msgid "NCM Code"
-msgstr "NCM Code"
-
-#. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_name
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_customer_state_name
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_name
@@ -744,6 +733,11 @@ msgstr "Factura Paga"
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_partner_id
 msgid "Partner"
 msgstr "Empresa"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_payment_gateway_names
+msgid "Payment Gateway Names"
+msgstr "Metodo de pago"
 
 #. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_sale_order_gt_shopify_financial_status
@@ -935,12 +929,12 @@ msgstr "Recurso"
 #. module: globalteckz_shopify
 #: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_data_shopify
 msgid "Run"
-msgstr "Run"
+msgstr "Ejecutar"
 
 #. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_sale_journal
 msgid "Sale Journal"
-msgstr "Sale Journal"
+msgstr "Diario de venta"
 
 #. module: globalteckz_shopify
 #: model:ir.actions.act_window,name:globalteckz_shopify.action_orders_shopify_all
@@ -1013,7 +1007,7 @@ msgstr "Shopify"
 #. module: globalteckz_shopify
 #: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
 msgid "Shopify API Password"
-msgstr "Shopify API Password"
+msgstr "Shopify API Clave"
 
 #. module: globalteckz_shopify
 #: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
@@ -1022,8 +1016,8 @@ msgstr "Shopify API key"
 
 #. module: globalteckz_shopify
 #: model:res.groups,name:globalteckz_shopify.gt_shopify_admin_group
-msgid "Shopify Administrador"
-msgstr "Admin Shopify"
+msgid "Shopify Admin"
+msgstr "Shopify Admin"
 
 #. module: globalteckz_shopify
 #: model:ir.actions.server,name:globalteckz_shopify.shopify_cron_ir_actions_server
@@ -1106,7 +1100,7 @@ msgstr "Shopify Instancias"
 #. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_account_invoice_gt_shopify_invoice
 msgid "Shopify Invoice"
-msgstr "Shopify Invoice"
+msgstr "Shopify Factura"
 
 #. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_shopify_kanban_instance
@@ -1164,11 +1158,6 @@ msgid "Shopify Product Image"
 msgstr "Imagen Producto Shopify"
 
 #. module: globalteckz_shopify
-#: model:ir.module.category,description:globalteckz_shopify.shopify_category
-msgid "Shopify Settings"
-msgstr "Flujo de trabajo y configuración"
-
-#. module: globalteckz_shopify
 #: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_shipment
 msgid "Shopify Shipment"
 msgstr "Envío de Shopify"
@@ -1183,12 +1172,17 @@ msgstr "Shopify Tienda"
 #. module: globalteckz_shopify
 #: model:res.groups,name:globalteckz_shopify.gt_shopify_user_group
 msgid "Shopify User"
-msgstr "Shopify"
+msgstr "Shopify Usuario"
+
+#. module: globalteckz_shopify
+#: model:ir.module.category,description:globalteckz_shopify.shopify_category
+msgid "Shopify Vendedor"
+msgstr "Shopify Vendedor"
 
 #. module: globalteckz_shopify
 #: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_form_view
 msgid "Shops"
-msgstr "Shops"
+msgstr "Tiendas"
 
 #. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_res_partner_gt_default_state_id
@@ -1245,6 +1239,11 @@ msgstr "Plantilla"
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_title
 msgid "Title"
 msgstr "Título"
+
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_product_product_gt_product_inventory_tracked
+msgid "Tracking"
+msgstr "Seguimiento"
 
 #. module: globalteckz_shopify
 #: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_data_shopify
@@ -1340,43 +1339,40 @@ msgid "Warehouse"
 msgstr "Almacén"
 
 #. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_import_order_workflow_warehouse_manufacturing_id
+msgid "Warehouse Manufacturing"
+msgstr "Fabricación de almacén"
+
+#. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_store_gt_store_weight_unit
 msgid "Weight Unit"
 msgstr "Unidad de peso"
 
 #. module: globalteckz_shopify
 #: model:ir.ui.menu,name:globalteckz_shopify.menu_shopify_workflow
-#, fuzzy
 msgid "Worfklow"
-msgstr "Worfklow"
+msgstr "Flujo de trabajo"
 
 #. module: globalteckz_shopify
 #: model:ir.ui.view,arch_db:globalteckz_shopify.gt_shopify_instance_kanban
-#, fuzzy
 msgid "Workflow"
-msgstr "Workflow"
+msgstr "Flujo de trabajo"
 
 #. module: globalteckz_shopify
 #: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_gt_workflow_id
-#, fuzzy
 msgid "Workflow & Settings"
-msgstr "Workflow & Settings"
+msgstr "Flujo de trabajo & Configuraciones"
 
 #. module: globalteckz_shopify
 #: model:ir.ui.view,arch_db:globalteckz_shopify.gt_import_order_workflow_form_view
 msgid "Workflow Name"
-msgstr "Workflow Nombre"
+msgstr "Nombre Flujo de trabajo"
 
 #. module: globalteckz_shopify
 #: model:ir.actions.act_window,help:globalteckz_shopify.action_picking_tree_completed
 #: model:ir.actions.act_window,help:globalteckz_shopify.action_picking_tree_pending
-msgid ""
-"You can either do it immediately or mark it as Todo for future processing. "
-"Use your scanner to validate the transferred quantity quicker."
-msgstr ""
-"Puede hacerlo de inmediato o marcarlo como \"para hacer\" para procesarlo "
-"mas adelante. Utilice el escáner de código de barras para validar más "
-"rápidamente la cantidad transferida."
+msgid "You can either do it immediately or mark it as Todo for future processing. Use your scanner to validate the transferred quantity quicker."
+msgstr "Puede hacerlo de inmediato o marcarlo como \"para hacer\" para procesarlo mas adelante. Utilice el escáner de código de barras para validar más rápidamente la cantidad transferida."
 
 #. module: globalteckz_shopify
 #: model:ir.ui.view,arch_db:globalteckz_shopify.gt_view_res_partner_shopify
@@ -1474,3 +1470,4 @@ msgstr "shopify.log.details"
 #: model:ir.model,name:globalteckz_shopify.model_shopify_wizard
 msgid "shopify.wizard"
 msgstr "shopify.wizard"
+

@@ -10,26 +10,26 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" name="action_get_shop" type="object" icon="fa-bars">
+                        <button class="oe_stat_button" name="action_get_shop" type="object" icon="fa-solid fa-building">
                             <field string="Shops" name="count_shopify_shop" widget="statinfo" />
                         </button>
-                        <button class="oe_stat_button" name="action_get_orders" type="object" icon="fa-usd">
+                        <button class="oe_stat_button" name="action_get_orders" type="object" icon="fa-solid fa-book">
                             <field string="Orders" name="count_shopify_orders" widget="statinfo" />
                         </button>
-                        <button class="oe_stat_button" name="action_get_customers" type="object" icon="fa-book">
+                        <button class="oe_stat_button" name="action_get_customers" type="object" icon="fa-solid fa-users">
                             <field string="Customers" name="count_shopify_customers" widget="statinfo" />
                         </button>
                         <newmline/>
-                        <button class="oe_stat_button" name="action_get_product_template" type="object" icon="fa-envelope">
+                        <button class="oe_stat_button" name="action_get_product_template" type="object" icon="fa-solid fa-cart-plus">
                             <field string="Template" name="count_shopify_template" widget="statinfo" />
                         </button>
-                        <button class="oe_stat_button" name="action_get_product_variant" type="object" icon="fa-pencil">
+                        <button class="oe_stat_button" name="action_get_product_variant" type="object" icon="fa-solid fa-pencil">
                             <field string="Variant" name="count_shopify_variant" widget="statinfo" />
                         </button>
                     </div>
                     <div class="oe_button_box" name="button_box">
                         
-<!--                        <button class="oe_stat_button" name="action_get_shipment" type="object" icon="fa-usd">
+<!--                        <button class="oe_stat_button" name="action_get_shipment" type="object" icon="fa-solid fa-user">
                             <field string="Customers" name="count_shopify_shipment" widget="statinfo" />
                         </button>-->
                     </div>

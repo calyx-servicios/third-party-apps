@@ -18,6 +18,7 @@
                                 <field name="gt_shopify_order_id"/>
                                 <field name="gt_shopify_order_status_url" widget="url" text="Order URL"/>
                                 <field name="gt_shopify_order_currency"/>
+                                <field name="gt_shopify_payment_gateway_names"/>
                             </group>
                             <group>
                                 <field name="gt_shopify_order_status"/>

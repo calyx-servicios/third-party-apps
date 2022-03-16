@@ -27,7 +27,9 @@ import base64
 import urllib
 from datetime import date
 import logging
+from logging import getLogger
 logger = logging.getLogger('product')
+_logger = getLogger(__name__)
 
 class GTShopifyInstance(models.Model):
     _name='gt.shopify.instance'
@@ -141,9 +143,31 @@ class GTShopifyInstance(models.Model):
 
         return True
     
-    
     @api.one
-    def gt_import_shopify_products(self):
+    def gt_import_shopify_product_template(self,shopify_product_id):   
+        log_obj = self.env['shopify.log']
+        log_line_obj = self.env['shopify.log.details']
+        log_id = log_obj.create({'create_date':date.today(),'name': 'Import Product','description': 'Successfull','gt_shopify_instance_id': self.id})
+        product_tmpl_obj = self.env['product.template']
+        product_obj = self.env['product.product']
+        try:
+            shopify_url = str(self.gt_location)
+            api_key = str(self.gt_api_key)
+            api_pass = str(self.gt_password)
+            shop_url = shopify_url + 'admin/api/2022-01/products/'+str(shopify_product_id)+'.json'
+            response = requests.get( shop_url,auth=(api_key,api_pass))
+            product_rs=json.loads(response.text)
+            product_item = product_rs['product']
+            product_tmpl_obj.gt_create_product_template(product_item,self,log_id)
+        
+        except Exception as exc:
+            logger.error('Exception===================:  %s', exc)
+            log_id.write({'description': exc}) 
+
+        return True
+
+    @api.one
+    def gt_import_shopify_products(self):    
         log_obj = self.env['shopify.log']
         log_line_obj = self.env['shopify.log.details']
         log_id = log_obj.create({'create_date':date.today(),'name': 'Import Product','description': 'Successfull','gt_shopify_instance_id': self.id})
@@ -164,6 +188,7 @@ class GTShopifyInstance(models.Model):
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
             log_id.write({'description': exc}) 
+       
         return True
     
     
@@ -346,7 +371,6 @@ class GTShopifyInstance(models.Model):
             log_id.write({'description': exc}) 
         return True
     
-    
     @api.one
     def gt_import_shopify_customers(self):
         log_obj = self.env['shopify.log']
@@ -356,11 +380,12 @@ class GTShopifyInstance(models.Model):
         shopify_state_obj = self.env['gt.shopify.customer.state']
         res_state_obj = self.env['res.country.state']
         res_country_obj = self.env['res.country']
+        
         try:
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
             api_pass = str(self.gt_password)
-            shop_url = shopify_url + 'admin/customers.json'
+            shop_url = shopify_url + 'admin/api/2022-01/customers.json'
             response = requests.get( shop_url,auth=(api_key,api_pass))
             customer_rs=json.loads(response.text)
             items = customer_rs['customers']
@@ -372,77 +397,97 @@ class GTShopifyInstance(models.Model):
             city = ''
             zip_code = ''
             name = ''
-            for customer in items:
-                try:
-                    if  'first_name' in customer:
-                        name = str(customer['first_name'])
-                    if 'last_name' in customer:
-                        name = str(customer['first_name']) + ' ' +str(customer['last_name'])
-                    if 'state' in customer:
-                        status = shopify_state_obj.search([('name','=',str(customer['state']))])
-                        if status:
-                            status_id = status.id
-                        else:
-                            status_id = shopify_state_obj.create({'name': str(customer['state'])}).id
-                    if 'default_address' in customer:
-                        address = customer['default_address']
-                        if 'address1' in address:
-                           address1 = address['address1'] 
-                        if 'address2' in address:
-                            address2 = address['address2']
-                        if 'city' in address:
-                            city = address['city']
-                        if 'zip' in address:
-                            zip_code = address['zip']
-                        if 'country' in address:
-                            country = res_country_obj.search([('name','=',str(address['country_name']))])
-                            if country:
-                                country_id = country.id
-                            else:
-                                country_id = res_country_obj.create({'name': str(address['country_name']),'code': str(address['country_code']) if 'country_code' in address else ''}).id
 
-                        if 'province' in address:
-                            state = res_state_obj.search([('name','=',str(address['province'])),('country_id','=',country_id)])
-                            if state:
-                                state_id = state.id
-                            else:
-                                state_id = res_state_obj.create({'name': str(address['province']),'country_id': country_id, 'code':str(address['province_code']) if 'province_code' in address else ''}).id
-                    vals = {
-                        'gt_customer_note': customer['note']if 'note' in customer else '',
-                        'gt_tax_exempt': customer['tax_exempt'] if 'tax_exempt' in customer else False,
-                        'gt_customer_id': customer['id'] if 'id' in customer else '',
-                        'gt_shopify_customer': True,
-                        'email': customer['email'] if 'email' in customer else '',
-                        'phone': customer['phone'] if 'phone' in customer else '',
-                        'gt_customer_state' : status_id,
-                        'country_id': country_id,
-                        'state_id': state_id,
-                        'street': address1,
-                        'street2':address2,
-                        'city': city,
-                        'zip': zip_code,
-                        'name': name,
-                        'gt_default_country_id': country_id,
-                        'gt_default_state_id': state_id,
-                        'gt_default_street': address1,
-                        'gt_default_street2':address2,
-                        'gt_default_city': city,
-                        'gt_default_zip': zip_code,
-                        'gt_default_name': name,
-                        'gt_shopify_instance_id' : self.id
-                    }
+            total_customer_url = shopify_url + '/admin/api/2022-01/customers/count.json'
+            total_customer_response = requests.get(total_customer_url,auth=(api_key,api_pass))
+            total_customer = json.loads(total_customer_response.text)['count']
+            total_count = len(items)
 
-                    res_id = res_obj.search([('gt_customer_id','=', customer['id'])])
-                    if not res_id:
-                        res = res_obj.create(vals)
-                except Exception as exc:
-                    logger.error('Exception===================:  %s', exc)
-                    log_line_obj.create({'name':'Create Customer','description':exc,'create_date':date.today(),
-                                              'shopify_log_id':log_id.id})
-                    log_id.write({'description': 'Something went wrong'}) 
+
+            while total_count < total_customer:
+                for customer in items:
+                    res_partner = res_obj.search([('gt_customer_id','=', customer['id'])])
+                    if not res_partner:
+                        try:
+                            if  'first_name' in customer:
+                                name = str(customer['first_name'])
+                            if 'last_name' in customer:
+                                name = str(customer['first_name']) + ' ' +str(customer['last_name'])
+                            if 'state' in customer:
+                                status = shopify_state_obj.search([('name','=',str(customer['state']))])
+                                if status:
+                                    status_id = status.id
+                                else:
+                                    status_id = shopify_state_obj.create({'name': str(customer['state'])}).id
+                            if 'default_address' in customer:
+                                address = customer['default_address']
+                                if 'address1' in address:
+                                    address1 = address['address1'] 
+                                if 'address2' in address:
+                                    address2 = address['address2']
+                                if 'city' in address:
+                                    city = address['city']
+                                if 'zip' in address:
+                                    zip_code = address['zip']
+                                if 'country' in address:
+                                    if address['country_name'] != None:
+                                        country = res_country_obj.search([('name','=',str(address['country_name'])), ('code', '=', str(address['country_code']))])
+                                        if country:
+                                            country_id = country.id
+                                        else:
+                                            country_id = res_country_obj.create({'name': str(address['country_name']),'code': str(address['country_code']) if 'country_code' in address else ''}).id
+
+                                        if 'province' in address:
+                                            state = res_state_obj.search([('name','=',str(address['province'])), ('country_id', '=', country_id), ('code', '=', str(address['province_code']))])
+                                            if state:
+                                                state_id = state.id
+                                            else:
+                                                state_id = res_state_obj.create({'name': str(address['province']),'country_id': country_id, 'code':str(address['province_code']) if 'province_code' in address else ''}).id
+                            vals = {
+                                'gt_customer_note': customer['note']if 'note' in customer else '',
+                                'gt_tax_exempt': customer['tax_exempt'] if 'tax_exempt' in customer else False,
+                                'gt_customer_id': customer['id'] if 'id' in customer else '',
+                                'gt_shopify_customer': True,
+                                'email': customer['email'] if 'email' in customer else '',
+                                'phone': customer['phone'] if 'phone' in customer else '',
+                                'gt_customer_state' : status_id,
+                                'country_id': country_id,
+                                'state_id': state_id,
+                                'street': address1,
+                                'street2':address2,
+                                'city': city,
+                                'zip': zip_code,
+                                'name': name,
+                                'gt_default_country_id': country_id,
+                                'gt_default_state_id': state_id,
+                                'gt_default_street': address1,
+                                'gt_default_street2':address2,
+                                'gt_default_city': city,
+                                'gt_default_zip': zip_code,
+                                'gt_default_name': name+'_s',
+                                'gt_shopify_instance_id' : self.id
+                            }
+
+                            res = res_obj.create(vals)
+                            self.env.cr.commit()
+
+                        except Exception as exc:
+                            logger.error('Exception===================:  %s', exc)
+                            log_line_obj.create({'name':'Create Customer','description':exc,'create_date':date.today(),
+                                                    'shopify_log_id':log_id.id})
+                            log_id.write({'description': 'Something went wrong'})
+                            self.env.cr.commit()
+
+                shop_url = response.links['next']['url']
+                response = requests.get( shop_url,auth=(api_key,api_pass))
+                customer_rs=json.loads(response.text)
+                items = customer_rs['customers']
+                total_count += len(items)
+
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
-            log_id.write({'description': exc}) 
+            log_id.write({'description': exc})
+            
         return True
     
     
@@ -468,7 +513,6 @@ class GTShopifyInstance(models.Model):
                 if len(response_order_status['orders'])>0:
                     return 'Cancelled'            
 
-
     @api.one
     def gt_import_shopify_orders(self):
         log_obj = self.env['shopify.log']
@@ -479,133 +523,197 @@ class GTShopifyInstance(models.Model):
         prod_obj = self.env['product.product']
         tax_obj = self.env['account.tax']
         payment_obj = self.env['account.payment.term']
-
-        self.gt_import_shopify_customers()
+        product_templ_obj = self.env['product.template']
 
         try:
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
             api_pass = str(self.gt_password)
-            shop_url = shopify_url + 'admin/orders.json?status=any'
+            shop_url = shopify_url + 'admin/orders.json'
             response = requests.get( shop_url,auth=(api_key,api_pass))
             customer_rs=json.loads(response.text)
             items = customer_rs['orders']
-            for order in items:
-                payment_id = []
-                order_confirm = []
-                order_stauts_url = ''
-                order_currency = ''
-                tax_incl = ''
-                try:
-                    if 'confirmed' in order:
-                        order_confirm = order['confirmed']
-                    if 'currency' in order:
-                        order_currency = order['currency']
-                    if 'order_status_url' in order:
-                        order_stauts_url = order['order_status_url']
-                    if 'taxes_included' in order:
-                        tax_incl = order['taxes_included']
-                    if 'customer' in order:
-                        customer = order['customer']
-                        cust_id = res_obj.search([('gt_customer_id','=', customer['id'])])
-                        if cust_id:
-                            customer_id = cust_id
-                        else:
-                            customer_id =  self.create_order_customer(res_obj,customer)
-                        if customer_id:
-                            if 'shipping_address' in order:
-                                shipping_address = order['shipping_address']
-                                self.update_shipping_address(shipping_address,customer_id)
 
-                        if 'line_items' in order:
-                            items = order['line_items']
-                            product_lines = []
-                            product_untracked_lines = []
+            total_order_url = shopify_url + '/admin/api/2022-01/orders/count.json'
+            total_order_response = requests.get( total_order_url,auth=(api_key,api_pass))
+            total_order = json.loads(total_order_response.text)['count']
+            total_count = len(items)
 
-                            for lines in items:
-                                product = prod_obj.search([('gt_product_id','=',lines['variant_id'])])
-                                if product:
-                                    product_id = product
-                                else:
-                                    prod_obj.gt_import_shopify_products()
-                                    product = prod_obj.search([('gt_product_id','=',lines['variant_id'])])
-                                    product_id = product
-                                if 'tax_lines' in lines:
-                                    ta_line = lines['tax_lines']
-                                    tax_list = []
-                                    for tax_line in ta_line: 
-                                        tax = tax_obj.search([('name','=',str(tax_line['title'])),('amount','=',tax_line['rate'] * 100),('type_tax_use','=','sale')])
-                                        if tax:
-                                            tax_id = tax
+            while total_count < total_order:
+
+                for order in items:
+                    payment_id = []
+                    order_confirm = []
+                    order_stauts_url = ''
+                    order_currency = ''
+                    tax_incl = ''
+                    try:
+                        if 'confirmed' in order:
+                            order_confirm = order['confirmed']
+                        if 'currency' in order:
+                            order_currency = order['currency']
+                        if 'order_status_url' in order:
+                            order_stauts_url = order['order_status_url']
+                        if 'taxes_included' in order:
+                            tax_incl = order['taxes_included']
+                        if 'customer' in order:
+                            customer = order['customer']
+                            cust_id = res_obj.search([('gt_customer_id','=', customer['id'])])
+                            if cust_id:
+                                customer_id = cust_id
+                            else:
+                                customer_id =  self.create_order_customer(res_obj,customer)
+                                self.env.cr.commit()
+                            if customer_id:
+                                if 'shipping_address' in order:
+                                    shipping_address = order['shipping_address']
+                                    self.update_shipping_address(shipping_address,customer_id)
+                                    self.env.cr.commit()
+
+                            if 'line_items' in order:
+                                items = order['line_items']
+                                product_lines = []
+                                product_untracked_lines = []
+
+                                for lines in items:
+                                    if lines['variant_id'] != None:
+                                        product = prod_obj.search([('gt_product_id','=',lines['variant_id'])])
+                                        if product:
+                                            product_id = product
+                                        else: 
+                                            self.gt_import_shopify_product_template(lines['product_id'])
+                                            self.env.cr.commit()
+                                            product = prod_obj.search([('gt_product_id','=',lines['variant_id'])])
+                                            if product:
+                                                product_id = product
+
+                                        if 'tax_lines' in lines:
+                                            ta_line = lines['tax_lines']
+                                            tax_list = []
+                                            for tax_line in ta_line: 
+                                                tax = tax_obj.search([('name','=',str(tax_line['title'])),('amount','=',tax_line['rate'] * 100),('type_tax_use','=','sale')])
+                                                if tax:
+                                                    tax_id = tax
+                                                else:
+                                                    tax_id = tax_obj.create({'name':tax_line['title'],'amount':tax_line['rate'] * 100,'type_tax_use':'sale'})
+                                                tax_list.append(tax_id.id)
+                                        
+                                        if product_id.gt_product_inventory_tracked:
+                                            product_lines.append((0,0,{
+                                                'product_id': product_id.id or False,
+                                                'name': product_id.name or 'Producto Sin Nombre',###,###
+                                                'template_id': product_id.product_tmpl_id.id or False,
+                                                'variants_status_ok':True,'tax_id': [(6, 0,tax_list)] or False,
+                                                'price_unit':lines['price'],
+                                                'product_uom_qty': lines['quantity'],
+                                            }))
+                                            # _logger.info("============================ ")
+                                            # _logger.info("===> product_id => ")
+                                            # _logger.info(product_id.id)
+                                            # _logger.info("===> product_name => ")
+                                            # _logger.info(product_id.name)
+                                            # _logger.info("===> template_id => ")
+                                            # _logger.info(product_id.product_tmpl_id.id)
+                                            # _logger.info("===> tax_list => ")
+                                            # _logger.info(tax_list)
+                                            # _logger.info("============================ ")
+
                                         else:
-                                            tax_id = tax_obj.create({'name':tax_line['title'],'amount':tax_line['rate'] * 100,'type_tax_use':'sale'})
-                                        tax_list.append(tax_id.id)
+                                            product_untracked_lines.append((0,0,{
+                                                'product_id': product_id.id,
+                                                'name': product_id.name or 'Producto Sin Nombre',###
+                                                'template_id': product_id.product_tmpl_id.id,###
+                                                'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],###
+                                                'price_unit':lines['price'],
+                                                'product_uom_qty': lines['quantity'],
+                                            }))
+
+                        # Como la SO puede contener productos con seguimiento de inventario, o no.
+                        # Se crearan 2 ordenes de venta para utilizar almacenes diferentes.
+                        # Ya que los que deban ir a fabricacion, deberian estar asociados a un almacen que tenga configurada esa ruta.
+                        sale_ids = sale_obj.search([('name','=',str(order['order_number'])),('gt_shopify_order_id','=',str(order['id']))])
+
+                        if not sale_ids:
+                            if product_lines:                      
+                                value = {
+                                    'name':str(order['order_number']),
+                                    'partner_id':customer_id.id, 
+                                    'order_line': product_lines,
+                                    'warehouse_id': self.gt_workflow_id.warehouse_id.id,
+                                    'gt_shopify_instance_id': self.id, 
+                                    'gt_shopify_order': True,
+                                    'payment_term_id':payment_id,
+                                    'gt_shopify_order_id': order['id'],
+                                    'gt_shopify_order_status_url':order_stauts_url,
+                                    'gt_shopify_order_confirmed':order_confirm,
+                                    'gt_shopify_order_currency':order_currency,
+                                    'gt_shopify_tax_included':tax_incl,
+                                    'gt_shopify_financial_status':order['financial_status'],
+                                    'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
+                                    'gt_shopify_order_status': self._get_shopify_status(order['id']),
+                                    'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]),
+                                    # 'email_partner': customer_id.email,
+                                }
+                                _logger.info("===> POR CREAR SO => ")
+                                _logger.info(str(order['order_number']))
+                                _logger.info(str(order['number']))
+                                sale_order = sale_obj.create(value)
                                 
-                                if product_id.gt_product_inventory_tracked:
-                                    product_lines.append((0,0,{'product_id': product_id.id,'template_id': product_id.product_tmpl_id.id,'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],'price_unit':lines['price'],'product_uom_qty': lines['quantity'],}))
-                                else:
-                                    product_untracked_lines.append((0,0,{'product_id': product_id.id,'template_id': product_id.product_tmpl_id.id,'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],'price_unit':lines['price'],'product_uom_qty': lines['quantity'],}))
+                            if product_untracked_lines:
+                                vals = {
+                                    'name':str(order['order_number']),
+                                    'partner_id':customer_id.id, 
+                                    'order_line': product_untracked_lines,
+                                    'warehouse_id': self.gt_workflow_id.warehouse_manufacturing_id.id,
+                                    'gt_shopify_instance_id': self.id, 
+                                    'gt_shopify_order': True,
+                                    'payment_term_id':payment_id,
+                                    'gt_shopify_order_id': order['id'],
+                                    'gt_shopify_order_status_url':order_stauts_url,
+                                    'gt_shopify_order_confirmed':order_confirm,
+                                    'gt_shopify_order_currency':order_currency,
+                                    'gt_shopify_tax_included':tax_incl,
+                                    'gt_shopify_financial_status':order['financial_status'],
+                                    'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
+                                    'gt_shopify_order_status': self._get_shopify_status(order['id']),
+                                    # 'email_partner': customer_id.email, ## NO EXISTE EN MI BASE LOCAL
+                                }
+                                _logger.info("===> POR CREAR SO, sale_order_manufacturing => ")
+                                _logger.info(str(order['order_number']))
+                                _logger.info(str(order['number']))
+                                sale_order_manufacturing = sale_obj.create(vals)
 
-                    # En caso que la SO contenga productos tanto productos con seguimiento de inventario como no.
-                    # Se crearan 2 ordenes de venta para utilizar almacenes diferentes. Ya que los que deban ir a fabricacion
-                    # deben estar asiciados a un almacen que tenga configurada esa ruta.
-                    sale_ids = sale_obj.search([('name','=',order['order_number']),('gt_shopify_order_id','=',order['id'])])
-                    if not sale_ids:
-                        if product_lines:
-                            sale_order = sale_obj.create({
-                                'name':order['order_number'],
-                                'partner_id':customer_id.id, 
-                                'order_line': product_lines,
-                                'warehouse_id': self.gt_workflow_id.warehouse_id.id,
-                                'gt_shopify_instance_id': self.id, 
-                                'gt_shopify_order': True,
-                                'payment_term_id':payment_id,
-                                'gt_shopify_order_id': order['id'],
-                                'gt_shopify_order_status_url':order_stauts_url,
-                                'gt_shopify_order_confirmed':order_confirm,
-                                'gt_shopify_order_currency':order_currency,
-                                'gt_shopify_tax_included':tax_incl,
-                                'gt_shopify_financial_status':order['financial_status'],
-                                'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
-                                'gt_shopify_order_status': self._get_shopify_status(order['id']),
-                                'email_partner': customer_id.email,
-                            })
+                        else:
+                            for sale_id in sale_ids:       
+                                vals_update = {
+                                    'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]),###
+                                    'gt_shopify_financial_status': order['financial_status'],
+                                    'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
+                                    'gt_shopify_order_status': self._get_shopify_status(order['id'])
+                                }
+                                _logger.info("===> POR ACTUALIZAR SO => ")
+                                _logger.info(str(order['order_number']))
+                                _logger.info(str(order['number']))
+                                sale_id.write(vals_update)
+                                self.env.cr.commit()
 
-                        if product_untracked_lines:
-                            sale_order_manufacturing = sale_obj.create({
-                                'name':order['order_number'],
-                                'partner_id':customer_id.id, 
-                                'order_line': product_untracked_lines,
-                                'warehouse_id': self.gt_workflow_id.warehouse_manufacturing_id.id,
-                                'gt_shopify_instance_id': self.id, 
-                                'gt_shopify_order': True,
-                                'payment_term_id':payment_id,
-                                'gt_shopify_order_id': order['id'],
-                                'gt_shopify_order_status_url':order_stauts_url,
-                                'gt_shopify_order_confirmed':order_confirm,
-                                'gt_shopify_order_currency':order_currency,
-                                'gt_shopify_tax_included':tax_incl,
-                                'gt_shopify_financial_status':order['financial_status'],
-                                'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
-                                'gt_shopify_order_status': self._get_shopify_status(order['id']),
-                                'email_partner': customer_id.email,
-                            })
+                                if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
+                                    sale_id.action_confirm()
+                            
 
-                    else:
+                    except Exception as exc:
+                        logger.error('Exception===================:  %s', exc)
+                        log_line_obj.create({'name':'Create Order','description':exc,'create_date':date.today(),
+                                                'shopify_log_id':log_id.id})
+                        log_id.write({'description': 'Something went wrong'}) 
 
-                        for sale_id in sale_ids:
-                            sale_id.write({'gt_shopify_financial_status': order['financial_status']})                        
-                            sale_id.write({'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status']})
-                            sale_id.write({'gt_shopify_order_status': self._get_shopify_status(order['id'])})
-                            if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
-                                sale_id.action_confirm()
+                shop_url = response.links['next']['url']
+                response = requests.get( shop_url,auth=(api_key,api_pass))
+                customer_rs=json.loads(response.text)
+                items = customer_rs['orders']
+                total_count += len(items)
+                
 
-
-                except Exception as exc:
-                    logger.error('Exception===================:  %s', exc)
-                    log_line_obj.create({'name':'Create Order','description':exc,'create_date':date.today(),
-                                              'shopify_log_id':log_id.id})
-                    log_id.write({'description': 'Something went wrong'}) 
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
             log_id.write({'description': exc}) 
@@ -616,15 +724,17 @@ class GTShopifyInstance(models.Model):
     def update_shipping_address(self,address,customer_id):
         shopify_state_obj = self.env['gt.shopify.customer.state']
         res_state_obj = self.env['res.country.state']
-        res_country_obj = self.env['res.country']   
+        res_country_obj = self.env['res.country']
+
         if 'address1' in address:
             address1 = address['address1'] 
             if 'address2' in address:
                 address2 = address['address2']
             if 'city' in address:
                 city = address['city']
+
             if 'zip' in address:
-                zip_code = address['zip']
+                zip_code = str(address['zip']) or '' ###
             if 'country' in address:
                 country = res_country_obj.search([('name','=',str(address['country']))])
                 if country:
@@ -638,34 +748,39 @@ class GTShopifyInstance(models.Model):
                     state_id = state.id
                 else:
                     state_id = res_state_obj.create({'name': str(address['province']),'country_id': country_id, 'code':str(address['province_code']) if 'province_code' in address else ''}).id
-        customer_id.write({
+        value_customer = {
             'country_id': country_id,
             'state_id': state_id,
             'street': address1,
             'street2':address2,
             'city': city,
             'zip': zip_code,
-        })
+        }
+        _logger.info("===> POR ACTUALIZAR CLIENTE => ")
+        _logger.info(customer_id.name)
+        customer_id.write(value_customer)
+        self.env.cr.commit()
         
         return True
         
-    
-    
+
     @api.multi
     def create_order_customer(self,res_obj,customer): 
         shopify_state_obj = self.env['gt.shopify.customer.state']
         res_state_obj = self.env['res.country.state']
         res_country_obj = self.env['res.country']
-        if  'first_name' in customer:
-            name = str(customer['first_name'])
+        if  'first_name' in customer:  
+            name = str(customer['first_name'])  
             if 'last_name' in customer:
                 name = str(customer['first_name']) + ' ' +str(customer['last_name'])
+                                      
             if 'state' in customer:
                 status = shopify_state_obj.search([('name','=',str(customer['state']))])
                 if status:
                     status_id = status.id
                 else:
                     status_id = shopify_state_obj.create({'name': str(customer['state'])}).id
+
         if 'default_address' in customer:
             address = customer['default_address']
             if 'address1' in address:
@@ -678,18 +793,20 @@ class GTShopifyInstance(models.Model):
                 zip_code = address['zip']
             if 'country' in address:
                 country = res_country_obj.search([('name','=',str(address['country_name']))])
-                if country:
+                if country:##SI EXISTE EL PAIS EN ODOO, USAMOS ESE
                     country_id = country.id
                 else:
                     country_id = res_country_obj.create({'name': str(address['country_name']),'code': str(address['country_code']) if 'country_code' in address else ''}).id
 
             if 'province' in address:
                 state = res_state_obj.search([('name','=',str(address['province'])),('country_id','=',country_id)])
-                if state:
+                if state:##SI EXISTE LA PROVINCIA EN ODOO, USAMOS ESE
                     state_id = state.id
                 else:
                     state_id = res_state_obj.create({'name': str(address['province']),'country_id': country_id, 'code':str(address['province_code']) if 'province_code' in address else ''}).id
-        customer_id = res_obj.create ({
+
+        customer_id = res_obj.create({
+            'name': name,
             'gt_customer_note': customer['note']if 'note' in customer else '',
             'gt_tax_exempt': customer['tax_exempt'] if 'tax_exempt' in customer else False,
             'gt_customer_id': customer['id'] if 'id' in customer else '',
@@ -704,10 +821,53 @@ class GTShopifyInstance(models.Model):
             'gt_default_city': city,
             'gt_default_zip': zip_code,
             'gt_default_name': name,
-            'gt_shopify_instance_id': self.id})
-            
-        
-        
+            'gt_shopify_instance_id': self.id
+        })
+
+        ### SI EL EMAIL SE ENCUENTRA EN ODOO. LO ACTUALIZAMOS
+        # validation_name_in_odoo = res_obj.search([('email','=',customer['email'])])
+        # if validation_name_in_odoo:
+        #     value = {
+        #         'email': customer['email'] if 'email' in customer else '',
+        #         'phone': customer['phone'] if 'phone' in customer else '',
+        #         'gt_customer_note': customer['note']if 'note' in customer else '',
+        #         'gt_tax_exempt': customer['tax_exempt'] if 'tax_exempt' in customer else False,
+        #         'gt_customer_id': customer['id'] if 'id' in customer else '',
+        #         'gt_shopify_customer': True,
+        #         'gt_customer_state' : status_id,
+        #         'gt_default_country_id': country_id,
+        #         'gt_default_state_id': state_id,
+        #         'gt_default_street': address1,
+        #         'gt_default_street2':address2,
+        #         'gt_default_city': city,
+        #         'gt_default_zip': zip_code,
+        #         'gt_default_name': name,
+        #         'gt_shopify_instance_id': self.id
+        #     }
+        #     customer_id = res_obj.write(value)
+        # ### SI EL EMAIL NO EXISTE EN ODOO, CREAMOS UN CONTACTO NUEVO
+        # else:
+        #     value = {
+        #         'name': name,
+        #         'email': customer['email'] if 'email' in customer else '',
+        #         'phone': customer['phone'] if 'phone' in customer else '',
+        #         'gt_customer_note': customer['note']if 'note' in customer else '',
+        #         'gt_tax_exempt': customer['tax_exempt'] if 'tax_exempt' in customer else False,
+        #         'gt_customer_id': customer['id'] if 'id' in customer else '',
+        #         'gt_shopify_customer': True,               
+        #         'gt_customer_state' : status_id,
+        #         'gt_default_country_id': country_id,
+        #         'gt_default_state_id': state_id,
+        #         'gt_default_street': address1,
+        #         'gt_default_street2':address2,
+        #         'gt_default_city': city,
+        #         'gt_default_zip': zip_code,
+        #         'gt_default_name': name,
+        #         'gt_default_phone': customer['phone'] if 'phone' in customer else '',
+        #         'gt_shopify_instance_id': self.id
+        #     }
+        #     customer_id = res_obj.create(value)
+  
         return customer_id
     
     
@@ -753,7 +913,7 @@ class GTShopifyInstance(models.Model):
     @api.multi
     def action_get_customers(self):
         shopify_customers = self.env['res.partner'].search([('gt_shopify_instance_id','=',self.id)])
-        action = self.env.ref('globalteckz_shopify.action_orders_shopify_all')
+        action = self.env.ref('globalteckz_shopify.action_customers_shopify_all')
         result = {
         'name': action.name,
         'help': action.help,

@@ -3,7 +3,7 @@
     <menuitem id="menu_shopify" name="Shopify" icon="terp-sale" sequence="1"/>
     <menuitem id="magento_dashboard_menu" action="act_shopify_dashboard" name="Dashboard" parent="menu_shopify" sequence="0" groups="gt_shopify_admin_group" />
     <menuitem id="menu_shopify_customers_parent" name="Shopify Customers" parent="menu_shopify" sequence="1" groups="gt_shopify_admin_group"/>
-    <menuitem id="menu_shopify_customers" name="Customers" parent="menu_shopify_customers_parent" action="base.action_partner_customer_form" sequence="1" groups="gt_shopify_admin_group"/>
+    <menuitem id="menu_shopify_customers" name="Customers" parent="menu_shopify_customers_parent" action="action_customers_shopify_all" sequence="1" groups="gt_shopify_admin_group"/>
     <menuitem id="menu_shopify_shopify_orders" name="Shopify Orders" parent="menu_shopify" sequence="2" groups="gt_shopify_admin_group"/>
     <menuitem id="menu_shopify_shopify_orders_all" name="All Orders" parent="menu_shopify_shopify_orders" action="action_orders_shopify_all" groups="gt_shopify_admin_group"/>
     <menuitem id="menu_shopify_shopify_orders_pending" name="Pending Orders" parent="menu_shopify_shopify_orders" action="action_orders_shopify_pending" groups="gt_shopify_admin_group"/>
