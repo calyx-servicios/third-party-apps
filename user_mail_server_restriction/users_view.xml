@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_users_server_mail_form" model="ir.ui.view">
+            <field name="name">view.users.server.mail.form</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <group name="messaging" position="before">
+                    <group string="Server Mail User Restrictions">
+                        <field name="mail_server_ids" widget="many2many_tags"/>
+                        <field name="default_mail_server_id" domain="[('id', 'in', mail_server_ids)]"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+    </data>
+</odoo>

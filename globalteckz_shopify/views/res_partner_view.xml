@@ -39,7 +39,16 @@
             </xpath>
         </field>
     </record>
-   
+    <record id="action_customers_shopify_all" model="ir.actions.act_window">
+        <field name="name">Customers</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('gt_shopify_customer', '=', 'True')]</field>
+        <field name="search_view_id" ref="base.res_partner_kanban_view"/>
+    </record>
+    
 </odoo>
 
                 

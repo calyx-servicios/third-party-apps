@@ -25,6 +25,8 @@ import requests
 import json
 import itertools
 import psycopg2
+import base64
+import urllib
 #from odoo.exceptions import ValidationError, except_orm
 import logging
 logger = logging.getLogger('product')
@@ -397,6 +399,9 @@ class ProductTemplate(models.Model):
         response = requests.get( shop_url,auth=(api_key,api_pass))
         product_rs=json.loads(response.text)
         product_items = product_rs['images']
+        photo_obj = self.env['gt.product.photo']
+        product_obj = self.env['product.product']
+        log_line_obj = self.env['shopify.log.details']
 
         for image in product_items:
             try:

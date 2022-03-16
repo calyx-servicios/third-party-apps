@@ -39,6 +39,7 @@ class SaleOrder(models.Model):
     gt_shopify_financial_status = fields.Char('Payment Status',readonly=True)
     gt_shopify_fulfillment_status = fields.Char('Delivery Status',readonly=True)
     gt_shopify_order_status = fields.Char('Order Status',readonly=True)
+    gt_shopify_payment_gateway_names = fields.Char(string='Payment Gateway Names',readonly=True)
     
     
     
@@ -51,7 +52,8 @@ class SaleOrder(models.Model):
         shop_url = shopify_url + 'admin/api/2021-01/orders.json?status=any&ids='+ str(self.gt_shopify_order_id)
         response = requests.get( shop_url,auth=(api_key,api_pass))
         order = json.loads(response.text)
-
+#
+        self.write({'gt_shopify_payment_gateway_names': order['orders'][0]['payment_gateway_names']})
         self.write({'gt_shopify_financial_status': order['orders'][0]['financial_status']})                        
         self.write({'gt_shopify_fulfillment_status': 'Not ready'if order['orders'][0]['fulfillment_status'] == None else order['orders'][0]['fulfillment_status']})
         self.write({'gt_shopify_order_status': self.gt_shopify_instance_id._get_shopify_status(self.gt_shopify_order_id)})
