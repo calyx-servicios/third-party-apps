@@ -397,19 +397,22 @@ class GTShopifyInstance(models.Model):
             city = ''
             zip_code = ''
             name = ''
-
-            total_customer_url = shopify_url + '/admin/api/2022-01/customers/count.json'
+            print('==> shop_url: ',shop_url)
+            total_customer_url = shopify_url + 'admin/api/2022-01/customers/count.json'
             total_customer_response = requests.get(total_customer_url,auth=(api_key,api_pass))
             total_customer = json.loads(total_customer_response.text)['count']
             total_count = len(items)
+            print('==> shop_url CUSTOMERS: ',shop_url)
+            
 
-
-            while total_count < total_customer:
+            while total_count <= total_customer:
+                print('==> total_count: ',total_count)
+                print('==> total_customer: ',total_customer)
                 for customer in items:
                     res_partner = res_obj.search([('gt_customer_id','=', customer['id'])])
                     if not res_partner:
                         try:
-                            if  'first_name' in customer:
+                            if 'first_name' in customer:
                                 name = str(customer['first_name'])
                             if 'last_name' in customer:
                                 name = str(customer['first_name']) + ' ' +str(customer['last_name'])
@@ -419,6 +422,7 @@ class GTShopifyInstance(models.Model):
                                     status_id = status.id
                                 else:
                                     status_id = shopify_state_obj.create({'name': str(customer['state'])}).id
+                                    self.env.cr.commit()
                             if 'default_address' in customer:
                                 address = customer['default_address']
                                 if 'address1' in address:
@@ -429,20 +433,25 @@ class GTShopifyInstance(models.Model):
                                     city = address['city']
                                 if 'zip' in address:
                                     zip_code = address['zip']
-                                if 'country' in address:
+                                if 'country' in address and (str(address['country_name']) != 'None'):
                                     if address['country_name'] != None:
-                                        country = res_country_obj.search([('name','=',str(address['country_name'])), ('code', '=', str(address['country_code']))])
+                                        country = res_country_obj.search([('name','ilike',str(address['country_name'])), ('code', '=', str(address['country_code']))])
                                         if country:
                                             country_id = country.id
                                         else:
                                             country_id = res_country_obj.create({'name': str(address['country_name']),'code': str(address['country_code']) if 'country_code' in address else ''}).id
-
-                                        if 'province' in address:
-                                            state = res_state_obj.search([('name','=',str(address['province'])), ('country_id', '=', country_id), ('code', '=', str(address['province_code']))])
+                                            self.env.cr.commit()
+                                        if 'province' in address and (str(address['province']) != 'None'):
+                                            state = res_state_obj.search([('name','ilike',str(address['province'])), ('country_id', '=', country_id), ('code', '=', str(address['province_code']))])
                                             if state:
                                                 state_id = state.id
                                             else:
-                                                state_id = res_state_obj.create({'name': str(address['province']),'country_id': country_id, 'code':str(address['province_code']) if 'province_code' in address else ''}).id
+                                                value_state = {
+                                                    'name': str(address['province']),
+                                                    'country_id': country_id, 
+                                                    'code':str(address['province_code']) if 'province_code' in address else ''}
+                                                state_id = res_state_obj.create(value_state).id
+                                                self.env.cr.commit()
                             vals = {
                                 'gt_customer_note': customer['note']if 'note' in customer else '',
                                 'gt_tax_exempt': customer['tax_exempt'] if 'tax_exempt' in customer else False,
@@ -467,7 +476,6 @@ class GTShopifyInstance(models.Model):
                                 'gt_default_name': name+'_s',
                                 'gt_shopify_instance_id' : self.id
                             }
-
                             res = res_obj.create(vals)
                             self.env.cr.commit()
 
@@ -483,6 +491,8 @@ class GTShopifyInstance(models.Model):
                 customer_rs=json.loads(response.text)
                 items = customer_rs['customers']
                 total_count += len(items)
+                print('==>url 2: ',shop_url)
+                print('==>faltan: ',len(items))
 
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
@@ -524,6 +534,8 @@ class GTShopifyInstance(models.Model):
         tax_obj = self.env['account.tax']
         payment_obj = self.env['account.payment.term']
         product_templ_obj = self.env['product.template']
+        product_lines = []
+        product_untracked_lines = []
 
         try:
             shopify_url = str(self.gt_location)
@@ -533,14 +545,16 @@ class GTShopifyInstance(models.Model):
             response = requests.get( shop_url,auth=(api_key,api_pass))
             customer_rs=json.loads(response.text)
             items = customer_rs['orders']
-
-            total_order_url = shopify_url + '/admin/api/2022-01/orders/count.json'
+            print('==> shop_url: ',shop_url)
+            print('==> COUNT. ITEMS: ', len(items))
+            total_order_url = shopify_url + 'admin/api/2022-01/orders/count.json'
             total_order_response = requests.get( total_order_url,auth=(api_key,api_pass))
             total_order = json.loads(total_order_response.text)['count']
             total_count = len(items)
-
-            while total_count < total_order:
-
+        
+            while total_count <= total_order:
+                print("==> total_count: ",total_count)
+                print("==> total_order: ",total_order)
                 for order in items:
                     payment_id = []
                     order_confirm = []
@@ -595,7 +609,9 @@ class GTShopifyInstance(models.Model):
                                                 if tax:
                                                     tax_id = tax
                                                 else:
+                                                    print("===> POR CREAR TAX: ",tax_line['title'])
                                                     tax_id = tax_obj.create({'name':tax_line['title'],'amount':tax_line['rate'] * 100,'type_tax_use':'sale'})
+                                                    self.env.cr.commit()
                                                 tax_list.append(tax_id.id)
                                         
                                         if product_id.gt_product_inventory_tracked:
@@ -607,16 +623,6 @@ class GTShopifyInstance(models.Model):
                                                 'price_unit':lines['price'],
                                                 'product_uom_qty': lines['quantity'],
                                             }))
-                                            # _logger.info("============================ ")
-                                            # _logger.info("===> product_id => ")
-                                            # _logger.info(product_id.id)
-                                            # _logger.info("===> product_name => ")
-                                            # _logger.info(product_id.name)
-                                            # _logger.info("===> template_id => ")
-                                            # _logger.info(product_id.product_tmpl_id.id)
-                                            # _logger.info("===> tax_list => ")
-                                            # _logger.info(tax_list)
-                                            # _logger.info("============================ ")
 
                                         else:
                                             product_untracked_lines.append((0,0,{
@@ -654,10 +660,9 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]),
                                     # 'email_partner': customer_id.email,
                                 }
-                                _logger.info("===> POR CREAR SO => ")
-                                _logger.info(str(order['order_number']))
-                                _logger.info(str(order['number']))
+                                print("===> CREATE SO: ",str(order['order_number']))
                                 sale_order = sale_obj.create(value)
+                                self.env.cr.commit()
                                 
                             if product_untracked_lines:
                                 vals = {
@@ -678,10 +683,9 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_order_status': self._get_shopify_status(order['id']),
                                     # 'email_partner': customer_id.email, ## NO EXISTE EN MI BASE LOCAL
                                 }
-                                _logger.info("===> POR CREAR SO, sale_order_manufacturing => ")
-                                _logger.info(str(order['order_number']))
-                                _logger.info(str(order['number']))
+                                print("===> CREATE SO, sale_order_manufacturing => ",str(order['order_number']))
                                 sale_order_manufacturing = sale_obj.create(vals)
+                                self.env.cr.commit()
 
                         else:
                             for sale_id in sale_ids:       
@@ -691,20 +695,20 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
                                     'gt_shopify_order_status': self._get_shopify_status(order['id'])
                                 }
-                                _logger.info("===> POR ACTUALIZAR SO => ")
-                                _logger.info(str(order['order_number']))
-                                _logger.info(str(order['number']))
+                                print("===> WRITE SO => ",str(order['order_number']))
                                 sale_id.write(vals_update)
                                 self.env.cr.commit()
 
                                 if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
                                     sale_id.action_confirm()
+                                    self.env.cr.commit()
                             
-
                     except Exception as exc:
                         logger.error('Exception===================:  %s', exc)
-                        log_line_obj.create({'name':'Create Order','description':exc,'create_date':date.today(),
-                                                'shopify_log_id':log_id.id})
+                        log_line_obj.create({'name':'Create Order',
+                        'description':exc,
+                        'create_date':date.today(),
+                        'shopify_log_id':log_id.id})
                         log_id.write({'description': 'Something went wrong'}) 
 
                 shop_url = response.links['next']['url']
@@ -712,8 +716,9 @@ class GTShopifyInstance(models.Model):
                 customer_rs=json.loads(response.text)
                 items = customer_rs['orders']
                 total_count += len(items)
+                print('===> url: ',shop_url)
+                print('===> Faltan: ',len(items))
                 
-
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
             log_id.write({'description': exc}) 
@@ -725,6 +730,7 @@ class GTShopifyInstance(models.Model):
         shopify_state_obj = self.env['gt.shopify.customer.state']
         res_state_obj = self.env['res.country.state']
         res_country_obj = self.env['res.country']
+        country_id = state_id = False
 
         if 'address1' in address:
             address1 = address['address1'] 
@@ -735,31 +741,41 @@ class GTShopifyInstance(models.Model):
 
             if 'zip' in address:
                 zip_code = str(address['zip']) or '' ###
-            if 'country' in address:
-                country = res_country_obj.search([('name','=',str(address['country']))])
+            if 'country' in address and (str(address['country']) != 'None'):
+                country = res_country_obj.search([('name','ilike',str(address['country']))])
                 if country:
                     country_id = country.id
                 else:
-                    country_id = res_country_obj.create({'name': str(address['country']),'code': str(address['country_code']) if 'country_code' in address else ''}).id
-
-            if 'province' in address:
+                    country_value = {
+                        'name': str(address['country']),
+                        'code': str(address['country_code']) if 'country_code' in address else ''
+                    }
+                    country_id = res_country_obj.create(country_value).id
+                    self.env.cr.commit()
+            if 'province' in address and (str(address['province']) != 'None'):
                 state = res_state_obj.search([('name','=',str(address['province'])),('country_id','=',country_id)])
                 if state:
                     state_id = state.id
                 else:
-                    state_id = res_state_obj.create({'name': str(address['province']),'country_id': country_id, 'code':str(address['province_code']) if 'province_code' in address else ''}).id
-        value_customer = {
-            'country_id': country_id,
-            'state_id': state_id,
-            'street': address1,
-            'street2':address2,
-            'city': city,
-            'zip': zip_code,
-        }
-        _logger.info("===> POR ACTUALIZAR CLIENTE => ")
-        _logger.info(customer_id.name)
-        customer_id.write(value_customer)
-        self.env.cr.commit()
+                    state_value = {
+                        'name': str(address['province']),
+                        'country_id': country_id, 
+                        'code':str(address['province_code']) if 'province_code' in address else ''
+                    }
+                    state_id = res_state_obj.create(state_value).id
+                    self.env.cr.commit()
+        if country_id and state_id:
+            value_customer = {
+                'country_id': country_id,
+                'state_id': state_id,
+                'street': address1,
+                'street2':address2,
+                'city': city,
+                'zip': zip_code,
+            }
+            print("===> WRITE CUSTOMER => ",customer_id.name)
+            customer_id.write(value_customer)
+            self.env.cr.commit()
         
         return True
         
@@ -791,14 +807,14 @@ class GTShopifyInstance(models.Model):
                 city = address['city']
             if 'zip' in address:
                 zip_code = address['zip']
-            if 'country' in address:
+            if 'country' in address and (str(address['country_name']) != 'None'):
                 country = res_country_obj.search([('name','=',str(address['country_name']))])
                 if country:##SI EXISTE EL PAIS EN ODOO, USAMOS ESE
                     country_id = country.id
                 else:
                     country_id = res_country_obj.create({'name': str(address['country_name']),'code': str(address['country_code']) if 'country_code' in address else ''}).id
 
-            if 'province' in address:
+            if 'province' in address and (str(address['province']) != 'None'):
                 state = res_state_obj.search([('name','=',str(address['province'])),('country_id','=',country_id)])
                 if state:##SI EXISTE LA PROVINCIA EN ODOO, USAMOS ESE
                     state_id = state.id
