@@ -401,11 +401,16 @@ class GTShopifyInstance(models.Model):
             total_customer_url = shopify_url + 'admin/api/2022-01/customers/count.json'
             total_customer_response = requests.get(total_customer_url,auth=(api_key,api_pass))
             total_customer = json.loads(total_customer_response.text)['count']
-            total_count = len(items)
+            total_count = 0
             print('==> shop_url CUSTOMERS: ',shop_url)
-            
+
+            if 'next' in response.links:
+                shop_url_next = response.links['next']['url']
+            else:
+                shop_url_next = False
 
             while total_count <= total_customer:
+                total_count += len(items)
                 print('==> total_count: ',total_count)
                 print('==> total_customer: ',total_customer)
                 for customer in items:
@@ -486,13 +491,14 @@ class GTShopifyInstance(models.Model):
                             log_id.write({'description': 'Something went wrong'})
                             self.env.cr.commit()
 
-                shop_url = response.links['next']['url']
-                response = requests.get( shop_url,auth=(api_key,api_pass))
-                customer_rs=json.loads(response.text)
-                items = customer_rs['customers']
-                total_count += len(items)
-                print('==>url 2: ',shop_url)
-                print('==>faltan: ',len(items))
+                if shop_url_next:
+                    response = requests.get( shop_url_next,auth=(api_key,api_pass))
+                    customer_rs = json.loads(response.text)
+                    items = customer_rs['customers']
+                    print('===> url: ',shop_url_next)
+                    print('===> Faltan: ',len(items))
+                    if 'next' in response.links:
+                        shop_url_next = response.links['next']['url']
 
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
@@ -550,9 +556,17 @@ class GTShopifyInstance(models.Model):
             total_order_url = shopify_url + 'admin/api/2022-01/orders/count.json'
             total_order_response = requests.get( total_order_url,auth=(api_key,api_pass))
             total_order = json.loads(total_order_response.text)['count']
-            total_count = len(items)
+            total_count = 0
+            
+            if 'next' in response.links:
+                shop_url_next = response.links['next']['url']
+            else:
+                shop_url_next = False
         
             while total_count <= total_order:
+                
+                total_count += len(items)
+
                 print("==> total_count: ",total_count)
                 print("==> total_order: ",total_order)
                 for order in items:
@@ -711,13 +725,17 @@ class GTShopifyInstance(models.Model):
                         'shopify_log_id':log_id.id})
                         log_id.write({'description': 'Something went wrong'}) 
 
-                shop_url = response.links['next']['url']
-                response = requests.get( shop_url,auth=(api_key,api_pass))
-                customer_rs=json.loads(response.text)
-                items = customer_rs['orders']
-                total_count += len(items)
-                print('===> url: ',shop_url)
-                print('===> Faltan: ',len(items))
+                if shop_url_next:
+                    response = requests.get( shop_url_next,auth=(api_key,api_pass))
+                    customer_rs = json.loads(response.text)
+                    items = customer_rs['orders']
+                    
+                    print('===> url: ',shop_url_next)
+                    print('===> Faltan: ',len(items))
+                    if 'next' in response.links:
+                        shop_url_next = response.links['next']['url']
+                    else:
+                        shop_url_next = False
                 
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
