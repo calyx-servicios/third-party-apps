@@ -672,7 +672,7 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
                                     'gt_shopify_order_status': self._get_shopify_status(order['id']),
                                     'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]),
-                                    # 'email_partner': customer_id.email,
+                                    'email_partner': customer_id.email,
                                 }
                                 print("===> CREATE SO: ",str(order['order_number']))
                                 sale_order = sale_obj.create(value)
@@ -695,7 +695,7 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_financial_status':order['financial_status'],
                                     'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
                                     'gt_shopify_order_status': self._get_shopify_status(order['id']),
-                                    # 'email_partner': customer_id.email, ## NO EXISTE EN MI BASE LOCAL
+                                    'email_partner': customer_id.email,
                                 }
                                 print("===> CREATE SO, sale_order_manufacturing => ",str(order['order_number']))
                                 sale_order_manufacturing = sale_obj.create(vals)

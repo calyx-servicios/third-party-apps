@@ -53,7 +53,13 @@ odoo woo commerce integration
 oodo shopify connector
 oodo shopify integration
     """,
-    'depends': ['sale','stock','base','delivery','account'],
+    'depends': ['sale',
+                'stock',
+                'base',
+                'delivery',
+                'account',
+                'sale_order_mail',
+            ],
     'data': [
             'security/shopify_security.xml',
             'security/ir.model.access.csv',
