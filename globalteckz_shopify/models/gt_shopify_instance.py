@@ -462,7 +462,7 @@ class GTShopifyInstance(models.Model):
                                 'gt_tax_exempt': customer['tax_exempt'] if 'tax_exempt' in customer else False,
                                 'gt_customer_id': customer['id'] if 'id' in customer else '',
                                 'gt_shopify_customer': True,
-                                'email': customer['email'] if 'email' in customer else 'No Suministrado',
+                                'email': customer['email'] if 'email' in customer else '',
                                 'phone': customer['phone'] if 'phone' in customer else '',
                                 'gt_customer_state' : status_id,
                                 'country_id': country_id,
@@ -672,7 +672,7 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
                                     'gt_shopify_order_status': self._get_shopify_status(order['id']),
                                     'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]),
-                                    'email_partner': customer_id.email,
+                                    'email_partner': customer_id.email if customer_id.email  else 'No Suministrado',
                                 }
                                 print("===> CREATE SO: ",str(order['order_number']))
                                 sale_order = sale_obj.create(value)
@@ -695,7 +695,7 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_financial_status':order['financial_status'],
                                     'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
                                     'gt_shopify_order_status': self._get_shopify_status(order['id']),
-                                    'email_partner': customer_id.email,
+                                    'email_partner': customer_id.email if customer_id.email  else 'No Suministrado',
                                 }
                                 print("===> CREATE SO, sale_order_manufacturing => ",str(order['order_number']))
                                 sale_order_manufacturing = sale_obj.create(vals)
@@ -845,7 +845,7 @@ class GTShopifyInstance(models.Model):
             'gt_tax_exempt': customer['tax_exempt'] if 'tax_exempt' in customer else False,
             'gt_customer_id': customer['id'] if 'id' in customer else '',
             'gt_shopify_customer': True,
-            'email': customer['email'] if 'email' in customer else 'No Suministrado',
+            'email': customer['email'] if 'email' in customer else '',
             'phone': customer['phone'] if 'phone' in customer else '',
             'gt_customer_state' : status_id,
             'gt_default_country_id': country_id,
