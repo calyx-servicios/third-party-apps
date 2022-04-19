@@ -569,6 +569,8 @@ class GTShopifyInstance(models.Model):
                 
                 total_count += len(items)
 
+                logger.info('Total Request ===================:  %s', total_count)
+
                 print("==> total_count: ",total_count)
                 print("==> total_order: ",total_order)
                 for order in items:
@@ -706,7 +708,7 @@ class GTShopifyInstance(models.Model):
                                 print("===> CREATE SO, sale_order_manufacturing => ",str(order['order_number']))
                                 sale_order_manufacturing = sale_obj.create(vals)
                                 self.env.cr.commit()
-                                logger.info('Create Order===================:  %s', sale_order.name)
+                                logger.info('Create Order===================:  %s', sale_order_manufacturing.name)
 
                         else:
                             for sale_id in sale_ids:       
@@ -719,7 +721,7 @@ class GTShopifyInstance(models.Model):
                                 print("===> WRITE SO => ",str(order['order_number']))
                                 sale_id.write(vals_update)
                                 self.env.cr.commit()
-                                logger.info('Update Order===================:  %s', sale_order.name)
+                                logger.info('Update Order===================:  %s', sale_id.name)
 
                                 if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
                                     sale_id.action_confirm()
@@ -744,6 +746,10 @@ class GTShopifyInstance(models.Model):
                         shop_url_next = response.links['next']['url']
                     else:
                         shop_url_next = False
+
+                    
+                    logger.info('Orders Count Response ===================:  %s', len(items))
+                    total_count
                 
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
