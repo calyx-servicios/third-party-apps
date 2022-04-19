@@ -653,6 +653,8 @@ class GTShopifyInstance(models.Model):
                                                     'price_unit':lines['price'],
                                                     'product_uom_qty': lines['quantity'],
                                                 }))
+                                        else:
+                                            logger.info('No Existe El Producto ===================:  %s', lines['product_id'])
 
                         # Como la SO puede contener productos con seguimiento de inventario, o no.
                         # Se crearan 2 ordenes de venta para utilizar almacenes diferentes.
