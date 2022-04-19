@@ -602,6 +602,7 @@ class GTShopifyInstance(models.Model):
                                 items = order['line_items']
                                 product_lines = []
                                 product_untracked_lines = []
+                                product_id = False
 
                                 for lines in items:
                                     if lines['variant_id'] != None:
@@ -628,25 +629,26 @@ class GTShopifyInstance(models.Model):
                                                     self.env.cr.commit()
                                                 tax_list.append(tax_id.id)
                                         
-                                        if product_id.gt_product_inventory_tracked:
-                                            product_lines.append((0,0,{
-                                                'product_id': product_id.id or False,
-                                                'name': product_id.name or 'Producto Sin Nombre',###,###
-                                                'template_id': product_id.product_tmpl_id.id or False,
-                                                'variants_status_ok':True,'tax_id': [(6, 0,tax_list)] or False,
-                                                'price_unit':lines['price'],
-                                                'product_uom_qty': lines['quantity'],
-                                            }))
+                                        if product_id:
+                                            if product_id.gt_product_inventory_tracked:
+                                                product_lines.append((0,0,{
+                                                    'product_id': product_id.id or False,
+                                                    'name': product_id.name or 'Producto Sin Nombre',###,###
+                                                    'template_id': product_id.product_tmpl_id.id or False,
+                                                    'variants_status_ok':True,'tax_id': [(6, 0,tax_list)] or False,
+                                                    'price_unit':lines['price'],
+                                                    'product_uom_qty': lines['quantity'],
+                                                }))
 
-                                        else:
-                                            product_untracked_lines.append((0,0,{
-                                                'product_id': product_id.id,
-                                                'name': product_id.name or 'Producto Sin Nombre',###
-                                                'template_id': product_id.product_tmpl_id.id,###
-                                                'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],###
-                                                'price_unit':lines['price'],
-                                                'product_uom_qty': lines['quantity'],
-                                            }))
+                                            else:
+                                                product_untracked_lines.append((0,0,{
+                                                    'product_id': product_id.id,
+                                                    'name': product_id.name or 'Producto Sin Nombre',###
+                                                    'template_id': product_id.product_tmpl_id.id,###
+                                                    'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],###
+                                                    'price_unit':lines['price'],
+                                                    'product_uom_qty': lines['quantity'],
+                                                }))
 
                         # Como la SO puede contener productos con seguimiento de inventario, o no.
                         # Se crearan 2 ordenes de venta para utilizar almacenes diferentes.
@@ -671,7 +673,7 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_financial_status':order['financial_status'],
                                     'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
                                     'gt_shopify_order_status': self._get_shopify_status(order['id']),
-                                    'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]),
+                                    'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
                                     'email_partner': customer_id.email if customer_id.email  else 'No Suministrado',
                                 }
                                 print("===> CREATE SO: ",str(order['order_number']))
@@ -695,6 +697,7 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_financial_status':order['financial_status'],
                                     'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
                                     'gt_shopify_order_status': self._get_shopify_status(order['id']),
+                                    'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
                                     'email_partner': customer_id.email if customer_id.email  else 'No Suministrado',
                                 }
                                 print("===> CREATE SO, sale_order_manufacturing => ",str(order['order_number']))
@@ -704,7 +707,7 @@ class GTShopifyInstance(models.Model):
                         else:
                             for sale_id in sale_ids:       
                                 vals_update = {
-                                    'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]),###
+                                    'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
                                     'gt_shopify_financial_status': order['financial_status'],
                                     'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
                                     'gt_shopify_order_status': self._get_shopify_status(order['id'])
