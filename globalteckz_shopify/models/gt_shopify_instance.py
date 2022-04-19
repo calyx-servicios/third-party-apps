@@ -391,7 +391,7 @@ class GTShopifyInstance(models.Model):
             items = customer_rs['customers']
             status_id = []
             state_id = []
-            country_id = []
+            country_id = False
             address1 = ''
             address2 = ''
             city = ''
@@ -806,6 +806,7 @@ class GTShopifyInstance(models.Model):
         shopify_state_obj = self.env['gt.shopify.customer.state']
         res_state_obj = self.env['res.country.state']
         res_country_obj = self.env['res.country']
+        country_id = False
         if  'first_name' in customer:  
             name = str(customer['first_name'])  
             if 'last_name' in customer:
