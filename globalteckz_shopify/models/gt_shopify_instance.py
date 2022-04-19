@@ -558,6 +558,8 @@ class GTShopifyInstance(models.Model):
             total_order = json.loads(total_order_response.text)['count']
             total_count = 0
             
+            logger.info('Total Orders===================:  %s', total_order)
+
             if 'next' in response.links:
                 shop_url_next = response.links['next']['url']
             else:
@@ -679,6 +681,7 @@ class GTShopifyInstance(models.Model):
                                 print("===> CREATE SO: ",str(order['order_number']))
                                 sale_order = sale_obj.create(value)
                                 self.env.cr.commit()
+                                logger.info('Create Order===================:  %s', sale_order.name)
                                 
                             if product_untracked_lines:
                                 vals = {
@@ -703,6 +706,7 @@ class GTShopifyInstance(models.Model):
                                 print("===> CREATE SO, sale_order_manufacturing => ",str(order['order_number']))
                                 sale_order_manufacturing = sale_obj.create(vals)
                                 self.env.cr.commit()
+                                logger.info('Create Order===================:  %s', sale_order.name)
 
                         else:
                             for sale_id in sale_ids:       
@@ -715,6 +719,7 @@ class GTShopifyInstance(models.Model):
                                 print("===> WRITE SO => ",str(order['order_number']))
                                 sale_id.write(vals_update)
                                 self.env.cr.commit()
+                                logger.info('Update Order===================:  %s', sale_order.name)
 
                                 if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
                                     sale_id.action_confirm()
