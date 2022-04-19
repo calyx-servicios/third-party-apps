@@ -752,6 +752,7 @@ class GTShopifyInstance(models.Model):
         res_state_obj = self.env['res.country.state']
         res_country_obj = self.env['res.country']
         country_id = state_id = False
+        address1 = address2 = city = zip_code = False
 
         if 'address1' in address:
             address1 = address['address1'] 
@@ -807,6 +808,7 @@ class GTShopifyInstance(models.Model):
         res_state_obj = self.env['res.country.state']
         res_country_obj = self.env['res.country']
         country_id = state_id = False
+        address1 = address2 = city = zip_code = False
         if  'first_name' in customer:  
             name = str(customer['first_name'])  
             if 'last_name' in customer:
