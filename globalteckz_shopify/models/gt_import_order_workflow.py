@@ -54,6 +54,7 @@ class GtImportOrderWorkflow(models.Model):
     sale_journal = fields.Many2one('account.journal',default=_get_default_journal,)
     pricelist_id = fields.Many2one('product.pricelist','Pricelist')
     warehouse_id = fields.Many2one('stock.warehouse',string='Warehouse')
+    warehouse_manufacturing_id = fields.Many2one('stock.warehouse',string='Warehouse Manufacturing')
     company_id = fields.Many2one('res.company',string="Company")
     # from here the additional field is adding
     ship_expo_shopify= fields.Selection(

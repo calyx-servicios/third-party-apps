@@ -41,6 +41,7 @@
                             </group>
                             <group name="inventory" string="Inventory">
                                 <field name="warehouse_id"/>
+                                <field name="warehouse_manufacturing_id"/>
                                 <field name="company_id"/>
                             </group>
                         </group>

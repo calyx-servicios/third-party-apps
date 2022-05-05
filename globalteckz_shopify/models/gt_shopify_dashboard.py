@@ -466,7 +466,7 @@ class GTShopifyStore(models.Model):
     @api.multi
     def action_view_workflow_settings(self):
         workflow_obj = self.env['gt.import.order.workflow']
-        workflow_id = workflow_obj.search([('id','=',self.gt_worflow_id.id)])
+        workflow_id = workflow_obj.search([('id','=',self.gt_workflow_id.id)])
         imd = self.env['ir.model.data']
         action = imd.xmlid_to_object('globalteckz_shopify.action_import_order_workflow_gt')
 #        list_view_id = imd.xmlid_to_res_id('product.product_product_tree_view')
