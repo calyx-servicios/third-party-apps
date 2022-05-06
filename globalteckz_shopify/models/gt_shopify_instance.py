@@ -25,7 +25,7 @@ import json
 import datetime
 import base64
 import urllib
-from datetime import date
+from datetime import date, datetime
 import logging
 from logging import getLogger
 logger = logging.getLogger('product')
@@ -194,12 +194,14 @@ class GTShopifyInstance(models.Model):
     
     @api.multi
     def cron_execute(self):
+        _logger.info("INIT %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
         shopify_instances = self.env['gt.shopify.instance'].search([])
         for rec in shopify_instances:
             rec.gt_import_shopify_customers()
             rec.gt_import_shopify_products()
             rec.gt_import_shopify_orders()
             rec.gt_export_shopify_stock()
+        _logger.info("FINISH %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
     
     @api.multi
     def gt_export_shopify_stock(self):
