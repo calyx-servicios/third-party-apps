@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<odoo>
+	<data>
+		<template id='assets_pos_all_in_one_js_css' name='pos_all_in_one_details' inherit_id='point_of_sale.assets'>
+			<xpath expr='.' position='inside'>
+				<link rel="stylesheet" href="/pos_all_in_one/static/src/css/pos_new.css" />
+				<link rel="stylesheet" href="/pos_all_in_one/static/src/css/multi_currency_button.css"/>
+            	<script type="text/javascript" src="/pos_all_in_one/static/src/js/pos_multi_currency_button.js"></script> 
+            	<script type="text/javascript" src="/pos_all_in_one/static/src/js/pos_multi_currency_conversation.js"></script>
+            	<script type="text/javascript" src="/pos_all_in_one/static/src/js/bi_pos_payment.js"/>
+                <script type="text/javascript" src="/pos_all_in_one/static/src/js/pos_disable_payment.js"/>
+                <script type="text/javascript" src="/pos_all_in_one/static/src/js/pos_product_operation.js"/>
+                <script type="text/javascript" src="/pos_all_in_one/static/src/js/bi_pos_product_template.js"/>	
+                <link rel="stylesheet" href="/pos_all_in_one/static/src/css/bi_pos_reprint_reorder.css" />
+                <script type="text/javascript" src="/pos_all_in_one/static/src/js/bi_pos_reprint_reorder.js"/>     
+                <script type="text/javascript" src="/pos_all_in_one/static/src/js/pos_orders_list.js"/>
+				<script type="text/javascript" src="/pos_all_in_one/static/src/js/jquery-barcode.js"/>
+				<script type="text/javascript" src="/pos_all_in_one/static/src/js/pos_loyalty.js"/>
+				<script type="text/javascript" src="/pos_all_in_one/static/src/js/pos_report.js"/>
+				<link rel="stylesheet" href="/pos_all_in_one/static/src/css/pos_report.css"/>
+				<script type="text/javascript" src="/pos_all_in_one/static/src/js/bi_pos_pay_later.js"/>
+				<script type="text/javascript" src="/pos_all_in_one/static/src/js/pos_internal_transfer.js"/>
+			</xpath>
+		</template>
+	</data>
+</odoo>

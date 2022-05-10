@@ -1,0 +1,144 @@
+Date :- 22nd may 2020
+version :- 13.0.0.1
+issue solve
+--> bi_pos_payment
+	1. on registering payment by user / employee login or without login enable shows attach warning message alert.
+	2. Shows trace back on click of view orders and opens on order page after click on okay and <<cancel back button not works for going back to pos screen for that you have to refresh the page to go back to pos screen when user or employee not having payment rights, by user/employee login or without login enable. [screen shot attach]
+	3. shows attach trace back on paying invoice with or without login.
+
+--> pos_product_operations :
+
+	1. Uploaded image not saved in created or edited product.
+	2. On edit product's sale price and category don't shows it's value in textbox but if saving it without change it will remain same as before.
+	3. After Creating a product and generating its pos order attached traceback occurs at the time of closing and validating session.
+
+--> pos loyalty and rewards
+
+	1. On adding multiple redemption rule getting attached traceback error.
+	2. Not showing records in loyalty history.
+
+--> bi_pos_multi_currency
+
+	1. On click of Update amount attached traceback comes.
+
+--> pos_orders_all
+
+A. Return with barcode:
+	1.  Increase size of return qty box. When products are more and names are large this display issue occurs.[screen shot attach]
+	2. if I am entering wrong qty then in alert box needs to press Ok button multiple times.
+B. Coupon :
+	1. My coupon code apply limit is 2 but I can apply it multiple times.
+
+--> all pos reports
+
+> Sales Summary :
+	1. as per user login database it shows correct report but as per login in pos will going to see then it will shows wrong data. It is also unable to add employee in selection also. One can only select or add user only. Functioning same as base but I guess acording to module functionality it should show sales report based on login pos user.
+> Pos Payment Report : 
+	1. On Click of print Xls button it shows attached screen and on download Sales Daily Excel Report from this screen it opens report in doc format with not supported language. And on click of save button, it shows edit and create button [screenshot attach] which works nothing useful.
+	- POS Reports Configuration
+
+- pos_orders_all any features not work which methods added process_orders and create form ui.
+
+Date 8th june 2020
+module pos_all_in_one
+version 13.0.0.2
+issue solve:-
+	--> bi_pos_payment:
+		1.  shows attach odoo warning on paying an invoice with or without login.
+
+	--> bi_pos_multi_currency
+		1. Convert amount not show in payment receipt. [In selected currency when I checked Receipt in checkbox ]
+
+	--> all pos reports
+		Pos Payment Report : 
+
+		1. On Click of print Xls button it shows the attached screenshot and on download Sales Daily Excel Report from this screen it opens the report in doc format with not supported language. And on click of save button dialog box disappears, don't understand its effects.
+
+Version 13.0.0.3 : (20/08/20)
+		- Solved 'sales summary' and 'Top Selling Category summary' reports issue.
+		- Solved Category filter and  Search bar  issue in pos screen.
+		- Remove warnings and adjust custom fields view in pos config.
+		- Solve multi currency issue and update code for multi currency.
+		- Update code for loyalty.
+
+
+Date 26th oct 2020
+Version 13.0.0.4
+issue solve
+	--> if there is a product "free product" whose sale price is 0.00 then if we add it in the pos order then in the receipt the "free product" name is not printed . All the product should be printed on the receipt.
+
+Version 13.0.0.5 : (18/11/20)
+		- Solve location issue when "Current Session Warehouse" is set in pos config.
+
+Version 13.0.0.6 : (20/11/20)
+		- Made pos stock functionality compatible with pos product operation.
+		- Update code for disable payments.
+		- Add discount code in replaced Orderreceipt in pay later.
+		- Solve issue of 'base_tags' keyerror in _accumulate_amounts() method as per latest changes.
+
+26th nov 2020
+version 13.0.0.7
+issue solve:- 
+	- stock not show in template popup
+	- po file added for arabic language
+
+Version 13.0.0.8 : (03/12/20)
+		- Fixed bug of displaying stock quantity when stock location is configured as 'specific'.
+
+Date 4th dec 2020
+version 13.0.0.9
+issue solve:-
+	- display stock quantity in template product quantity.
+	- when select template product and its variant available getting warning qty out of stock , wether its must open popup also with that all warehouse and selected particular warehouse not show proper and click product if quantity not available then must generateing error but product added in orderline
+
+Date 4th dec 2020
+version 13.0.1.0
+issue solve:-
+	- po file update , where we import file given error for translation import
+
+
+Date 9th dec 2020
+version 13.0.2.0
+issue solve:-
+	- reprint receipt not work well
+	- product template module show template name on main pos screen
+
+Version 13.0.2.1 : (15/12/20)
+	- Update _validate_session() as per latest changes in base.
+
+Date 17th dec 2020
+version 13.0.2.2:
+	- I've not enabled multi currency, still I'm getting the toggle button in pos 
+	- multi currency  details show without access
+	- On Edit Product from POS it shows only 2 names in Product category field dropdown list, one is none and other is preset category. Other categories are not coming. Even on setting none in edit it's not saving it too.
+	- POS -> Product -> Edit Product -> Sale Price not showing(printing) on edit. [ SS attached ]
+	- POS -> Bag -> image of Bag is not showing.
+	- Orders -> other info -> Barcode field showing 2 times.
+	- POS -> Partial Payment -> In Partial paid order, on doing full payment generating invoice attached warning shows.
+	- POS -> Partial Payment -> With every time do partial payment loyalty point gets plus every time. And so total loyalty point gets increase with every payment and allows to redeem successfully.
+	- product operation when user select multiple product variant and update price details its not updated its given error.
+	- if product save at that time , variant display name show there, so save product everytime name update same as product variant name
+	- in report select start date before end date generate error
+
+
+date 1st feb 2021
+version:- 13.0.2.3
+issue solve:-
+	- report generation error issue solve for v13
+
+=> 13.0.2.4 : Add French, Spanish , Arabic and Dutch translation in module also improved an index.
+
+
+Version 13.0.2.5 : (05/04/21)
+		- Solve issue of product template load when "Restrict Available Product Categories" is set.
+		- Solve pos_internal_transfer load js issue.
+
+Version 13.0.2.6 : (05/04/21)
+		- Solve Backend reports printing issue for same date.
+
+
+Version 13.0.2.7 : (25-05-21)
+		- Update _process_order() method as per base.
+
+Version 13.0.2.8 : (18-01-22)
+		- Update code for barcode and import psycopg2.

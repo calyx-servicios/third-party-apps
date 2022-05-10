@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <templates id="pos_product_operations_template" inherit_id="point_of_sale.template" xml:space="preserve">
+
+        <!-- SeeAllProductsButtonWidget -->
+        <t t-name="SeeAllProductsButtonWidget" name="See All Products Button Widget">
+          <t t-if="widget.pos.config.allow_pos_product_operations">
+              <div class="control-button button confirm" id="see_product_screen" style="background-color: #7f82ac; color: #fff; font-size: 14px;">
+                <i class="fa fa-university"></i> Products 
+              </div>
+          </t>
+        </t>
+
+        <!-- SeeAllProductsScreenWidget -->
+        <t t-name="SeeAllProductsScreenWidget">
+            <div class="clientlist-screen screen">
+                <div class="screen-content">
+                    <section class="top-content">
+                        <span class='button back'>
+                            <i class='fa fa-angle-double-left'></i>
+                            Cancel
+                        </span>
+                        <span class='searchbox search-product'>
+                            <input placeholder='Search Products' />
+                            <span class='search-clear'></span>
+                        </span>
+                        <span class='searchbox'></span>
+                        <t t-if= "widget.pos.config.allow_edit_product">
+                            <span class='button new-product' style="left: 50%;margin-left: 120px;">
+                              Add Products
+                                <i class='fa fa-plus'></i>
+                            </span>
+                        </t>
+                    </section>
+                    <section class="full-content">
+                        <div class='window'>
+                            <section class='subwindow collapsed'>
+                                <div class='subwindow-container'>
+                                    <div class='subwindow-container-fix client-details-contents'>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class='subwindow'>
+                                <div class='subwindow-container'>
+                                    <div class='subwindow-container-fix touch-scrollable scrollable-y'>
+                                        <table class='client-list'>
+                                            <thead>
+                                                <tr style="background-color: #7f82ac; color: #fff;">
+                                                    <th>Product Name</th>
+                                                    <th>Product Category</th>
+                                                    <th>List Price</th>
+                                                    <th>Cost Price</th>
+                                                    <th>Barcode</th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody class='products-list-contents'>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </section>
+                    
+                </div>
+            </div>
+        </t>
+
+ <!-- ProductsLine -->
+   <t t-name="ProductsLine">
+        <tr class='products-line' t-att-data-id='product.id' style="cursor: pointer;">
+            <td><t t-esc='product.display_name' /></td>
+            <td><t t-esc='product.pos_categ_id[1]' /></td>
+            <td><t t-esc='product.lst_price' t-lang="o.partner_id.lang"/></td>
+            <td><t t-esc='product.standard_price' t-lang="o.partner_id.lang"/></td>
+            <td><t t-esc='product.barcode or "N/A"' /></td>
+        </tr>
+    </t>
+
+
+
+    <t t-name="ProductDetailsEdit">
+        <section class='client-details edit'>
+            <div class='client-picture'>
+                <t t-if='!product.id'>
+                    <i class='fa fa-camera'></i>
+                </t>
+                <t t-if='product.id'>
+                    <img t-att-src='widget.partner_icon_url(product.id)' />
+                </t>
+                <input type='file' class='image-uploader'></input>
+            </div>
+            <input class='detail client-name' name='display_name' t-att-value='product.display_name' placeholder='Name'></input>
+            <div class='edit-buttons'>
+                <div class='button undo'><i class='fa fa-undo' /></div>
+                <div class='button save'><i class='fa fa-floppy-o' /></div>
+            </div>
+            <div class='client-details-box clearfix'>
+                <div class='client-details-left'>
+                    <div class='client-detail'>
+                        <span class='label'>Product Category</span>
+                        <select class='detail client-categ-id' name='pos_categ_id'>
+                            <option value=''>None</option>
+                                <t t-foreach='widget.pos.categories' t-as='category'>
+                                    <t t-if="product">
+                                        <option t-att-value='category.id' t-att-selected="product.pos_categ_id[0] ? ((category.id === product.pos_categ_id[0]) ? true : undefined) : undefined">
+                                            <t t-esc='category.name'/>
+                                        </option>
+                                    </t>
+                                    <t t-else="">
+                                         <option t-att-value='category.id'  t-att-selected="category.pos_categ_id ? ((category.id === product.pos_categ_id[0]) ? true : undefined) : undefined">
+                                            <t t-esc='category.name'/>
+                                        </option>
+                                    </t>
+                                </t>
+                        </select>
+                    </div>
+                    
+                    <div class='client-detail'>
+                        <span class='label'>Barcode</span>
+                        <input class='detail barcode' name='barcode'    t-att-value='product.barcode || ""'></input>
+                    </div>
+
+                </div>
+                <div class='client-details-right'>
+                
+                    <div class='client-detail'>
+                        <span class='label'>Sale Price</span>
+                        <input class='detail client-address-city'   name='list_price' t-att-value='product.price_extra' placeholder='Sale Price'></input>
+                    </div>
+                    
+                    <div class='client-detail'>
+                        <span class='label'>Cost Price</span>
+                        <input class='detail client-price'  name='price'  t-att-value='product.standard_price || ""'></input>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </t>
+    
+    
+   <!-- ProductDetails -->
+   <t t-name="ProductDetails">
+        <section class='client-details'>
+            <div class='client-picture'>
+                <img t-att-src='widget.partner_icon_url(product.id)' alt="product logo"/>
+            </div>
+            <div class='client-name'>
+                <t t-esc='product.display_name'/>
+            </div>
+            <t t-if= "widget.pos.config.allow_edit_product">
+                <div class='edit-buttons'>
+                    <div class='button edit'><i class='fa fa-pencil-square' /></div>
+                </div>
+            </t>
+                        
+            <div style="width: 100%;height: 220px;overflow: scroll;">
+            <div class='client-details-box clearfix'>
+                <div class='client-details-left'>
+                    <div class='client-detail'>
+                        <span class='label' style="width:135px;">Product Category</span>
+                        <t>
+                            <span class='detail client-label'>
+                                <t t-esc='product.pos_categ_id[1]' />
+                            </span>
+                        </t>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label' style="width:105px;">Barcode</span>
+                        <t>
+                            <span class='detail client-label'>
+                                <t t-esc='product.barcode or "N/A"' />
+                            </span>
+                        </t>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label' style="width:105px;">Customer Taxes</span>
+                        <t t-if = "widget.pos.taxes_by_id[product.taxes_id]">
+                            <span class='detail client-label'>
+                                <t t-esc='widget.pos.taxes_by_id[product.taxes_id].name ' />
+                            </span>
+                        </t>
+                        <t t-else="">
+                            <span class='detail client-label'>
+                                <t t-esc='"N/A" ' />
+                            </span>
+                        </t>
+                    </div>
+                </div>
+                <div class='client-details-right'>
+                    <div class='client-detail'>
+                        <span class='label' style="width:105px;">Sale Price</span>
+                        <span class='client-type'>
+                            <t t-esc='product.lst_price' />
+                        </span>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label' style="width:105px;">Cost Price</span>
+                        <t>
+                            <span class='detail client-label'>
+                                <t t-esc='product.standard_price' />
+                            </span>
+                        </t>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </section>
+    </t>    
+
+     
+    
+  	</templates>
+  	
+  	

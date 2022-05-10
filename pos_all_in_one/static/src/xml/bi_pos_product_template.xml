@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<template>
+
+
+	<t t-name="ProductTemplatePopupWidget">
+		<div class="modal-dialog">
+			<div class="popup popup-confirm" style="height: 450px;">
+				<p class="title" style="background-color: #7f82ac; color: #fff;">Products Variants</p>
+				<p style="color: #0075AC;">Select Your Variants</p>
+				<div class="body" style="height: 300px; overflow  : auto">
+						<span class="placeholder-ProductTemplateListWidget"/>
+				</div>
+				<div class="footer" style="background-color: #7f82ac; color: #fff; bottom:-43px;">
+					<div id="cancel" class="button cancel" style="color: #131212; background: white;">
+						Cancel 
+					</div>
+				</div>
+			</div>
+		</div>
+	</t>
+
+	<t t-name="ProductTemplate">
+		<article class='product' t-att-data-product-id="product.id" tabindex="0" t-attf-aria-labelledby="article_product_#{product.id}">
+			<div class="product-img">
+				<img t-att-src='image_url' alt="Product image"/>
+				<span class="price-tag">
+					<t t-esc="product.product_variant_count"/> Variants
+				</span>
+			</div>
+			<div class="product-name" t-attf-id="article_product_#{product.id}">
+				<t t-if = "product.product_variant_count">
+					<t t-esc="product.template_name"/>
+				</t>
+				<t t-else="">
+					<t t-esc="product.display_name"/>
+				</t>
+			</div>
+		</article>
+	</t>
+
+	<t t-name="ProductTemplateListWidget">
+		<div class='productt-list-container'>
+			<div class="productt-list-scroller touch-scrollable  scrollable-y">
+				<div class="productt-list">
+				</div>
+			</div>
+			<span class="placeholder-ScrollbarWidget" />
+		</div>
+	</t>
+
+	<t t-name="ProductProduct">
+		<article class='product' t-att-data-product-id="product.id" tabindex="0" t-attf-aria-labelledby="article_product_#{product.id}">
+			<div class="product-img">
+				<img t-att-src='image_url' alt="Product image"/>
+			<!-- Display Stock in POS -->
+			<t t-if="widget.pos.config.pos_display_stock">
+				<!-- If Stock Type is Qty on hand -->
+				<t t-if="widget.pos.config.pos_stock_type == 'onhand'">
+					<span class="price-tag" id="stockqty" style="right: 90px;">
+						<t t-esc="product.bi_on_hand"/>
+					</span>
+				</t>
+				
+				<!-- If Stock Type is Incoming Qty -->
+				<t t-if="widget.pos.config.pos_stock_type == 'incoming'">
+					<span class="price-tag" style="right: 90px;">
+						<t t-esc="product.incoming_qty"/>
+					</span>
+				</t>
+				
+				<!-- If Stock Type is Outgoing Qty -->
+				<t t-if="widget.pos.config.pos_stock_type == 'outgoing'">
+					<span class="price-tag" style="right: 90px;">
+						<t t-esc="product.outgoing_qty"/>
+					</span>
+				</t>
+				
+				<!-- If Stock Type is Qty Available -->
+				<t t-if="widget.pos.config.pos_stock_type == 'available'">
+					<span class="price-tag" id="availqty" style="right: 90px;">
+						<t t-if="widget.pos.config.show_stock_location == 'specific'">
+							<t t-esc="product.bi_available"/>
+						</t>
+						<t t-if="widget.pos.config.show_stock_location == 'all'">
+							<t t-esc="product.virtual_available"/>
+						</t>
+					</span>
+				</t>
+				
+			</t>
+				<span class="price-tag">
+					<t t-esc="widget.format_currency(product.get_price(pricelist, 1),'Product Price')"/>
+				</span>
+			</div>
+			<div class="product-name" t-attf-id="article_product_#{product.id}">
+				<t t-esc="product.display_name"/>
+			</div>
+		</article>
+	</t>
+
+</template>
