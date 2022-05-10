@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="account_internal_taxes_form_view_inherit" model="ir.ui.view">
+            <field name="name">account.tax.internal.taxes.form</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[1]" position="before">
+					<page string="Internal Taxes" name="internal_taxes" attrs="{'invisible':['|',('type_tax_use', '!=', 'sale'),('amount_type','not in', ('internal_taxes', 'ad_emergency', 'fet'))]}">
+						<group name="internal_taxes">
+							<group name="group_internal_taxes" string="Price of internal taxes">
+								<field name="sale_price_afip"/>
+								<field name="production_cost"/>
+								<field name="wholesale_price"/>
+								<field name="retail_price"/>
+								<field name="fixed_fet"/>
+							</group>
+							<group name="group_internal_taxes" string="Price with tax of internal taxes">
+								<group name="group_internal_taxes_wholesale">
+									<field name="wholesale_net_sale_price"/>
+									<field name="wholesale_iva"/>
+									<field name="wholesale_internal"/>
+									<field name="wholesale_ad_emergency"/>
+									<field name="wholesale_fet"/>
+									<field name="wholesale_total_sale_price_taxes"/>
+								</group>
+								<group name="group_internal_taxes_retail">
+									<field name="retail_net_sale_price"/>
+									<field name="retail_iva"/>
+									<field name="retail_internal"/>
+									<field name="retail_ad_emergency"/>
+									<field name="retail_fet"/>
+									<field name="retail_total_sale_price_taxes"/>
+								</group>
+							</group>
+							<group name="group_internal_taxes" string="Calculation of internal taxes" colspan="6">
+								<group name="group_internal_taxes_internal" string="Internal">
+									<field name="internal_tax_base"/>
+									<field name="internal_aliquot"/>
+									<field name="internal_minimum"/>
+									<field name="internal_determined_tax"/>
+								</group>
+								<group name="group_internal_taxes_ad_emergency" string="Ad. Emergency">
+									<field name="ad_emergency_tax_base"/>
+									<field name="ad_emergency_aliquot"/>
+									<field name="ad_emergency_determined_tax"/>
+								</group>
+								<group name="group_internal_taxes_fet" string="FET">
+									<field name="fet_tax_base"/>
+									<field name="fet_determined_tax"/>
+								</group>
+								<group name="group_internal_taxes_iva" string="IVA">
+									<field name="iva_tax_base"/>
+									<field name="iva_aliquot" readonly="1"/>
+									<field name="iva_determined_tax"/>
+								</group>
+							</group>
+						</group>
+					</page>
+				</xpath>
+            </field>
+        </record>
+	</data>
+</odoo>
