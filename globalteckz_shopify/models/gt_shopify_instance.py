@@ -576,6 +576,7 @@ class GTShopifyInstance(models.Model):
                 print("==> total_count: ",total_count)
                 print("==> total_order: ",total_order)
                 for order in items:
+
                     payment_id = []
                     order_confirm = []
                     order_stauts_url = ''
@@ -635,6 +636,7 @@ class GTShopifyInstance(models.Model):
                                                     self.env.cr.commit()
                                                 tax_list.append(tax_id.id)
                                         
+
                                         if product_id:
                                             if product_id.gt_product_inventory_tracked:
                                                 product_lines.append((0,0,{
@@ -657,6 +659,29 @@ class GTShopifyInstance(models.Model):
                                                 }))
                                         else:
                                             logger.info('No Existe El Producto ===================:  %s', lines['product_id'])
+                        if 'total_shipping_price_set' in order and self.gt_workflow_id.ship_product:
+                            if 'presentment_money' in order['total_shipping_price_set']:
+                                amount_shipping = float(order['total_shipping_price_set']['presentment_money']['amount'])
+                                if amount_shipping > 0 :
+                                    product_shipping = self.gt_workflow_id.ship_product
+                                    if product_lines:
+                                        product_lines.append((0,0,{
+                                                    'product_id': product_shipping.id or False,
+                                                    'name': product_shipping.name or 'Envio',
+                                                    'template_id': product_shipping.product_tmpl_id.id or False,
+                                                    'tax_id': [(6, 0,tax_list)] or False,
+                                                    'price_unit': amount_shipping,
+                                                    'product_uom_qty': 1.0,
+                                                }))
+                                    if product_untracked_lines:
+                                        product_untracked_lines.append((0,0,{
+                                                    'product_id': product_shipping.id,
+                                                    'name': product_shipping.name or 'Envio',
+                                                    'template_id': product_shipping.product_tmpl_id.id,
+                                                    'tax_id': [(6, 0,tax_list)],
+                                                    'price_unit': amount_shipping,
+                                                    'product_uom_qty': 1.0,
+                                                }))
 
                         # Como la SO puede contener productos con seguimiento de inventario, o no.
                         # Se crearan 2 ordenes de venta para utilizar almacenes diferentes.
@@ -779,7 +804,7 @@ class GTShopifyInstance(models.Model):
             if 'zip' in address:
                 zip_code = str(address['zip']) or '' ###
             if 'country' in address and (str(address['country']) != 'None'):
-                country = res_country_obj.search([('name','ilike',str(address['country']))])
+                country = res_country_obj.search(['|', ('name','ilike',str(address['country'])),('code', '=', str(address['country_code']))])
                 if country:
                     country_id = country.id
                 else:
@@ -790,7 +815,7 @@ class GTShopifyInstance(models.Model):
                     country_id = res_country_obj.create(country_value).id
                     self.env.cr.commit()
             if 'province' in address and (str(address['province']) != 'None'):
-                state = res_state_obj.search([('name','=',str(address['province'])),('country_id','=',country_id)])
+                state = res_state_obj.search([('name','=',str(address['province'])),('country_id','=',country_id)]) or res_state_obj.search([('code','=',str(address['province_code'])),('country_id','=',country_id)])
                 if state:
                     state_id = state.id
                 else:
