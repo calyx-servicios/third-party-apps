@@ -623,18 +623,20 @@ class GTShopifyInstance(models.Model):
                                             if product:
                                                 product_id = product
 
-                                        if 'tax_lines' in lines:
-                                            ta_line = lines['tax_lines']
-                                            tax_list = []
-                                            for tax_line in ta_line: 
-                                                tax = tax_obj.search([('name','=',str(tax_line['title'])),('amount','=',tax_line['rate'] * 100),('type_tax_use','=','sale')])
-                                                if tax:
-                                                    tax_id = tax
-                                                else:
-                                                    print("===> POR CREAR TAX: ",tax_line['title'])
-                                                    tax_id = tax_obj.create({'name':tax_line['title'],'amount':tax_line['rate'] * 100,'type_tax_use':'sale'})
-                                                    self.env.cr.commit()
-                                                tax_list.append(tax_id.id)
+                                        tax_list = []
+                                        # Se comenta bloque de codigo para no importar impuestos en las lineas de pedido
+                                        # if 'tax_lines' in lines:
+                                        #     ta_line = lines['tax_lines']
+                                        #     tax_list = []
+                                        #     for tax_line in ta_line: 
+                                        #         tax = tax_obj.search([('name','=',str(tax_line['title'])),('amount','=',tax_line['rate'] * 100),('type_tax_use','=','sale')])
+                                        #         if tax:
+                                        #             tax_id = tax
+                                        #         else:
+                                        #             print("===> POR CREAR TAX: ",tax_line['title'])
+                                        #             tax_id = tax_obj.create({'name':tax_line['title'],'amount':tax_line['rate'] * 100,'type_tax_use':'sale'})
+                                        #             self.env.cr.commit()
+                                        #         tax_list.append(tax_id.id)
                                         
 
                                         if product_id:
@@ -643,7 +645,8 @@ class GTShopifyInstance(models.Model):
                                                     'product_id': product_id.id or False,
                                                     'name': product_id.name or 'Producto Sin Nombre',###,###
                                                     'template_id': product_id.product_tmpl_id.id or False,
-                                                    'variants_status_ok':True,'tax_id': [(6, 0,tax_list)] or False,
+                                                    'variants_status_ok':True,
+                                                    # 'tax_id': [(6, 0,tax_list)] or False,
                                                     'price_unit':lines['price'],
                                                     'product_uom_qty': lines['quantity'],
                                                 }))
@@ -653,7 +656,8 @@ class GTShopifyInstance(models.Model):
                                                     'product_id': product_id.id,
                                                     'name': product_id.name or 'Producto Sin Nombre',###
                                                     'template_id': product_id.product_tmpl_id.id,###
-                                                    'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],###
+                                                    'variants_status_ok':True,
+                                                    # 'tax_id': [(6, 0,tax_list)],
                                                     'price_unit':lines['price'],
                                                     'product_uom_qty': lines['quantity'],
                                                 }))
@@ -667,18 +671,18 @@ class GTShopifyInstance(models.Model):
                                     if product_lines:
                                         product_lines.append((0,0,{
                                                     'product_id': product_shipping.id or False,
-                                                    'name': product_shipping.name or 'Envio',
+                                                    'name': order['shipping_lines'][0]['title'] or 'Envio',
                                                     'template_id': product_shipping.product_tmpl_id.id or False,
-                                                    'tax_id': [(6, 0,tax_list)] or False,
+                                                    # 'tax_id': [(6, 0,tax_list)] or False,
                                                     'price_unit': amount_shipping,
                                                     'product_uom_qty': 1.0,
                                                 }))
                                     if product_untracked_lines:
                                         product_untracked_lines.append((0,0,{
                                                     'product_id': product_shipping.id,
-                                                    'name': product_shipping.name or 'Envio',
+                                                    'name': order['shipping_lines'][0]['title'] or 'Envio',
                                                     'template_id': product_shipping.product_tmpl_id.id,
-                                                    'tax_id': [(6, 0,tax_list)],
+                                                    # 'tax_id': [(6, 0,tax_list)],
                                                     'price_unit': amount_shipping,
                                                     'product_uom_qty': 1.0,
                                                 }))
