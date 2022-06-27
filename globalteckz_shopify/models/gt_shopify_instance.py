@@ -663,10 +663,11 @@ class GTShopifyInstance(models.Model):
                                                 }))
                                         else:
                                             logger.info('No Existe El Producto ===================:  %s', lines['product_id'])
+                        
                         if 'total_shipping_price_set' in order and self.gt_workflow_id.ship_product:
                             if 'presentment_money' in order['total_shipping_price_set']:
                                 amount_shipping = float(order['total_shipping_price_set']['presentment_money']['amount'])
-                                if amount_shipping > 0 :
+                                if 'shipping_lines' in order:
                                     product_shipping = self.gt_workflow_id.ship_product
                                     if product_lines:
                                         product_lines.append((0,0,{
