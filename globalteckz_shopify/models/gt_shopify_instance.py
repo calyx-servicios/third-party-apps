@@ -663,16 +663,21 @@ class GTShopifyInstance(models.Model):
                                                 }))
                                         else:
                                             logger.info('No Existe El Producto ===================:  %s', lines['product_id'])
-                        
+                        # import wdb
+                        # wdb.set_trace()
+            
                         if 'total_shipping_price_set' in order and self.gt_workflow_id.ship_product:
                             if 'presentment_money' in order['total_shipping_price_set']:
                                 amount_shipping = float(order['total_shipping_price_set']['presentment_money']['amount'])
                                 if 'shipping_lines' in order:
                                     product_shipping = self.gt_workflow_id.ship_product
+                                    shipping_name = False
+                                    if len(order['shipping_lines']) > 0:
+                                        shipping_name = order['shipping_lines'][0]['title']
                                     if product_lines:
                                         product_lines.append((0,0,{
                                                     'product_id': product_shipping.id or False,
-                                                    'name': order['shipping_lines'][0]['title'] or 'Envio',
+                                                    'name': shipping_name or 'Envio',
                                                     'template_id': product_shipping.product_tmpl_id.id or False,
                                                     # 'tax_id': [(6, 0,tax_list)] or False,
                                                     'price_unit': amount_shipping,
@@ -681,7 +686,7 @@ class GTShopifyInstance(models.Model):
                                     if product_untracked_lines:
                                         product_untracked_lines.append((0,0,{
                                                     'product_id': product_shipping.id,
-                                                    'name': order['shipping_lines'][0]['title'] or 'Envio',
+                                                    'name': shipping_name or 'Envio',
                                                     'template_id': product_shipping.product_tmpl_id.id,
                                                     # 'tax_id': [(6, 0,tax_list)],
                                                     'price_unit': amount_shipping,
@@ -785,7 +790,7 @@ class GTShopifyInstance(models.Model):
                     logger.info('Orders Count Response ===================:  %s', len(items))
                     total_count
                 
-        except Exception as exc:
+        except Exception as exc: 
             logger.error('Exception===================:  %s', exc)
             log_id.write({'description': exc}) 
         return True
