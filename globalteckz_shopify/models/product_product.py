@@ -122,14 +122,19 @@ class ProductProduct(models.Model):
     @api.multi
     def _is_inventory_tracking(self, shopify_instance_id):
         
+        inventory_tracking = False
         shopify_url = str(shopify_instance_id.gt_location)
         api_key = str(shopify_instance_id.gt_api_key)
         api_pass = str(shopify_instance_id.gt_password)
         shop_url = shopify_url + '/admin/api/2021-01/inventory_items/'+ str(self.gt_product_inventory_id)+ '.json'
         response = requests.get( shop_url,auth=(api_key,api_pass))
         product_rs = json.loads(response.text)
+        
+        if 'inventory_item' in product_rs:
+            if 'tracked' in product_rs['inventory_item']:
+                inventory_tracking = product_rs['inventory_item']['tracked']
 
-        return product_rs['inventory_item']['tracked']
+        return inventory_tracking
     
 class GtInventoryPolicy(models.Model):
     _name = 'gt.inventory.policy'
