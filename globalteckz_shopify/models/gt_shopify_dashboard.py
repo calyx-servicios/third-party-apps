@@ -1,18 +1,11 @@
-import json
-#from openerp import SUPERUSER_ID
-from odoo import api, fields, models, _
-#import openerp.addons.decimal_precision as dp
-from datetime import datetime
-#from openerp.exceptions import Warning
-import time
+from odoo import api, fields, models
+import json 
 
 class GTShopifyStore(models.Model):
     _inherit = 'gt.shopify.instance'
     _description = "Shopify Instance Dashboard view"
-    # _order = 'sequence'
     
     shopify_kanban_instance = fields.Text(compute='_shopify_kanban_instace')
-
     
     @api.one
     def _shopify_kanban_instace(self):
@@ -22,8 +15,6 @@ class GTShopifyStore(models.Model):
         product_obj = self.env['product.template']
         product_product_obj = self.env['product.product']
         log_obj = self.env['shopify.log']
-        #shop_obj = self.env['sale.shop']
-        #shop_id  = shop_obj.search([('prestashop_instance_id','=',self.id)])
         all_order_ids = order_obj.search([('gt_shopify_instance_id','=',self.id)])
         pending_order_ids = order_obj.search([('gt_shopify_instance_id','=',self.id),('gt_shopify_order','!=',False),('state','!=','done')])
         complete_order_ids = order_obj.search([('gt_shopify_instance_id','=',self.id),('gt_shopify_order','!=',False),('state','=','done')])
@@ -36,7 +27,7 @@ class GTShopifyStore(models.Model):
         draft_invoice_ids = invoice_obj.search([('origin', 'in', origin_list),('state','=','draft')])
         open_invoice_ids = invoice_obj.search([('origin', 'in', origin_list),('state','=','open')])
         paid_invoice_ids = invoice_obj.search([('origin', 'in', origin_list),('state','=','paid')])
-#        
+    
         waiting_availability_stock_ids = stock_obj.search([('origin', 'in', origin_list),('state','=', 'confirmed')])
         available_stock_ids = stock_obj.search([('origin', 'in', origin_list),('state','=', 'assigned')])
         complete_stock_ids = stock_obj.search([('origin', 'in', origin_list),('state','=','done')])
@@ -45,26 +36,23 @@ class GTShopifyStore(models.Model):
         product_variant_exported = product_product_obj.search([('gt_shopify_instance_id', '=', self.id),('gt_shopify_product','=',True),('gt_shopify_exported','=',True)])
         product_variant_not_exported = product_product_obj.search([('gt_shopify_instance_id', '=', self.id),('gt_shopify_product','=',True),('gt_shopify_exported','=',False)])
         shopify_logs = log_obj.search([('gt_shopify_instance_id', '=', self.id)])
-        shopify_webservices ={
-
-        'all_order': len(all_order_ids),
-        'pending_order': len(pending_order_ids),
-        'complete_order': len(complete_order_ids),
-        'draft_order': len(draft_order_ids),
-        'cancel_order': len(cancel_order_ids),
-        'draft_invoice': len(draft_invoice_ids),
-        'open_invoice': len(open_invoice_ids),
-        'paid_invoice': len(paid_invoice_ids),
-        'waiting_availability_stock': len(waiting_availability_stock_ids),
-        'available_stock': len(available_stock_ids),
-        'complete_stock': len(complete_stock_ids),
-        'product_template_exported' : len(product_template_exported_ids),
-        'product_template_not_exported' : len(product_template_not_exported),
-        'product_variant_exported' : len(product_variant_exported),
-        'product_variant_not_exported' : len(product_variant_not_exported),
-        'shopify_logs' : len(shopify_logs),
-#                 'late_delivey':late_delivey_ids,
-#                 'back_order': len(back_order_ids),
+        shopify_webservices = {
+            'all_order': len(all_order_ids),
+            'pending_order': len(pending_order_ids),
+            'complete_order': len(complete_order_ids),
+            'draft_order': len(draft_order_ids),
+            'cancel_order': len(cancel_order_ids),
+            'draft_invoice': len(draft_invoice_ids),
+            'open_invoice': len(open_invoice_ids),
+            'paid_invoice': len(paid_invoice_ids),
+            'waiting_availability_stock': len(waiting_availability_stock_ids),
+            'available_stock': len(available_stock_ids),
+            'complete_stock': len(complete_stock_ids),
+            'product_template_exported' : len(product_template_exported_ids),
+            'product_template_not_exported' : len(product_template_not_exported),
+            'product_variant_exported' : len(product_variant_exported),
+            'product_variant_not_exported' : len(product_variant_not_exported),
+            'shopify_logs' : len(shopify_logs),
         }
         self.shopify_kanban_instance = json.dumps(shopify_webservices)
 
@@ -137,9 +125,6 @@ class GTShopifyStore(models.Model):
         }
         if len(order_id) >= 1:
             result['domain'] = "[('id','in',%s)]" % order_id.ids
-#         elif len(order_id) == 1:
-#             result['views'] = [(form_view_id, 'form')]
-#             result['res_id'] = order_id.ids[0]
         else:
             result = {'type': 'ir.actions.act_window_close'}
         return result
@@ -191,7 +176,6 @@ class GTShopifyStore(models.Model):
         else:
             result = {'type': 'ir.actions.act_window_close'}
         return result
-
     
     @api.multi
     def action_view_draft_invoice(self):
@@ -338,7 +322,6 @@ class GTShopifyStore(models.Model):
 
     @api.multi
     def action_view_complete_stock(self):
-
         order_obj = self.env['sale.order']
         stock_obj = self.env['stock.picking']
         order_id = order_obj.search([('gt_shopify_instance_id','=',self.id),('gt_shopify_order','!=',False)])
@@ -365,7 +348,6 @@ class GTShopifyStore(models.Model):
             result = {'type': 'ir.actions.act_window_close'}
         return result
     
-    
     @api.multi
     def action_view_product_template_exported(self):
         product_obj = self.env['product.template']
@@ -382,7 +364,6 @@ class GTShopifyStore(models.Model):
             'target': action.target,
             'context': action.context,
             'res_model': action.res_model,
-            
         }
         if len(product_id) >= 1:
             result['domain'] = "[('id','in',%s)]" % product_id.ids
@@ -407,7 +388,6 @@ class GTShopifyStore(models.Model):
             'target': action.target,
             'context': action.context,
             'res_model': action.res_model,
-            
         }
         if len(product_id) >= 1:
             result['domain'] = "[('id','in',%s)]" % product_id.ids
@@ -431,7 +411,6 @@ class GTShopifyStore(models.Model):
             'target': action.target,
             'context': action.context,
             'res_model': action.res_model,
-            
         }
         if len(product_id) >= 1:
             result['domain'] = "[('id','in',%s)]" % product_id.ids
@@ -455,7 +434,6 @@ class GTShopifyStore(models.Model):
             'target': action.target,
             'context': action.context,
             'res_model': action.res_model,
-            
         }
         if len(product_id) >= 1:
             result['domain'] = "[('id','in',%s)]" % product_id.ids
@@ -469,7 +447,6 @@ class GTShopifyStore(models.Model):
         workflow_id = workflow_obj.search([('id','=',self.gt_workflow_id.id)])
         imd = self.env['ir.model.data']
         action = imd.xmlid_to_object('globalteckz_shopify.action_import_order_workflow_gt')
-#        list_view_id = imd.xmlid_to_res_id('product.product_product_tree_view')
         form_view_id = imd.xmlid_to_res_id('globalteckz_shopify.gt_import_order_workflow_form_view')
         result = {
             'name': action.name,
@@ -479,14 +456,12 @@ class GTShopifyStore(models.Model):
             'target': action.target,
             'context': action.context,
             'res_model': action.res_model,
-            
         }
         if len(workflow_id) == 1:
             result['domain'] = "[('id','in',%s)]" % workflow_id.ids
         else:
             result = {'type': 'ir.actions.act_window_close'}
         return result
-    
     
     @api.multi
     def action_view_shopify_logs(self):
@@ -504,10 +479,10 @@ class GTShopifyStore(models.Model):
             'target': action.target,
             'context': action.context,
             'res_model': action.res_model,
-            
         }
         if len(log_ids) >= 1:
             result['domain'] = "[('id','in',%s)]" % log_ids.ids
         else:
             result = {'type': 'ir.actions.act_window_close'}
         return result
+
