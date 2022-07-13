@@ -19,7 +19,7 @@
 ###############################################################################
 
 
-from odoo import fields,models
+from odoo import fields, models
 
 
 class GtProductPhoto(models.Model):
@@ -40,3 +40,4 @@ class GtProductPhoto(models.Model):
     
     
 GtProductPhoto()
+

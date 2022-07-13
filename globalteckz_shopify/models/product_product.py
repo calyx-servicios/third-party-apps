@@ -19,16 +19,15 @@
 ###############################################################################
 
 
-from odoo import fields,api,models
-from odoo.exceptions import UserError, ValidationError
-import logging
-import requests
-import json
+from odoo import fields, api, models
+from odoo.exceptions import ValidationError
+import logging, requests, json
+
 logger = logging.getLogger('product')
+
 
 class ProductProduct(models.Model):
     _inherit='product.product'
-    
     
     gt_requires_shipping = fields.Boolean(string='Requires Shipping')
     gt_product_id = fields.Char(string='Product ID')
@@ -57,7 +56,6 @@ class ProductProduct(models.Model):
         for store in stores:
             if store.gt_shopify_instance_id.id == self.product_tmpl_id.gt_shopify_instance_id.id:
                 return store.primary_stock_location
-
 
     @api.multi
     def update_variant(self,products_response,instance,log_id):
@@ -113,7 +111,6 @@ class ProductProduct(models.Model):
             self.write(vals)
 
         except Exception as exc:
-            logger.error('Exception===================:  %s', exc)
             log_line_obj.create({'name':'Create Product Template','description':exc,'create_date': fields.date.today(),
                                       'shopify_log_id':log_id.id})
             log_id.write({'description': 'Something went wrong'}) 
@@ -121,7 +118,6 @@ class ProductProduct(models.Model):
     
     @api.multi
     def _is_inventory_tracking(self, shopify_instance_id):
-        
         inventory_tracking = False
         shopify_url = str(shopify_instance_id.gt_location)
         api_key = str(shopify_instance_id.gt_api_key)
@@ -135,13 +131,13 @@ class ProductProduct(models.Model):
                 inventory_tracking = product_rs['inventory_item']['tracked']
 
         return inventory_tracking
-    
+
+
 class GtInventoryPolicy(models.Model):
     _name = 'gt.inventory.policy'
     
     name = fields.Char(string='Inventory Policy')
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance')
-    
     
     
 class GtInventoryManagement(models.Model):
@@ -156,9 +152,4 @@ class GtFulfillmentService(models.Model):
     
     name = fields.Char(string='Fulfillment Service')
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance')
-    
-    
-    
-    
-    
-    
+
