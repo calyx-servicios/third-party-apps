@@ -21,9 +21,7 @@
 
 from odoo import fields, api, models
 from odoo.exceptions import ValidationError
-import logging, requests, json
-
-logger = logging.getLogger('product')
+import requests, json
 
 
 class ProductProduct(models.Model):
@@ -111,7 +109,7 @@ class ProductProduct(models.Model):
             self.write(vals)
 
         except Exception as exc:
-            log_line_obj.create({'name':'Create Product Template','description':exc,'create_date': fields.date.today(),
+            log_line_obj.create({'name':'Create Product Template','description':exc,'status':'ERROR','create_date': fields.date.today(),
                                       'shopify_log_id':log_id.id})
             log_id.write({'description': 'Something went wrong'}) 
         return True

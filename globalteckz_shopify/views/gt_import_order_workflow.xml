@@ -37,12 +37,12 @@
                             <group name="accounts" string="Accounts">
                                 <field name="sale_journal" />
                                 <field name="pricelist_id" />
-                                <field name="stock_location_id"/>
+                                <field name="stock_location_id" required="1"/>
                             </group>
                             <group name="inventory" string="Inventory">
-                                <field name="warehouse_id"/>
-                                <field name="warehouse_manufacturing_id"/>
-                                <field name="company_id"/>
+                                <field name="warehouse_id" required="1"/>
+                                <field name="warehouse_manufacturing_id" required="1"/>
+                                <field name="company_id" required="1"/>
                             </group>
                         </group>
                     </sheet>
