@@ -4,8 +4,8 @@
         <field name="name">Shopify Cron</field>
         <field eval="True" name="active"/>
         <field name="user_id" ref="base.user_root"/>
-        <field name="interval_number">15</field>
-        <field name="interval_type">minutes</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
         <field name="numbercall">-1</field>
         <field ref="model_gt_shopify_instance" name="model_id"/>
         <field name="state">code</field>
@@ -18,8 +18,8 @@
         <field name="name">Shopify Cron Products</field>
         <field eval="True" name="active"/>
         <field name="user_id" ref="base.user_root"/>
-        <field name="interval_number">15</field>
-        <field name="interval_type">minutes</field>
+        <field name="interval_number">12</field>
+        <field name="interval_type">hours</field>
         <field name="numbercall">-1</field>
         <field ref="model_gt_shopify_instance" name="model_id"/>
         <field name="state">code</field>

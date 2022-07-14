@@ -21,9 +21,7 @@
 from odoo import fields, api, models
 from datetime import date
 from odoo.exceptions import ValidationError
-import requests, json, base64, urllib, logging
-
-logger = logging.getLogger('product')
+import requests, json, base64, urllib
 
 
 class ProductTemplate(models.Model):
@@ -49,8 +47,8 @@ class ProductTemplate(models.Model):
         api_key = str(shopify_instance_id.gt_api_key)
         api_pass = str(shopify_instance_id.gt_password)
         shop_url = shopify_url + 'admin/products/' + str(self.gt_product_id) + '.json'
-        response = requests.get( shop_url,auth=(api_key,api_pass))
-        product_rs=json.loads(response.text)
+        response = requests.get(shop_url,auth=(api_key,api_pass))
+        product_rs = json.loads(response.text)
         product_items = product_rs['product']
         product_obj = self.env['product.product']
 
@@ -106,9 +104,9 @@ class ProductTemplate(models.Model):
         api_key = str(instance.gt_api_key)
         api_pass = str(instance.gt_password)
         shop_url = shopify_url + 'admin/api/2021-01/products.json?status=active&ids=' + str(self.gt_product_id)
-        response = requests.get( shop_url,auth=(api_key,api_pass))
-        product_rs=json.loads(response.text)
-        if len(product_rs['products'])>0:
+        response = requests.get(shop_url,auth=(api_key,api_pass))
+        product_rs = json.loads(response.text)
+        if len(product_rs['products']) > 0:
             return True
         else:
             return False
@@ -158,7 +156,6 @@ class ProductTemplate(models.Model):
                             tags_id = tags_obj.create({'name':str(tags),'gt_shopify_instance_id':instance.id})
                             tags_lst.append(tags_id.id)
             variant = []
-            
             def _variants(self):
                 if len(self) == 1:
                     return len(self[0]['values'])
@@ -271,7 +268,7 @@ class ProductTemplate(models.Model):
                         product_product.update_variant(variant,instance,log_id)
 
         except Exception as exc:
-            log_line_obj.create({'name':'Create Product Template','description':exc,'create_date':date.today(),
+            log_line_obj.create({'name':'Create Product Template','description':exc,'status':'ERROR','create_date':date.today(),
                                       'shopify_log_id':log_id.id})
             log_id.write({'description': 'Something went wrong'}) 
         return True
@@ -283,6 +280,8 @@ class ProductTemplate(models.Model):
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
         product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('product_tmpl_id.id', '=', self.id )])
+        result = 200
+        list_vals = []
         for products in product_ids:
             qty_available = self.env['stock.quant'].search([('product_id','=',products.id),('location_id','=',self.gt_shopify_instance_id.gt_workflow_id.stock_location_id.id)])
             quantity = qty_available.quantity - qty_available.reserved_quantity
@@ -294,7 +293,11 @@ class ProductTemplate(models.Model):
                 }
                 shop_url = shopify_url + 'admin/api/2021-01/inventory_levels/set.json'
                 response = requests.post(shop_url,auth=(api_key,api_pass),data=vals)
-
+                if response.status_code != 200:
+                    result = response.status_code
+                    list_vals.append(vals)
+        return result, list_vals
+        
     @api.multi
     def update_product_shopify(self):
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
@@ -342,7 +345,7 @@ class ProductTemplate(models.Model):
 
     @api.multi
     def update_product_odoo(self):
-        log_id = self.env['shopify.log.details']
+        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Update Product Odoo','description': 'Successfull','gt_shopify_instance_id': self.gt_shopify_instance_id.id})
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
@@ -353,7 +356,8 @@ class ProductTemplate(models.Model):
 
     @api.multi
     def update_images_shopify(self):
-        log_id = self.env['shopify.log.details']
+        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Update Images Shopify','description': 'Successfull','gt_shopify_instance_id': self.gt_shopify_instance_id.id})
+        log_line_obj = self.env['shopify.log.details']
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
@@ -364,7 +368,6 @@ class ProductTemplate(models.Model):
         product_items = product_rs['images']
         photo_obj = self.env['gt.product.photo']
         product_obj = self.env['product.product']
-        log_line_obj = self.env['shopify.log.details']
 
         for image in product_items:
             try:
@@ -413,9 +416,6 @@ class ProductTemplate(models.Model):
 
     @api.multi
     def gt_export_shopify_product(self):
-        log_obj = self.env['shopify.log']
-        log_line_obj = self.env['shopify.log.details']
-        product_tmpl_obj = self.env['product.template']
         product_obj = self.env['product.product']
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
@@ -518,7 +518,7 @@ class ProductTemplate(models.Model):
                     response = requests.get(shop_url,auth=(api_key,api_pass))
                     variants = json.loads(response.text)
                     
-                    products_id = self.env['product.product'].search([('product_tmpl_id.gt_product_id','=',prod_id)])
+                    products_id = product_obj.search([('product_tmpl_id.gt_product_id','=',prod_id)])
 
                     for product_id in products_id:
                         for variant in variants['variants']:
