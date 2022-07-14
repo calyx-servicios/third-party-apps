@@ -20,7 +20,7 @@
 
 {
     'name': 'Odoo Shopify Connector',
-    'version': '11.0',
+    'version': '11.0.2.1.0',
     'category': 'Generic Modules',
     'sequence': 1,
     'author': 'Globalteckz',
