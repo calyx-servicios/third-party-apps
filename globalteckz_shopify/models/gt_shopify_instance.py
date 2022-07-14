@@ -93,9 +93,8 @@ class GTShopifyInstance(models.Model):
 
     @api.one
     def gt_create_shopify_store(self):
-        log_obj = self.env['shopify.log']
         log_line_obj = self.env['shopify.log.details']
-        log_id = log_obj.create({'create_date':date.today(),'name': 'Create Shopify Store','description': 'Successfull','gt_shopify_instance_id': self.id})
+        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Create Shopify Store','description': 'Successfull','gt_shopify_instance_id': self.id})
         store_obj = self.env['gt.shopify.store']
         try:
             shopify_url = str(self.gt_location)
@@ -132,17 +131,14 @@ class GTShopifyInstance(models.Model):
             else:
                 store_obj.create(vals)
         except Exception as exc:
-            log_line_obj.create({'name':'Create Shopify Store','description':exc,'create_date':date.today(),
+            log_line_obj.create({'name':'Create Shopify Store','description':exc,'status':'ERROR','create_date':date.today(),
                                       'shopify_log_id':log_id.id})
             log_id.write({'description': 'Something went wrong'}) 
-
         return True
     
     @api.one
-    def gt_import_shopify_product_template(self,shopify_product_id):   
-        log_obj = self.env['shopify.log']
-        log_line_obj = self.env['shopify.log.details']
-        log_id = log_obj.create({'create_date':date.today(),'name': 'Import Product','description': 'Successfull','gt_shopify_instance_id': self.id})
+    def gt_import_shopify_product_template(self,shopify_product_id):
+        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Import Product','description': 'Successfull','gt_shopify_instance_id': self.id})
         product_tmpl_obj = self.env['product.template']
         product_obj = self.env['product.product']
         try:
@@ -150,21 +146,17 @@ class GTShopifyInstance(models.Model):
             api_key = str(self.gt_api_key)
             api_pass = str(self.gt_password)
             shop_url = shopify_url + 'admin/api/2022-01/products/'+str(shopify_product_id)+'.json'
-            response = requests.get( shop_url,auth=(api_key,api_pass))
-            product_rs=json.loads(response.text)
+            response = requests.get(shop_url,auth=(api_key,api_pass))
+            product_rs = json.loads(response.text)
             product_item = product_rs['product']
             product_tmpl_obj.gt_create_product_template(product_item,self,log_id)
-        
         except Exception as exc:
             log_id.write({'description': exc}) 
-
         return True
 
     @api.one
-    def gt_import_shopify_products(self):    
-        log_obj = self.env['shopify.log']
-        log_line_obj = self.env['shopify.log.details']
-        log_id = log_obj.create({'create_date':date.today(),'name': 'Import Product','description': 'Successfull','gt_shopify_instance_id': self.id})
+    def gt_import_shopify_products(self):
+        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Import Product','description': 'Successfull','gt_shopify_instance_id': self.id})
         product_tmpl_obj = self.env['product.template']
         product_obj = self.env['product.product']
         try:
@@ -175,13 +167,10 @@ class GTShopifyInstance(models.Model):
             response = requests.get( shop_url,auth=(api_key,api_pass))
             product_rs=json.loads(response.text)
             product_items = product_rs['products']
-            
             for products in product_items:
                 product_tmpl_obj.gt_create_product_template(products,self,log_id)
-        
         except Exception as exc:
             log_id.write({'description': exc}) 
-       
         return True
     
     @api.multi
@@ -204,59 +193,55 @@ class GTShopifyInstance(models.Model):
     
     @api.multi
     def gt_export_shopify_stock(self):
-        log_obj = self.env['shopify.log']
+        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Import Product Stock','description': 'Successfull','gt_shopify_instance_id': self.id})
         log_line_obj = self.env['shopify.log.details']
-        log_id = log_obj.create({'create_date':date.today(),'name': 'Import Product','description': 'Successfull','gt_shopify_instance_id': self.id})
         product_tmpl_obj = self.env['product.template']
-
         shopify_url = str(self.gt_location)
         api_key = str(self.gt_api_key)
         api_pass = str(self.gt_password)
-        product_ids = product_tmpl_obj.search([('gt_shopify_exported','=', True),('gt_shopify_product','=',True),('gt_shopify_exported','=', True)])
-        
+        product_ids = product_tmpl_obj.search([('gt_shopify_exported','=', True),('gt_shopify_product','=',True),('gt_shopify_exported','=', True)])   
         if product_ids:
             for products in product_ids:
-                products.update_product_stock()
+                result, vals = products.update_product_stock()
+                if result != 200:
+                    log_line_obj.create({'name':'Update Product Stock Status ' + str(result),'description':vals,'status':'ERROR','create_date':date.today(),
+                                         'shopify_log_id':log_id.id})
+                    log_id.write({'description': 'Something went wrong'}) 
 
         return True
 
-
-    @api.multi
     def _get_instance_primary_stock_location(self):
         stores = self.env['gt.shopify.store'].search([])
         for store in stores:
             if store.gt_shopify_instance_id.id == self.id:
                 return store.primary_stock_location
-
     
     def get_inventory_variant(self, inventory_item_id):
         shopify_url = str(self.gt_location)
         api_key = str(self.gt_api_key)
         api_pass = str(self.gt_password)
         shop_url = shopify_url + 'admin/api/2021-01/inventory_levels.json?inventory_item_ids=' + str(inventory_item_id)
-        response = requests.get( shop_url,auth=(api_key,api_pass))
-        product_rs=json.loads(response.text)
+        response = requests.get(shop_url,auth=(api_key,api_pass))
+        product_rs = json.loads(response.text)
 
         for location in product_rs['inventory_levels']:
             if str(location['location_id']) == self._get_instance_primary_stock_location():
                 return location['available']
-
     
     @api.one
     def gt_import_shopify_stock(self):
-        log_obj = self.env['shopify.log']
         log_line_obj = self.env['shopify.log.details']
-        log_id = log_obj.create({'create_date':date.today(),'name': 'Import Inventory','description': 'Successfull','gt_shopify_instance_id': self.id})
+        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Import Inventory Stock','description': 'Successfull','gt_shopify_instance_id': self.id})
         product_obj = self.env['product.product']
-        stock_inve_line_obj=self.env['stock.inventory.line']
-        stock_inv_obj=self.env['stock.inventory']
+        stock_inve_line_obj = self.env['stock.inventory.line']
+        stock_inv_obj = self.env['stock.inventory']
         try:
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
             api_pass = str(self.gt_password)
             shop_url = shopify_url + 'admin/products.json'
-            response = requests.get( shop_url,auth=(api_key,api_pass))
-            product_rs=json.loads(response.text)
+            response = requests.get(shop_url,auth=(api_key,api_pass))
+            product_rs = json.loads(response.text)
             product_items = product_rs['products']
             inventory_id = stock_inv_obj.create({'name':'update stock'+' '+str(datetime.datetime.now())})
             stock_location_id = self.gt_workflow_id.stock_location_id.id
@@ -292,19 +277,20 @@ class GTShopifyInstance(models.Model):
                                                         stock_inve_line_obj.create({'inventory_id':inventory_id.id,'location_id':self.gt_workflow_id.stock_location_id.id,'product_id':product_id.id,'product_qty':int(self.get_inventory_variant(variant['inventory_item_id']))})
                 
                 except Exception as exc:
-                    log_line_obj.create({'name':'Create Inventory','description':exc,'create_date':date.today(),
+                    log_line_obj.create({'name':'Create Inventory','description':exc,'status':'ERROR','create_date':date.today(),
                                               'shopify_log_id':log_id.id})
                     log_id.write({'description': 'Something went wrong'}) 
             inventory_id.action_done()
         except Exception as exc:
-            log_id.write({'description': exc}) 
+            log_line_obj.create({'name':'Create Inventory','description':exc,'status':'ERROR','create_date':date.today(),
+                                 'shopify_log_id':log_id.id})
+            log_id.write({'description': 'Something went wrong'}) 
         return True
         
     @api.one
     def gt_import_shopify_image(self):
-        log_obj = self.env['shopify.log']
         log_line_obj = self.env['shopify.log.details']
-        log_id = log_obj.create({'create_date':date.today(),'name': 'Import Image','description': 'Successfull','gt_shopify_instance_id': self.id})
+        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Import Image','description': 'Successfull','gt_shopify_instance_id': self.id})
         product_tmpl_obj = self.env['product.template']
         product_obj = self.env['product.product']
         photo_obj = self.env['gt.product.photo']
@@ -360,18 +346,19 @@ class GTShopifyInstance(models.Model):
                                         photo_obj.create(vals)
                                 variant_id = product_id.write({'image_medium':image_path})
                     except Exception as exc:
-                        log_line_obj.create({'name':'Create Image','description':exc,'create_date':date.today(),
+                        log_line_obj.create({'name':'Create Image','description':exc,'status':'ERROR','create_date':date.today(),
                                                   'shopify_log_id':log_id.id})
                         log_id.write({'description': 'Something went wrong'}) 
         except Exception as exc:
-            log_id.write({'description': exc}) 
+            log_line_obj.create({'name':'Create Image','description':exc,'status':'ERROR','create_date':date.today(),
+                                 'shopify_log_id':log_id.id})
+            log_id.write({'description': 'Something went wrong'}) 
         return True
     
     @api.one
     def gt_import_shopify_customers(self):
-        log_obj = self.env['shopify.log']
         log_line_obj = self.env['shopify.log.details']
-        log_id = log_obj.create({'create_date':date.today(),'name': 'Import Customers','description': 'Successfull','gt_shopify_instance_id': self.id})
+        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Import Customers','description': 'Successfull','gt_shopify_instance_id': self.id})
         res_obj = self.env['res.partner']
         shopify_state_obj = self.env['gt.shopify.customer.state']
         res_state_obj = self.env['res.country.state']
@@ -393,13 +380,13 @@ class GTShopifyInstance(models.Model):
             city = ''
             zip_code = ''
             name = ''
-            log_line_obj.create({'name':'Shop Url','description':shop_url,'create_date':date.today(),
+            log_line_obj.create({'name':'Shop Url','description':shop_url,'status':'INFO','create_date':date.today(),
                                  'shopify_log_id':log_id.id})
             total_customer_url = shopify_url + 'admin/api/2022-01/customers/count.json'
             total_customer_response = requests.get(total_customer_url,auth=(api_key,api_pass))
             total_customer = json.loads(total_customer_response.text)['count']
             total_count = 0
-            log_line_obj.create({'name':'Shop Url CUSTOMERS','description':shop_url,'create_date':date.today(),
+            log_line_obj.create({'name':'Shop Url CUSTOMERS','description':shop_url,'status':'INFO','create_date':date.today(),
                                  'shopify_log_id':log_id.id})
 
             if 'next' in response.links:
@@ -409,9 +396,9 @@ class GTShopifyInstance(models.Model):
 
             while total_count <= total_customer:
                 total_count += len(items)
-                log_line_obj.create({'name':'total_count','description':total_count,'create_date':date.today(),
+                log_line_obj.create({'name':'total_count','description':total_count,'status':'INFO','create_date':date.today(),
                                      'shopify_log_id':log_id.id})
-                log_line_obj.create({'name':'total_customer','description':total_customer,'create_date':date.today(),
+                log_line_obj.create({'name':'total_customer','description':total_customer,'status':'INFO','create_date':date.today(),
                                      'shopify_log_id':log_id.id})
                 for customer in items:
                     res_partner = res_obj.search([('gt_customer_id','=', customer['id'])])
@@ -485,7 +472,7 @@ class GTShopifyInstance(models.Model):
                             self.env.cr.commit()
 
                         except Exception as exc:
-                            log_line_obj.create({'name':'Create Customer','description':exc,'create_date':date.today(),
+                            log_line_obj.create({'name':'Create Customer','description':exc,'status':'ERROR','create_date':date.today(),
                                                     'shopify_log_id':log_id.id})
                             log_id.write({'description': 'Something went wrong'})
                             self.env.cr.commit()
@@ -494,18 +481,18 @@ class GTShopifyInstance(models.Model):
                     response = requests.get( shop_url_next,auth=(api_key,api_pass))
                     customer_rs = json.loads(response.text)
                     items = customer_rs['customers']
-                    log_line_obj.create({'name':'url','description':shop_url_next,'create_date':date.today(),
+                    log_line_obj.create({'name':'url','description':shop_url_next,'status':'INFO','create_date':date.today(),
                                          'shopify_log_id':log_id.id})
-                    log_line_obj.create({'name':'Faltan','description':len(items),'create_date':date.today(),
+                    log_line_obj.create({'name':'Faltan','description':len(items),'status':'INFO','create_date':date.today(),
                                          'shopify_log_id':log_id.id})
                     if 'next' in response.links:
                         shop_url_next = response.links['next']['url']
 
         except Exception as exc:
-            log_id.write({'description': exc})
-            
+            log_line_obj.create({'name':'Create Customer','description':exc,'status':'ERROR','create_date':date.today(),
+                                 'shopify_log_id':log_id.id})
+            log_id.write({'description': 'Something went wrong'})
         return True
-    
     
     def _get_shopify_status(self, order_id):
         shopify_url = str(self.gt_location)
@@ -531,9 +518,8 @@ class GTShopifyInstance(models.Model):
 
     @api.one
     def gt_import_shopify_orders(self):
-        log_obj = self.env['shopify.log']
         log_line_obj = self.env['shopify.log.details']
-        log_id = log_obj.create({'create_date':date.today(),'name': 'Import Orders','description': 'Successfull','gt_shopify_instance_id': self.id})
+        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Import Orders','description': 'Successfull','gt_shopify_instance_id': self.id})
         res_obj = self.env['res.partner']
         sale_obj = self.env['sale.order']
         prod_obj = self.env['product.product']
@@ -551,16 +537,16 @@ class GTShopifyInstance(models.Model):
             response = requests.get( shop_url,auth=(api_key,api_pass))
             customer_rs=json.loads(response.text)
             items = customer_rs['orders']
-            log_line_obj.create({'name':'shop_url','description':shop_url,'create_date':date.today(),
+            log_line_obj.create({'name':'shop_url','description':shop_url,'status':'INFO','create_date':date.today(),
                                  'shopify_log_id':log_id.id})
-            log_line_obj.create({'name':'COUNT. ITEMS','description':len(items),'create_date':date.today(),
+            log_line_obj.create({'name':'COUNT. ITEMS','description':len(items),'status':'INFO','create_date':date.today(),
                                  'shopify_log_id':log_id.id})
             total_order_url = shopify_url + 'admin/api/2022-01/orders/count.json'
             total_order_response = requests.get( total_order_url,auth=(api_key,api_pass))
             total_order = json.loads(total_order_response.text)['count']
             total_count = 0
             
-            log_line_obj.create({'name':'Total Orders','description':total_order,'create_date':date.today(),
+            log_line_obj.create({'name':'Total Orders','description':total_order,'status':'INFO','create_date':date.today(),
                                  'shopify_log_id':log_id.id})
             
             if 'next' in response.links:
@@ -568,19 +554,16 @@ class GTShopifyInstance(models.Model):
             else:
                 shop_url_next = False
         
-            while total_count <= total_order:
-                
+            while total_count <= total_order:               
                 total_count += len(items)
-
-                log_line_obj.create({'name':'Total Request','description':total_count,'create_date':date.today(),
+                log_line_obj.create({'name':'Total Request','description':total_count,'status':'INFO','create_date':date.today(),
                                  'shopify_log_id':log_id.id})
-                log_line_obj.create({'name':'total count','description':total_count,'create_date':date.today(),
+                log_line_obj.create({'name':'total count','description':total_count,'status':'INFO','create_date':date.today(),
                                  'shopify_log_id':log_id.id})
-                log_line_obj.create({'name':'total order','description':total_order,'create_date':date.today(),
+                log_line_obj.create({'name':'total order','description':total_order,'status':'INFO','create_date':date.today(),
                                  'shopify_log_id':log_id.id})
                 
                 for order in items:
-
                     payment_id = []
                     order_confirm = []
                     order_stauts_url = ''
@@ -606,7 +589,7 @@ class GTShopifyInstance(models.Model):
                             if customer_id:
                                 if 'shipping_address' in order:
                                     shipping_address = order['shipping_address']
-                                    self.update_shipping_address(shipping_address,customer_id)
+                                    self.update_shipping_address(shipping_address,customer_id,log_id)
                                     self.env.cr.commit()
 
                             if 'line_items' in order:
@@ -648,7 +631,7 @@ class GTShopifyInstance(models.Model):
                                                     'product_uom_qty': lines['quantity'],
                                                 }))
                                         else:
-                                            log_line_obj.create({'name':'No Existe El Producto','description':lines['product_id'],'create_date':date.today(),
+                                            log_line_obj.create({'name':'No Existe El Producto','description':lines['product_id'],'status':'WARNING','create_date':date.today(),
                                                                  'shopify_log_id':log_id.id})
             
                         if 'shipping_lines' in order and self.gt_workflow_id.ship_product:
@@ -701,11 +684,11 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
                                     'email_partner': customer_id.email if customer_id.email  else 'No Suministrado',
                                 }
-                                log_line_obj.create({'name':'CREATE SO','description':str(order['order_number']),'create_date':date.today(),
+                                log_line_obj.create({'name':'CREATE SO','description':str(order['order_number']),'status':'INFO','create_date':date.today(),
                                                      'shopify_log_id':log_id.id})
                                 sale_order = sale_obj.create(value)
                                 self.env.cr.commit()
-                                log_line_obj.create({'name':'Create Order','description':sale_order.name,'create_date':date.today(),
+                                log_line_obj.create({'name':'Create Order','description':sale_order.name,'status':'INFO','create_date':date.today(),
                                                      'shopify_log_id':log_id.id})
                                 
                             if product_untracked_lines:
@@ -728,11 +711,11 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
                                     'email_partner': customer_id.email if customer_id.email  else 'No Suministrado',
                                 }
-                                log_line_obj.create({'name':'CREATE SO, sale_order_manufacturing','description':str(order['order_number']),'create_date':date.today(),
+                                log_line_obj.create({'name':'CREATE SO, sale_order_manufacturing','description':str(order['order_number']),'status':'INFO','create_date':date.today(),
                                                      'shopify_log_id':log_id.id})
                                 sale_order_manufacturing = sale_obj.create(vals)
                                 self.env.cr.commit()
-                                log_line_obj.create({'name':'Create Order manufacturing','description':sale_order_manufacturing.name,'create_date':date.today(),
+                                log_line_obj.create({'name':'Create Order manufacturing','description':sale_order_manufacturing.name,'status':'INFO','create_date':date.today(),
                                                      'shopify_log_id':log_id.id})
 
                         else:
@@ -743,11 +726,11 @@ class GTShopifyInstance(models.Model):
                                     'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
                                     'gt_shopify_order_status': self._get_shopify_status(order['id'])
                                 }
-                                log_line_obj.create({'name':'WRITE SO','description':str(order['order_number']),'create_date':date.today(),
+                                log_line_obj.create({'name':'WRITE SO','description':str(order['order_number']),'status':'INFO','create_date':date.today(),
                                                      'shopify_log_id':log_id.id})
                                 sale_id.write(vals_update)
                                 self.env.cr.commit()
-                                log_line_obj.create({'name':'Update Order','description':sale_id.name,'create_date':date.today(),
+                                log_line_obj.create({'name':'Update Order','description':sale_id.name,'status':'INFO','create_date':date.today(),
                                                      'shopify_log_id':log_id.id})
 
                                 if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
@@ -755,10 +738,8 @@ class GTShopifyInstance(models.Model):
                                     self.env.cr.commit()
                             
                     except Exception as exc:
-                        log_line_obj.create({'name':'Create Order',
-                        'description':exc,
-                        'create_date':date.today(),
-                        'shopify_log_id':log_id.id})
+                        log_line_obj.create({'name':'Create Order', 'description':exc,'status':'ERROR',
+                                             'create_date':date.today(),'shopify_log_id':log_id.id})
                         log_id.write({'description': 'Something went wrong'}) 
 
                 if shop_url_next:
@@ -766,25 +747,26 @@ class GTShopifyInstance(models.Model):
                     customer_rs = json.loads(response.text)
                     items = customer_rs['orders']
                     
-                    log_line_obj.create({'name':'url','description':shop_url_next,'create_date':date.today(),
+                    log_line_obj.create({'name':'url','description':shop_url_next,'status':'INFO','create_date':date.today(),
                                                      'shopify_log_id':log_id.id})
-                    log_line_obj.create({'name':'Faltan','description':len(items),'create_date':date.today(),
+                    log_line_obj.create({'name':'Faltan','description':len(items),'status':'INFO','create_date':date.today(),
                                                      'shopify_log_id':log_id.id})
                     if 'next' in response.links:
                         shop_url_next = response.links['next']['url']
                     else:
                         shop_url_next = False
 
-                    log_line_obj.create({'name':'Orders Count Response','description':len(items),'create_date':date.today(),
-                                         'shopify_log_id':log_id.id})
-                
+                    log_line_obj.create({'name':'Orders Count Response','description':len(items),'status':'INFO',
+                                         'create_date':date.today(), 'shopify_log_id':log_id.id})      
         except Exception as exc:
-            log_id.write({'description': exc}) 
+            log_line_obj.create({'name':'Import Orders','description':exc,'status':'ERROR',
+                                         'create_date':date.today(), 'shopify_log_id':log_id.id})
+            log_id.write({'description': 'Something went wrong'}) 
         return True
-        
     
     @api.multi
-    def update_shipping_address(self,address,customer_id):
+    def update_shipping_address(self,address,customer_id, log_id):
+        log_line_obj = self.env['shopify.log.details']
         shopify_state_obj = self.env['gt.shopify.customer.state']
         res_state_obj = self.env['res.country.state']
         res_country_obj = self.env['res.country']
@@ -797,7 +779,6 @@ class GTShopifyInstance(models.Model):
                 address2 = address['address2']
             if 'city' in address:
                 city = address['city']
-
             if 'zip' in address:
                 zip_code = str(address['zip']) or '' ###
             if 'country' in address and (str(address['country']) != 'None'):
@@ -832,14 +813,12 @@ class GTShopifyInstance(models.Model):
                 'city': city,
                 'zip': zip_code,
             }
-            log_line_obj.create({'name':'WRITE CUSTOMER','description':customer_id.name,'create_date':date.today(),
+            log_line_obj.create({'name':'WRITE CUSTOMER','description':customer_id.name,'status':'INFO','create_date':date.today(),
                                  'shopify_log_id':log_id.id})
             customer_id.write(value_customer)
             self.env.cr.commit()
-        
         return True
         
-
     @api.multi
     def create_order_customer(self,res_obj,customer): 
         shopify_state_obj = self.env['gt.shopify.customer.state']
@@ -901,7 +880,6 @@ class GTShopifyInstance(models.Model):
             'gt_default_name': name,
             'gt_shopify_instance_id': self.id
         })
-  
         return customer_id
     
     @api.multi
@@ -919,7 +897,6 @@ class GTShopifyInstance(models.Model):
             'res_model': action.res_model,
             'domain': [('id', 'in', shopify_shop.ids)]
         }
-
         return result
     
     @api.multi
@@ -937,7 +914,6 @@ class GTShopifyInstance(models.Model):
             'res_model': action.res_model,
             'domain': [('id', 'in', shopify_orders.ids)]
         }
-
         return result
     
     @api.multi
@@ -955,7 +931,6 @@ class GTShopifyInstance(models.Model):
             'res_model': action.res_model,
             'domain': [('id', 'in', shopify_customers.ids)]
         }
-
         return result
     
     @api.multi
@@ -973,7 +948,6 @@ class GTShopifyInstance(models.Model):
             'res_model': action.res_model,
             'domain': [('id', 'in', shopify_templ.ids)]
         }
-
         return result
     
     @api.multi
@@ -991,6 +965,5 @@ class GTShopifyInstance(models.Model):
             'res_model': action.res_model,
             'domain': [('id', 'in', shopify_prod.ids)]
         }
-
         return result
 
