@@ -42,4 +42,5 @@ class MagentoLogDetails(models.Model):
     description = fields.Char('Log Description')
     create_date = fields.Datetime(string="Create DateTime")
     shopify_log_id = fields.Many2one('shopify.log', string='Shopify Log')
+    status = fields.Char('Status')
 
