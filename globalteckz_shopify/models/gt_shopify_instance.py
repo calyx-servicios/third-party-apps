@@ -25,7 +25,7 @@ import json
 import datetime
 import base64
 import urllib
-from datetime import date
+from datetime import date, datetime
 import logging
 from logging import getLogger
 logger = logging.getLogger('product')
@@ -194,12 +194,14 @@ class GTShopifyInstance(models.Model):
     
     @api.multi
     def cron_execute(self):
+        _logger.info("INIT %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
         shopify_instances = self.env['gt.shopify.instance'].search([])
         for rec in shopify_instances:
             rec.gt_import_shopify_customers()
             rec.gt_import_shopify_products()
             rec.gt_import_shopify_orders()
             rec.gt_export_shopify_stock()
+        _logger.info("FINISH %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
     
     @api.multi
     def gt_export_shopify_stock(self):
@@ -574,6 +576,7 @@ class GTShopifyInstance(models.Model):
                 print("==> total_count: ",total_count)
                 print("==> total_order: ",total_order)
                 for order in items:
+
                     payment_id = []
                     order_confirm = []
                     order_stauts_url = ''
@@ -620,26 +623,30 @@ class GTShopifyInstance(models.Model):
                                             if product:
                                                 product_id = product
 
-                                        if 'tax_lines' in lines:
-                                            ta_line = lines['tax_lines']
-                                            tax_list = []
-                                            for tax_line in ta_line: 
-                                                tax = tax_obj.search([('name','=',str(tax_line['title'])),('amount','=',tax_line['rate'] * 100),('type_tax_use','=','sale')])
-                                                if tax:
-                                                    tax_id = tax
-                                                else:
-                                                    print("===> POR CREAR TAX: ",tax_line['title'])
-                                                    tax_id = tax_obj.create({'name':tax_line['title'],'amount':tax_line['rate'] * 100,'type_tax_use':'sale'})
-                                                    self.env.cr.commit()
-                                                tax_list.append(tax_id.id)
+                                        tax_list = []
+                                        # Se comenta bloque de codigo para no importar impuestos en las lineas de pedido
+                                        # if 'tax_lines' in lines:
+                                        #     ta_line = lines['tax_lines']
+                                        #     tax_list = []
+                                        #     for tax_line in ta_line: 
+                                        #         tax = tax_obj.search([('name','=',str(tax_line['title'])),('amount','=',tax_line['rate'] * 100),('type_tax_use','=','sale')])
+                                        #         if tax:
+                                        #             tax_id = tax
+                                        #         else:
+                                        #             print("===> POR CREAR TAX: ",tax_line['title'])
+                                        #             tax_id = tax_obj.create({'name':tax_line['title'],'amount':tax_line['rate'] * 100,'type_tax_use':'sale'})
+                                        #             self.env.cr.commit()
+                                        #         tax_list.append(tax_id.id)
                                         
+
                                         if product_id:
                                             if product_id.gt_product_inventory_tracked:
                                                 product_lines.append((0,0,{
                                                     'product_id': product_id.id or False,
                                                     'name': product_id.name or 'Producto Sin Nombre',###,###
                                                     'template_id': product_id.product_tmpl_id.id or False,
-                                                    'variants_status_ok':True,'tax_id': [(6, 0,tax_list)] or False,
+                                                    'variants_status_ok':True,
+                                                    # 'tax_id': [(6, 0,tax_list)] or False,
                                                     'price_unit':lines['price'],
                                                     'product_uom_qty': lines['quantity'],
                                                 }))
@@ -649,12 +656,39 @@ class GTShopifyInstance(models.Model):
                                                     'product_id': product_id.id,
                                                     'name': product_id.name or 'Producto Sin Nombre',###
                                                     'template_id': product_id.product_tmpl_id.id,###
-                                                    'variants_status_ok':True,'tax_id': [(6, 0,tax_list)],###
+                                                    'variants_status_ok':True,
+                                                    # 'tax_id': [(6, 0,tax_list)],
                                                     'price_unit':lines['price'],
                                                     'product_uom_qty': lines['quantity'],
                                                 }))
                                         else:
                                             logger.info('No Existe El Producto ===================:  %s', lines['product_id'])
+            
+                        if 'shipping_lines' in order and self.gt_workflow_id.ship_product:
+                            if len(order['shipping_lines']) > 0 and ('presentment_money' in order['total_shipping_price_set']):
+                                amount_shipping = float(order['total_shipping_price_set']['presentment_money']['amount'])
+                                product_shipping = self.gt_workflow_id.ship_product
+                                shipping_name = False
+                                if len(order['shipping_lines']) > 0:
+                                    shipping_name = order['shipping_lines'][0]['title']
+                                if product_lines:
+                                    product_lines.append((0,0,{
+                                                'product_id': product_shipping.id or False,
+                                                'name': shipping_name or 'Envio',
+                                                'template_id': product_shipping.product_tmpl_id.id or False,
+                                                # 'tax_id': [(6, 0,tax_list)] or False,
+                                                'price_unit': amount_shipping,
+                                                'product_uom_qty': 1.0,
+                                            }))
+                                if product_untracked_lines:
+                                    product_untracked_lines.append((0,0,{
+                                                'product_id': product_shipping.id,
+                                                'name': shipping_name or 'Envio',
+                                                'template_id': product_shipping.product_tmpl_id.id,
+                                                # 'tax_id': [(6, 0,tax_list)],
+                                                'price_unit': amount_shipping,
+                                                'product_uom_qty': 1.0,
+                                            }))
 
                         # Como la SO puede contener productos con seguimiento de inventario, o no.
                         # Se crearan 2 ordenes de venta para utilizar almacenes diferentes.
@@ -753,7 +787,7 @@ class GTShopifyInstance(models.Model):
                     logger.info('Orders Count Response ===================:  %s', len(items))
                     total_count
                 
-        except Exception as exc:
+        except Exception as exc: 
             logger.error('Exception===================:  %s', exc)
             log_id.write({'description': exc}) 
         return True
@@ -777,7 +811,7 @@ class GTShopifyInstance(models.Model):
             if 'zip' in address:
                 zip_code = str(address['zip']) or '' ###
             if 'country' in address and (str(address['country']) != 'None'):
-                country = res_country_obj.search([('name','ilike',str(address['country']))])
+                country = res_country_obj.search(['|', ('name','ilike',str(address['country'])),('code', '=', str(address['country_code']))])
                 if country:
                     country_id = country.id
                 else:
@@ -788,7 +822,7 @@ class GTShopifyInstance(models.Model):
                     country_id = res_country_obj.create(country_value).id
                     self.env.cr.commit()
             if 'province' in address and (str(address['province']) != 'None'):
-                state = res_state_obj.search([('name','=',str(address['province'])),('country_id','=',country_id)])
+                state = res_state_obj.search([('name','=',str(address['province'])),('country_id','=',country_id)]) or res_state_obj.search([('code','=',str(address['province_code'])),('country_id','=',country_id)])
                 if state:
                     state_id = state.id
                 else:
