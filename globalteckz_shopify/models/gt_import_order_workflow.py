@@ -19,14 +19,19 @@
 ###############################################################################
  
  
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from datetime import timedelta, datetime, time
+#from openerp import netsvc
+from openerp.tools.translate import _
 
 class GtImportOrderWorkflow(models.Model):
     _name = "gt.import.order.workflow"
     
     @api.model
     def _get_default_journal(self):
-        return True
+#         sale_journal = self.env.ref('globalteckz_magento_2.magento_sales_journal')
+#         print "sale_journal", sale_journal.id
+        return True # sale_journal.id
     
     stock_location_id = fields.Many2one('stock.location',string='Stock Location')
     real_order_status_update = fields.Boolean(string='Real update order status')
@@ -58,4 +63,5 @@ class GtImportOrderWorkflow(models.Model):
         string='Shipment export magento', default='oncreation',
         help="Select the option at which the shipment should "\
         "be exported to magento")
+
 

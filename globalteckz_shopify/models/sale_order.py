@@ -19,12 +19,14 @@
 ###############################################################################
 
 
-from odoo import fields, models, api
-import requests, json
+from odoo import fields,models, api
 
+import requests
+import json
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
+    
     
     gt_shopify_order = fields.Boolean(string='Shopify Order',readonly=True)
     gt_shopify_order_id = fields.Char(string='Order ID',readonly=True)
@@ -40,15 +42,17 @@ class SaleOrder(models.Model):
     gt_shopify_payment_gateway_names = fields.Char(string='Payment Gateway Names',readonly=True)
     
     
+    
     @api.multi
     def gt_update_shopify_order(self):
+        
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
         shop_url = shopify_url + 'admin/api/2021-01/orders.json?status=any&ids='+ str(self.gt_shopify_order_id)
         response = requests.get( shop_url,auth=(api_key,api_pass))
         order = json.loads(response.text)
-
+#
         self.write({'gt_shopify_payment_gateway_names': order['orders'][0]['payment_gateway_names']})
         self.write({'gt_shopify_financial_status': order['orders'][0]['financial_status']})                        
         self.write({'gt_shopify_fulfillment_status': 'Not ready'if order['orders'][0]['fulfillment_status'] == None else order['orders'][0]['fulfillment_status']})
@@ -56,4 +60,3 @@ class SaleOrder(models.Model):
         
         if self.state in ['draft','sent'] and self.gt_shopify_financial_status == 'paid':
             self.action_confirm()
-

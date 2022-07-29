@@ -19,8 +19,9 @@
 ###############################################################################
 
 
-from odoo import fields, models
-
+from odoo import fields,api,models,_
+import requests
+import json
 
 class GTShopifyStore(models.Model):
     _name='gt.shopify.store'
@@ -46,4 +47,3 @@ class GTShopifyStore(models.Model):
     gt_store_phone = fields.Char(string='Phone')
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance')
     primary_stock_location = fields.Char(string='Primary Location Stock ID',size=64,required=True)
-

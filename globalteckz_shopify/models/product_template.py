@@ -18,11 +18,18 @@
 #                                                                             #
 ###############################################################################
 
-from odoo import fields, api, models
+from odoo import fields,api,models, tools
 from datetime import date
-from odoo.exceptions import ValidationError
-import requests, json, base64, urllib
-
+from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
+import requests
+import json
+import itertools
+import psycopg2
+import base64
+import urllib
+#from odoo.exceptions import ValidationError, except_orm
+import logging
+logger = logging.getLogger('product')
 
 class ProductTemplate(models.Model):
     _inherit='product.template'
@@ -43,12 +50,14 @@ class ProductTemplate(models.Model):
     
     @api.multi
     def update_variant_ids(self,shopify_instance_id):
+        
         shopify_url = str(shopify_instance_id.gt_location)
         api_key = str(shopify_instance_id.gt_api_key)
         api_pass = str(shopify_instance_id.gt_password)
+        #shop_url = shopify_url + 'admin/products.json'
         shop_url = shopify_url + 'admin/products/' + str(self.gt_product_id) + '.json'
-        response = requests.get(shop_url,auth=(api_key,api_pass))
-        product_rs = json.loads(response.text)
+        response = requests.get( shop_url,auth=(api_key,api_pass))
+        product_rs=json.loads(response.text)
         product_items = product_rs['product']
         product_obj = self.env['product.product']
 
@@ -98,15 +107,17 @@ class ProductTemplate(models.Model):
                                     if variant['compare_at_price'] != 0 and float(variant['compare_at_price']) > float(variant['price']): 
                                         product.write({'gt_product_price_compare': variant['compare_at_price']})
 
+
     @api.multi
     def _get_product_active(self,instance):
+
         shopify_url = str(instance.gt_location)
         api_key = str(instance.gt_api_key)
         api_pass = str(instance.gt_password)
         shop_url = shopify_url + 'admin/api/2021-01/products.json?status=active&ids=' + str(self.gt_product_id)
-        response = requests.get(shop_url,auth=(api_key,api_pass))
-        product_rs = json.loads(response.text)
-        if len(product_rs['products']) > 0:
+        response = requests.get( shop_url,auth=(api_key,api_pass))
+        product_rs=json.loads(response.text)
+        if len(product_rs['products'])>0:
             return True
         else:
             return False
@@ -156,7 +167,9 @@ class ProductTemplate(models.Model):
                             tags_id = tags_obj.create({'name':str(tags),'gt_shopify_instance_id':instance.id})
                             tags_lst.append(tags_id.id)
             variant = []
+            
             def _variants(self):
+
                 if len(self) == 1:
                     return len(self[0]['values'])
                 elif len(self) == 2:
@@ -227,6 +240,7 @@ class ProductTemplate(models.Model):
                 product_id.update_variant_ids(instance)
             
             self._cr.commit()
+            
 
             if 'variants' in products and len(products['variants']) > 1:
                 value_id1 = []
@@ -236,27 +250,39 @@ class ProductTemplate(models.Model):
                 for variant in products['variants']:
                     value_id_list = []
                     if 'option1' in variant and variant['option1'] != None and variant['option1'] != 'Default Title':
+
                         value_id1 = product_attribute_option_obj.search([('name','=', str(variant['option1']))])
+
                         value_id_list.append(value_id1[0].id)
 
                     if 'option2' in variant and variant['option2'] != None:
+
                         value_id2 = product_attribute_option_obj.search([('name','=', str(variant['option2']))])
+
                         value_id_list.append(value_id2[0].id)
 
                     if 'option3' in variant and variant['option3'] != None:
+
                         value_id3 = product_attribute_option_obj.search([('name','=', str(variant['option3']))])        
+
                         value_id_list.append(value_id3[0].id)
 
                     if value_id1 and value_id2 and value_id3:
+
                         product_product = product_obj.search([('default_code','=',str(products['id'])),('attribute_value_ids','in',[value_id1[0].id,value_id2[0].id,value_id3[0].id])])
+
                     elif value_id1 and value_id2:
+
                         product_product = product_obj.search([('default_code','=',str(products['id'])),('attribute_value_ids','in',[value_id1[0].id,value_id2[0].id])])
+
                     elif value_id1 and value_id2:
+
                         product_product = product_obj.search([('default_code','=',str(products['id'])),('attribute_value_ids','in',[value_id1[0].id])])
 
                     if product_product:
                         for product_ids in product_product:
                             attribute_list = []
+
                             for att_idss in product_ids.attribute_value_ids:
                                 attribute_list.append(att_idss.id)
                             if sorted(attribute_list, key=int) == sorted(value_id_list, key=int):
@@ -267,21 +293,24 @@ class ProductTemplate(models.Model):
                     if product_product:
                         product_product.update_variant(variant,instance,log_id)
 
+            
+
         except Exception as exc:
-            log_line_obj.create({'name':'Create Product Template','description':exc,'status':'ERROR','create_date':date.today(),
+            logger.error('Exception===================:  %s', exc)
+            log_line_obj.create({'name':'Create Product Template','description':exc,'create_date':date.today(),
                                       'shopify_log_id':log_id.id})
             log_id.write({'description': 'Something went wrong'}) 
         return True
     
+
     @api.multi
     def update_product_stock(self):
+
         product_obj = self.env['product.product']
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
         product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('product_tmpl_id.id', '=', self.id )])
-        result = 200
-        list_vals = []
         for products in product_ids:
             qty_available = self.env['stock.quant'].search([('product_id','=',products.id),('location_id','=',self.gt_shopify_instance_id.gt_workflow_id.stock_location_id.id)])
             quantity = qty_available.quantity - qty_available.reserved_quantity
@@ -293,16 +322,14 @@ class ProductTemplate(models.Model):
                 }
                 shop_url = shopify_url + 'admin/api/2021-01/inventory_levels/set.json'
                 response = requests.post(shop_url,auth=(api_key,api_pass),data=vals)
-                if response.status_code != 200:
-                    result = response.status_code
-                    list_vals.append(vals)
-        return result, list_vals
-        
+
     @api.multi
     def update_product_shopify(self):
+
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
+        
         tag = ''
         if len(self.gt_product_tags) == 1:
             tag = str(self.gt_product_tags.name)
@@ -312,12 +339,12 @@ class ProductTemplate(models.Model):
         
         vals = {
             "product": {
-                "id": int(self.gt_product_id),
-                "title": str(self.name),
-                "status": "active" if self.gt_shopify_active else "draft",
-                "tags": tag,
-                "body_html": self.gt_shopify_description,
-            }  
+            "id": int(self.gt_product_id),
+            "title": str(self.name),
+            "status": "active" if self.gt_shopify_active else "draft",
+            "tags": tag,
+            "body_html": self.gt_shopify_description,
+          }  
         }
 
         shop_url = shopify_url + '/admin/api/2021-01/products/'+ str(self.gt_product_id) +'.json'
@@ -327,37 +354,43 @@ class ProductTemplate(models.Model):
             if product.gt_product_id:
                 if product.gt_product_price_compare != 0:
                     vals = {
-                        "variant": {
-                            "id": int(product.gt_product_id),
-                            "price": product.lst_price,
-                            "compare_at_price": product.gt_product_price_compare,
-                        }
+                      "variant": {
+                        "id": int(product.gt_product_id),
+                        "price": product.lst_price,
+                        "compare_at_price": product.gt_product_price_compare,
+                      }
                     }                
                 else:
                     vals = {
-                        "variant": {
-                            "id": int(product.gt_product_id),
-                            "price": product.lst_price,
-                        }
+                      "variant": {
+                        "id": int(product.gt_product_id),
+                        "price": product.lst_price,
+                      }
                     }                
                 shop_url = shopify_url + '/admin/api/2021-01/variants/'+ str(product.gt_product_id) +'.json'
                 response = requests.put(shop_url,auth=(api_key,api_pass),data=json.dumps(vals), headers={'Content-Type': 'application/json'})
 
+     
     @api.multi
     def update_product_odoo(self):
-        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Update Product Odoo','description': 'Successfull','gt_shopify_instance_id': self.gt_shopify_instance_id.id})
+        
+        log_id = self.env['shopify.log.details']
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
+        
         shop_url = shopify_url + 'admin/products/' + str(self.gt_product_id) + '.json'
+
         response = requests.get( shop_url,auth=(api_key,api_pass))
         product_item = json.loads(response.text)
+        
         self.gt_create_product_template(product_item['product'], self.gt_shopify_instance_id, log_id)
+
 
     @api.multi
     def update_images_shopify(self):
-        log_id = self.env['shopify.log'].create({'create_date':date.today(),'name': 'Update Images Shopify','description': 'Successfull','gt_shopify_instance_id': self.gt_shopify_instance_id.id})
-        log_line_obj = self.env['shopify.log.details']
+        
+        log_id = self.env['shopify.log.details']
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
@@ -368,6 +401,7 @@ class ProductTemplate(models.Model):
         product_items = product_rs['images']
         photo_obj = self.env['gt.product.photo']
         product_obj = self.env['product.product']
+        log_line_obj = self.env['shopify.log.details']
 
         for image in product_items:
             try:
@@ -381,7 +415,7 @@ class ProductTemplate(models.Model):
                         'gt_image': image_path,
                         'gt_image_position' : image['position'],
                         'gt_product_temp_id': self.id,
-                    }
+                        }
                     photo_id = photo_obj.search([('gt_image_id','=',image['id']),('gt_product_temp_id','=',self.id)])
                     if photo_id:
                         photo_id.write(vals)
@@ -402,7 +436,7 @@ class ProductTemplate(models.Model):
                                 'gt_image': image_path,
                                 'gt_image_position' : image['position'],
                                 'gt_product_id': product_id.id,
-                            }
+                                }
                             photo_id = photo_obj.search([('gt_image_id','=',image['id']),('gt_product_id','=',product_id.id)])
                             if photo_id:
                                 photo_id.write(vals)
@@ -410,12 +444,17 @@ class ProductTemplate(models.Model):
                                 photo_obj.create(vals)
                         variant_id = product_id.write({'image_medium':image_path})
             except Exception as exc:
+                logger.error('Exception===================:  %s', exc)
                 log_line_obj.create({'name':'Create Image','description':exc,'create_date':date.today(),
                                           'shopify_log_id':log_id.id})
                 log_id.write({'description': 'Something went wrong'}) 
 
     @api.multi
     def gt_export_shopify_product(self):
+
+        log_obj = self.env['shopify.log']
+        log_line_obj = self.env['shopify.log.details']
+        product_tmpl_obj = self.env['product.template']
         product_obj = self.env['product.product']
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
@@ -425,6 +464,7 @@ class ProductTemplate(models.Model):
             raise ValidationError('Debe seleccionar una instancia de Shopify para poder exportar el producto a la tienda.')
 
         for products in self:
+
             tag = ''
             if len(products.gt_product_tags) == 1:
                 tag = str(products.gt_product_tags.name)
@@ -433,6 +473,7 @@ class ProductTemplate(models.Model):
                     tag += str(tags.name)+',' 
 
             if len(products.product_variant_ids) > 0 and not products.gt_product_id:
+
                 list_variant = []
                 option1_list = []
                 option2_list = []
@@ -472,16 +513,17 @@ class ProductTemplate(models.Model):
                                     option3_list.append(option3)
 
                     vals_variant = {
-                        "price": str(variants.lst_price),
-                        "sku": str(variants.default_code),
-                        "barcode": str(variants.barcode),
-                        "inventory_management": "shopify",
-                        "option1": option1,
-                        "option2": option2,
-                        "option3": option3,
-                    }
+                            "price": str(variants.lst_price),
+                            "sku": str(variants.default_code),
+                            "barcode": str(variants.barcode),
+                            "inventory_management": "shopify",
+                            "option1": option1,
+                            "option2": option2,
+                            "option3": option3,
+                          }
 
                     list_variant.append(vals_variant)
+
 
                 if len(option1_list) > 0:
                     vals_option = {"name": attribute1, "values": option1_list}
@@ -495,16 +537,16 @@ class ProductTemplate(models.Model):
 
                 vals = {
                     "product": {
-                        "title": str(products.name),
-                        "body_html": str(products.gt_shopify_description),
-                        "product_type": str(products.gt_shopify_product_type.name),
-                        "inventory_management": "shopify",
-                        "tags": tag,
-                        "options": options,
-                        "variants": list_variant,
-                        "status": "active" if products.gt_shopify_active else "draft",
+                      "title": str(products.name),
+                      "body_html": str(products.gt_shopify_description),
+                      "product_type": str(products.gt_shopify_product_type.name),
+                      "inventory_management": "shopify",
+                      "tags": tag,
+                      "options": options,
+                      "variants": list_variant,
+                      "status": "active" if products.gt_shopify_active else "draft",
                     }
-                }
+                  }
 
                 payload= json.dumps(vals)
                 shop_url = shopify_url + 'admin/api/2021-01/products.json'
@@ -517,11 +559,14 @@ class ProductTemplate(models.Model):
                     shop_url = shopify_url + 'admin/api/2021-01/products/'+str(prod_id)+'/variants.json'
                     response = requests.get(shop_url,auth=(api_key,api_pass))
                     variants = json.loads(response.text)
+
                     
-                    products_id = product_obj.search([('product_tmpl_id.gt_product_id','=',prod_id)])
+                    products_id = self.env['product.product'].search([('product_tmpl_id.gt_product_id','=',prod_id)])
 
                     for product_id in products_id:
+
                         for variant in variants['variants']:
+
                             if variant['option3'] != None:
                                 for product in product_id:
                                     variantes = [product.attribute_value_ids[0].name,product.attribute_value_ids[1].name, product.attribute_value_ids[2].name ]
@@ -559,7 +604,6 @@ class GtPublishedScope(models.Model):
     name = fields.Char(string='Scope name')
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance')
     
-    
 class GtShopifyVendor(models.Model):
     _name = 'gt.shopify.vendor'
         
@@ -573,10 +617,8 @@ class GtShopifyProductTags(models.Model):
     name = fields.Char(string='Product Tags')
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance')
     
-    
 class GtShopifyProductType(models.Model):
     _name = 'gt.shopify.product.type'
     
     name = fields.Char(string='Product Type')
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance')
-

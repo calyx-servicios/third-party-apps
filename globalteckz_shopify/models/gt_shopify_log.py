@@ -19,10 +19,11 @@
 #                                                                             #
 ###############################################################################
 
-
-from odoo import fields, models
 import logging
-logger = logging.getLogger('shopify')
+logger = logging.getLogger('amazon')
+
+from odoo import api, fields, models, _
+
 
 class MagentoLog(models.Model):
     _name='shopify.log'
@@ -34,13 +35,18 @@ class MagentoLog(models.Model):
     shopify_log_details_id = fields.One2many('shopify.log.details', 'shopify_log_id', string='Shopify Log Details')
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance')
 
-
 class MagentoLogDetails(models.Model):
     _name='shopify.log.details'
+    
     
     name = fields.Char('name')
     description = fields.Char('Log Description')
     create_date = fields.Datetime(string="Create DateTime")
     shopify_log_id = fields.Many2one('shopify.log', string='Shopify Log')
-    status = fields.Char('Status')
-
+    
+#     @api.model
+#     def create(self, vals):
+#         if not vals.get('name'):
+#             vals['name']= self.env['ir.sequence'].next_by_code('amazon.log') or 'Log Sequence'
+#         res = super(AmazonLog, self).create(vals)
+#         return res

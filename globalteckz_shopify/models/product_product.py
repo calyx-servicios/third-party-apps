@@ -19,13 +19,16 @@
 ###############################################################################
 
 
-from odoo import fields, api, models
-from odoo.exceptions import ValidationError
-import requests, json
-
+from odoo import fields,api,models
+from odoo.exceptions import UserError, ValidationError
+import logging
+import requests
+import json
+logger = logging.getLogger('product')
 
 class ProductProduct(models.Model):
     _inherit='product.product'
+    
     
     gt_requires_shipping = fields.Boolean(string='Requires Shipping')
     gt_product_id = fields.Char(string='Product ID')
@@ -54,6 +57,7 @@ class ProductProduct(models.Model):
         for store in stores:
             if store.gt_shopify_instance_id.id == self.product_tmpl_id.gt_shopify_instance_id.id:
                 return store.primary_stock_location
+
 
     @api.multi
     def update_variant(self,products_response,instance,log_id):
@@ -109,33 +113,30 @@ class ProductProduct(models.Model):
             self.write(vals)
 
         except Exception as exc:
-            log_line_obj.create({'name':'Create Product Template','description':exc,'status':'ERROR','create_date': fields.date.today(),
+            logger.error('Exception===================:  %s', exc)
+            log_line_obj.create({'name':'Create Product Template','description':exc,'create_date': fields.date.today(),
                                       'shopify_log_id':log_id.id})
             log_id.write({'description': 'Something went wrong'}) 
         return True
     
     @api.multi
     def _is_inventory_tracking(self, shopify_instance_id):
-        inventory_tracking = False
+        
         shopify_url = str(shopify_instance_id.gt_location)
         api_key = str(shopify_instance_id.gt_api_key)
         api_pass = str(shopify_instance_id.gt_password)
         shop_url = shopify_url + '/admin/api/2021-01/inventory_items/'+ str(self.gt_product_inventory_id)+ '.json'
         response = requests.get( shop_url,auth=(api_key,api_pass))
         product_rs = json.loads(response.text)
-        
-        if 'inventory_item' in product_rs:
-            if 'tracked' in product_rs['inventory_item']:
-                inventory_tracking = product_rs['inventory_item']['tracked']
 
-        return inventory_tracking
-
-
+        return product_rs['inventory_item']['tracked']
+    
 class GtInventoryPolicy(models.Model):
     _name = 'gt.inventory.policy'
     
     name = fields.Char(string='Inventory Policy')
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance')
+    
     
     
 class GtInventoryManagement(models.Model):
@@ -150,4 +151,9 @@ class GtFulfillmentService(models.Model):
     
     name = fields.Char(string='Fulfillment Service')
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance')
-
+    
+    
+    
+    
+    
+    

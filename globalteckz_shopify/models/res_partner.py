@@ -19,11 +19,11 @@
 ###############################################################################
 
 
-from odoo import fields, models
-
+from odoo import fields,models
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
+    
     
     gt_customer_note = fields.Text(string='Note')
     gt_customer_state = fields.Many2one('gt.shopify.customer.state', string='Customer state')
@@ -43,8 +43,9 @@ class ResPartner(models.Model):
     gt_shopify_instance_id = fields.Many2one('gt.shopify.instance', string='Shopify Instance',readonly=True)
     
     
+    
 class GtShopifyCustomerState(models.Model):
     _name = 'gt.shopify.customer.state'
     
+    
     name = fields.Char(string='Name')
-

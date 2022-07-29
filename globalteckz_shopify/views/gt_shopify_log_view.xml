@@ -24,7 +24,6 @@
                                     <tree editable="bottom" string="Magneot Log Line">
                                         <field name="name"/>
                                         <field name="description"/>
-                                        <field name="status"/>
                                         <field name="create_date"/>
                                     </tree>
                                 </field>
@@ -43,7 +42,6 @@
                 <tree string="Shopify">
                     <field name="name"/>
                     <field name="description"/>
-                    <field name="create_date"/>
                 </tree>
             </field>
         </record>
