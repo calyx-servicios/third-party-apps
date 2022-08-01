@@ -177,14 +177,38 @@ class GTShopifyInstance(models.Model):
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
             api_pass = str(self.gt_password)
-            shop_url = shopify_url + 'admin/products.json?limit=250'
+            shop_url = shopify_url + 'admin/products.json'
             response = requests.get( shop_url,auth=(api_key,api_pass))
             product_rs=json.loads(response.text)
             product_items = product_rs['products']
-            
-            for products in product_items:
-                product_tmpl_obj.gt_create_product_template(products,self,log_id)
+            total_products_url = shopify_url + 'admin/api/2022-01/products/count.json'    
+            total_products_response = requests.get(total_products_url, auth=(api_key,api_pass))
+            total_products = json.loads(total_products_response.text)['count']
+            total_count = 0
+
+            if 'next' in response.links:
+                shop_url_next = response.links['next']['url']
+            else:
+                shop_url_next = False
+
+            while total_count <= total_products and total_products != 0:
+                
+                total_count += len(product_items)
+                logger.info('Total Request ===================:  %s', total_count)
+
+                for products in product_items:
+                    product_tmpl_obj.gt_create_product_template(products,self,log_id)
         
+                if shop_url_next:
+                    response = requests.get( shop_url_next,auth=(api_key,api_pass))
+                    product_rs=json.loads(response.text)
+                    product_items = product_rs['products']
+                    if 'next' in response.links:
+                        shop_url_next = response.links['next']['url']
+                    else:
+                        shop_url_next = False
+
+
         except Exception as exc:
             logger.error('Exception===================:  %s', exc)
             log_id.write({'description': exc}) 
@@ -200,7 +224,8 @@ class GTShopifyInstance(models.Model):
             rec.gt_import_shopify_customers()
             rec.gt_import_shopify_products()
             rec.gt_import_shopify_orders()
-            rec.gt_export_shopify_stock()
+            # Comentamos el cron de actualizacion de stock para realizar pruebas
+            # rec.gt_export_shopify_stock()
         _logger.info("FINISH %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
     
     @api.multi
@@ -498,7 +523,6 @@ class GTShopifyInstance(models.Model):
                     customer_rs = json.loads(response.text)
                     items = customer_rs['customers']
                     print('===> url: ',shop_url_next)
-                    print('===> Faltan: ',len(items))
                     if 'next' in response.links:
                         shop_url_next = response.links['next']['url']
 
@@ -567,7 +591,7 @@ class GTShopifyInstance(models.Model):
             else:
                 shop_url_next = False
         
-            while total_count <= total_order:
+            while total_count <= total_order and total_order != 0:
                 
                 total_count += len(items)
 
@@ -693,75 +717,76 @@ class GTShopifyInstance(models.Model):
                         # Como la SO puede contener productos con seguimiento de inventario, o no.
                         # Se crearan 2 ordenes de venta para utilizar almacenes diferentes.
                         # Ya que los que deban ir a fabricacion, deberian estar asociados a un almacen que tenga configurada esa ruta.
-                        sale_ids = sale_obj.search([('name','=',str(order['order_number'])),('gt_shopify_order_id','=',str(order['id']))])
-
-                        if not sale_ids:
-                            if product_lines:                      
-                                value = {
-                                    'name':str(order['order_number']),
-                                    'partner_id':customer_id.id, 
-                                    'order_line': product_lines,
-                                    'warehouse_id': self.gt_workflow_id.warehouse_id.id,
-                                    'gt_shopify_instance_id': self.id, 
-                                    'gt_shopify_order': True,
-                                    'payment_term_id':payment_id,
-                                    'gt_shopify_order_id': order['id'],
-                                    'gt_shopify_order_status_url':order_stauts_url,
-                                    'gt_shopify_order_confirmed':order_confirm,
-                                    'gt_shopify_order_currency':order_currency,
-                                    'gt_shopify_tax_included':tax_incl,
-                                    'gt_shopify_financial_status':order['financial_status'],
-                                    'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
-                                    'gt_shopify_order_status': self._get_shopify_status(order['id']),
-                                    'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
-                                    'email_partner': customer_id.email if customer_id.email  else 'No Suministrado',
-                                }
-                                print("===> CREATE SO: ",str(order['order_number']))
-                                sale_order = sale_obj.create(value)
-                                self.env.cr.commit()
-                                logger.info('Create Order===================:  %s', sale_order.name)
-                                
-                            if product_untracked_lines:
-                                vals = {
-                                    'name':str(order['order_number']),
-                                    'partner_id':customer_id.id, 
-                                    'order_line': product_untracked_lines,
-                                    'warehouse_id': self.gt_workflow_id.warehouse_manufacturing_id.id,
-                                    'gt_shopify_instance_id': self.id, 
-                                    'gt_shopify_order': True,
-                                    'payment_term_id':payment_id,
-                                    'gt_shopify_order_id': order['id'],
-                                    'gt_shopify_order_status_url':order_stauts_url,
-                                    'gt_shopify_order_confirmed':order_confirm,
-                                    'gt_shopify_order_currency':order_currency,
-                                    'gt_shopify_tax_included':tax_incl,
-                                    'gt_shopify_financial_status':order['financial_status'],
-                                    'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
-                                    'gt_shopify_order_status': self._get_shopify_status(order['id']),
-                                    'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
-                                    'email_partner': customer_id.email if customer_id.email  else 'No Suministrado',
-                                }
-                                print("===> CREATE SO, sale_order_manufacturing => ",str(order['order_number']))
-                                sale_order_manufacturing = sale_obj.create(vals)
-                                self.env.cr.commit()
-                                logger.info('Create Order===================:  %s', sale_order_manufacturing.name)
-
-                        else:
-                            for sale_id in sale_ids:       
-                                vals_update = {
-                                    'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
-                                    'gt_shopify_financial_status': order['financial_status'],
-                                    'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
-                                    'gt_shopify_order_status': self._get_shopify_status(order['id'])
-                                }
-                                print("===> WRITE SO => ",str(order['order_number']))
-                                sale_id.write(vals_update)
-                                self.env.cr.commit()
-                                logger.info('Update Order===================:  %s', sale_id.name)
-
-                                if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
-                                    sale_id.action_confirm()
+                        
+                        if order['order_number']:
+                            sale_ids = sale_obj.search([('name','=',str(order['order_number'])),('gt_shopify_order_id','=',str(order['id']))])
+                            if not sale_ids:
+                                if product_lines:                      
+                                    value = {
+                                        'name':str(order['order_number']),
+                                        'partner_id':customer_id.id, 
+                                        'order_line': product_lines,
+                                        'warehouse_id': self.gt_workflow_id.warehouse_id.id,
+                                        'gt_shopify_instance_id': self.id, 
+                                        'gt_shopify_order': True,
+                                        'payment_term_id':payment_id,
+                                        'gt_shopify_order_id': order['id'],
+                                        'gt_shopify_order_status_url':order_stauts_url,
+                                        'gt_shopify_order_confirmed':order_confirm,
+                                        'gt_shopify_order_currency':order_currency,
+                                        'gt_shopify_tax_included':tax_incl,
+                                        'gt_shopify_financial_status':order['financial_status'],
+                                        'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
+                                        'gt_shopify_order_status': self._get_shopify_status(order['id']),
+                                        'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
+                                        'email_partner': customer_id.email if customer_id.email  else 'No Suministrado',
+                                    }
+                                    print("===> CREATE SO: ",str(order['order_number']))
+                                    sale_order = sale_obj.create(value)
                                     self.env.cr.commit()
+                                    logger.info('Create Order===================:  %s', sale_order.name)
+                                    
+                                if product_untracked_lines:
+                                    vals = {
+                                        'name':str(order['order_number']),
+                                        'partner_id':customer_id.id, 
+                                        'order_line': product_untracked_lines,
+                                        'warehouse_id': self.gt_workflow_id.warehouse_manufacturing_id.id,
+                                        'gt_shopify_instance_id': self.id, 
+                                        'gt_shopify_order': True,
+                                        'payment_term_id':payment_id,
+                                        'gt_shopify_order_id': order['id'],
+                                        'gt_shopify_order_status_url':order_stauts_url,
+                                        'gt_shopify_order_confirmed':order_confirm,
+                                        'gt_shopify_order_currency':order_currency,
+                                        'gt_shopify_tax_included':tax_incl,
+                                        'gt_shopify_financial_status':order['financial_status'],
+                                        'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
+                                        'gt_shopify_order_status': self._get_shopify_status(order['id']),
+                                        'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
+                                        'email_partner': customer_id.email if customer_id.email  else 'No Suministrado',
+                                    }
+                                    print("===> CREATE SO, sale_order_manufacturing => ",str(order['order_number']))
+                                    sale_order_manufacturing = sale_obj.create(vals)
+                                    self.env.cr.commit()
+                                    logger.info('Create Order===================:  %s', sale_order_manufacturing.name)
+
+                            else:
+                                for sale_id in sale_ids:       
+                                    vals_update = {
+                                        'gt_shopify_payment_gateway_names': str(order['payment_gateway_names'][0]) if order['payment_gateway_names'] else '',
+                                        'gt_shopify_financial_status': order['financial_status'],
+                                        'gt_shopify_fulfillment_status': 'Not ready'if order['fulfillment_status'] == None else order['fulfillment_status'],
+                                        'gt_shopify_order_status': self._get_shopify_status(order['id'])
+                                    }
+                                    print("===> WRITE SO => ",str(order['order_number']))
+                                    sale_id.write(vals_update)
+                                    self.env.cr.commit()
+                                    logger.info('Update Order===================:  %s', sale_id.name)
+
+                                    if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
+                                        sale_id.action_confirm()
+                                        self.env.cr.commit()
                             
                     except Exception as exc:
                         logger.error('Exception===================:  %s', exc)
@@ -777,15 +802,12 @@ class GTShopifyInstance(models.Model):
                     items = customer_rs['orders']
                     
                     print('===> url: ',shop_url_next)
-                    print('===> Faltan: ',len(items))
                     if 'next' in response.links:
                         shop_url_next = response.links['next']['url']
                     else:
                         shop_url_next = False
 
-                    
                     logger.info('Orders Count Response ===================:  %s', len(items))
-                    total_count
                 
         except Exception as exc: 
             logger.error('Exception===================:  %s', exc)
