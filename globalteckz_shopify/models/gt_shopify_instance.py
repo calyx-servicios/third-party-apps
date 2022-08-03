@@ -443,7 +443,7 @@ class GTShopifyInstance(models.Model):
             else:
                 shop_url_next = False
 
-            while total_count <= total_customer:
+            while total_count <= total_customer and total_customer != 0:
                 total_count += len(items)
                 print('==> total_count: ',total_count)
                 print('==> total_customer: ',total_customer)
