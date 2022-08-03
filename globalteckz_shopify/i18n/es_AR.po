@@ -1471,3 +1471,7 @@ msgstr "shopify.log.details"
 msgid "shopify.wizard"
 msgstr "shopify.wizard"
 
+#. module: globalteckz_shopify
+#: model:ir.model.fields,field_description:globalteckz_shopify.field_gt_shopify_instance_shopify_created_at_min
+msgid "Last Cron Run"
+msgstr "Ultima Ejecucion Cron"

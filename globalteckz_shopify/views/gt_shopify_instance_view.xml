@@ -54,6 +54,9 @@
                         <group>
                             <field name="gt_workflow_id"/>
                         </group>
+                        <group>
+                            <field name="shopify_created_at_min"/>
+                        </group>
                     </group>
                     <notebook>
                         <page string="Manage Products">

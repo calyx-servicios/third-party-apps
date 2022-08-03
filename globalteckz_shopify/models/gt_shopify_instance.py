@@ -25,7 +25,7 @@ import json
 import datetime
 import base64
 import urllib
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import logging
 from logging import getLogger
 logger = logging.getLogger('product')
@@ -45,7 +45,7 @@ class GTShopifyInstance(models.Model):
     count_shopify_customers = fields.Integer(compute='get_shopify_customers_count')
     count_shopify_template = fields.Integer(compute='get_shopify_template_count')
     count_shopify_variant = fields.Integer(compute='get_shopify_variant_count')
-    
+    shopify_created_at_min = fields.Datetime(string='Last Cron Run')
     
     @api.multi
     def get_shopify_template_count(self):
@@ -167,7 +167,10 @@ class GTShopifyInstance(models.Model):
         return True
 
     @api.one
-    def gt_import_shopify_products(self):    
+    def gt_import_shopify_products(self):
+        date_updated_at_min = datetime.strptime(self.shopify_created_at_min,'%Y-%m-%d %H:%M:%S')
+        date_updated_at_min = date_updated_at_min - timedelta(hours=3)
+        str_updated_at_min = date_updated_at_min.isoformat() + '-03:00'
         log_obj = self.env['shopify.log']
         log_line_obj = self.env['shopify.log.details']
         log_id = log_obj.create({'create_date':date.today(),'name': 'Import Product','description': 'Successfull','gt_shopify_instance_id': self.id})
@@ -177,11 +180,11 @@ class GTShopifyInstance(models.Model):
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
             api_pass = str(self.gt_password)
-            shop_url = shopify_url + 'admin/products.json'
+            shop_url = shopify_url + 'admin/products.json?updated_at_min=' + str_updated_at_min
             response = requests.get( shop_url,auth=(api_key,api_pass))
             product_rs=json.loads(response.text)
             product_items = product_rs['products']
-            total_products_url = shopify_url + 'admin/api/2022-01/products/count.json'    
+            total_products_url = shopify_url + 'admin/api/2022-01/products/count.json?updated_at_min=' + str_updated_at_min   
             total_products_response = requests.get(total_products_url, auth=(api_key,api_pass))
             total_products = json.loads(total_products_response.text)['count']
             total_count = 0
@@ -226,6 +229,7 @@ class GTShopifyInstance(models.Model):
             rec.gt_import_shopify_orders()
             # Comentamos el cron de actualizacion de stock para realizar pruebas
             # rec.gt_export_shopify_stock()
+            rec.shopify_created_at_min = datetime.now()
         _logger.info("FINISH %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
     
     @api.multi
@@ -400,6 +404,9 @@ class GTShopifyInstance(models.Model):
     
     @api.one
     def gt_import_shopify_customers(self):
+        date_updated_at_min = datetime.strptime(self.shopify_created_at_min,'%Y-%m-%d %H:%M:%S')
+        date_updated_at_min = date_updated_at_min - timedelta(hours=3)
+        str_updated_at_min = date_updated_at_min.isoformat() + '-03:00'
         log_obj = self.env['shopify.log']
         log_line_obj = self.env['shopify.log.details']
         log_id = log_obj.create({'create_date':date.today(),'name': 'Import Customers','description': 'Successfull','gt_shopify_instance_id': self.id})
@@ -412,7 +419,7 @@ class GTShopifyInstance(models.Model):
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
             api_pass = str(self.gt_password)
-            shop_url = shopify_url + 'admin/api/2022-01/customers.json'
+            shop_url = shopify_url + 'admin/api/2022-01/customers.json?updated_at_min=' + str_updated_at_min
             response = requests.get( shop_url,auth=(api_key,api_pass))
             customer_rs=json.loads(response.text)
             items = customer_rs['customers']
@@ -425,7 +432,7 @@ class GTShopifyInstance(models.Model):
             zip_code = ''
             name = ''
             print('==> shop_url: ',shop_url)
-            total_customer_url = shopify_url + 'admin/api/2022-01/customers/count.json'
+            total_customer_url = shopify_url + 'admin/api/2022-01/customers/count.json?updated_at_min=' + str_updated_at_min
             total_customer_response = requests.get(total_customer_url,auth=(api_key,api_pass))
             total_customer = json.loads(total_customer_response.text)['count']
             total_count = 0
@@ -557,6 +564,9 @@ class GTShopifyInstance(models.Model):
 
     @api.one
     def gt_import_shopify_orders(self):
+        date_updated_at_min = datetime.strptime(self.shopify_created_at_min,'%Y-%m-%d %H:%M:%S')
+        date_updated_at_min = date_updated_at_min - timedelta(hours=3)
+        str_updated_at_min = date_updated_at_min.isoformat() + '-03:00'
         log_obj = self.env['shopify.log']
         log_line_obj = self.env['shopify.log.details']
         log_id = log_obj.create({'create_date':date.today(),'name': 'Import Orders','description': 'Successfull','gt_shopify_instance_id': self.id})
@@ -573,13 +583,13 @@ class GTShopifyInstance(models.Model):
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
             api_pass = str(self.gt_password)
-            shop_url = shopify_url + 'admin/orders.json'
+            shop_url = shopify_url + 'admin/orders.json?updated_at_min=' + str_updated_at_min
             response = requests.get( shop_url,auth=(api_key,api_pass))
             customer_rs=json.loads(response.text)
             items = customer_rs['orders']
             print('==> shop_url: ',shop_url)
             print('==> COUNT. ITEMS: ', len(items))
-            total_order_url = shopify_url + 'admin/api/2022-01/orders/count.json'
+            total_order_url = shopify_url + 'admin/api/2022-01/orders/count.json?updated_at_min=' + str_updated_at_min
             total_order_response = requests.get( total_order_url,auth=(api_key,api_pass))
             total_order = json.loads(total_order_response.text)['count']
             total_count = 0
