@@ -190,8 +190,8 @@ class SearchAssistant(models.TransientModel):
                     'selected': selected,
                     'product_id': product.id,
                     'attribute_value_ids': [(6, 0, product.attribute_value_ids.ids)],
-                    'price_unit': product.list_price,
-                    'qty_available_today': available_qty,
+                    'price_unit': product.lst_price,
+                    'qty_available_today': product.qty_available_not_res,
                     'description': product.description or '',
                     'brand_id': product.product_tmpl_id.product_brand_id
                 }))
