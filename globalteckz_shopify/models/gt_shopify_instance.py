@@ -227,8 +227,7 @@ class GTShopifyInstance(models.Model):
             rec.gt_import_shopify_customers()
             rec.gt_import_shopify_products()
             rec.gt_import_shopify_orders()
-            # Comentamos el cron de actualizacion de stock para realizar pruebas
-            # rec.gt_export_shopify_stock()
+            rec.gt_export_shopify_stock()
             rec.shopify_created_at_min = datetime.now()
         _logger.info("FINISH %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
     
