@@ -9,9 +9,9 @@
 
                 <group>
                     <group>
-                        <field name="partner_readonly" invisible="1" options="{'no_create': True}" />
-                        <field name="partner_id" colspan="4" attrs="{'readonly':[('partner_readonly','=',True)]}" options="{'no_create': True}" />
-                        <field name="team_id" colspan="4" options="{'no_create': True}" />
+                        <field name="partner_readonly" invisible="1"/>
+                        <field name="partner_id" colspan="4" attrs="{'readonly':[('partner_readonly','=',True)]}"/>
+                        <field name="team_id" colspan="4"/>
                     </group>
                     <group>
                         <field name="stock_date" />
