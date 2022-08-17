@@ -309,10 +309,9 @@ class ProductTemplate(models.Model):
         shopify_url = str(self.gt_shopify_instance_id.gt_location)
         api_key = str(self.gt_shopify_instance_id.gt_api_key)
         api_pass = str(self.gt_shopify_instance_id.gt_password)
-        last_update = self.gt_shopify_instance_id.shopify_created_at_min
         product_ids = product_obj.search([('product_tmpl_id.gt_shopify_exported','=', True),('product_tmpl_id.id', '=', self.id )])
         for products in product_ids:
-            qty_available = self.env['stock.quant'].search([('product_id','=',products.id),('location_id','=',self.gt_shopify_instance_id.gt_workflow_id.stock_location_id.id),('write_date','>=',last_update)])
+            qty_available = self.env['stock.quant'].search([('product_id','=',products.id),('location_id','=',self.gt_shopify_instance_id.gt_workflow_id.stock_location_id.id)])
             quantity = qty_available.quantity - qty_available.reserved_quantity
             if quantity >= 0:
                 vals =  {
