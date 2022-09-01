@@ -20,5 +20,9 @@
         top: 0px !important;
         background-color: #eee;
     }
+    .o_field_one2many.o_field_widget.o_field_x2many.o_field_x2many_list .o_list_view.o_list_optional_columns div.table-responsive{
+        max-height: 28em;
+        overflow-y: scroll
+    }
 }
 
