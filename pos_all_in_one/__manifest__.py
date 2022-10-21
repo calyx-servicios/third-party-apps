@@ -3,7 +3,7 @@
 
 {
     "name" : "POS All in one -Advance Point of Sale All in one Features",
-    "version" : "13.0.2.8",
+    "version" : "13.0.2.9",
     "category" : "Point of Sale",
     'summary': 'All in one pos Reprint pos Return POS Stock pos gift import sale from pos pos multi currency payment pos pay later pos internal transfer pos disable payment pos product template pos product operation pos loyalty rewards all pos reports pos stock all pos',
     "description": """
