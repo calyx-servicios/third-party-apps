@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record model="ir.ui.view" id="account_move_line_balance_tree_grouped">
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account_ux.view_move_line_tree_grouped" />
+        <field name="arch" type="xml">
+            <field name="balance" position="after">
+                <field name="exchange_currency_id" optional="show"/>
+                <field name="exchange_amount" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
