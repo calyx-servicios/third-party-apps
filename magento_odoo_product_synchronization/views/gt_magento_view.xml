@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="gt_magento_instance_skusynchro_form_view" model="ir.ui.view">
+        <field name="name">gt.magento.instance.skusynchro.form.view</field>
+        <field name="model">gt.magento.instance</field>
+        <field name="inherit_id" ref="globalteckz_magento_2.gt_magento_instance_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='GtImportMagentoProductSkuForce']" position="after">
+                <button name="GtSynchroMagentoOdooSku" string="Sincronizar Productos x SKU" type="object" class="btn-primary"/>
+            </xpath>
+        </field>
+    </record> 
+
+</odoo>
