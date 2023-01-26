@@ -16,7 +16,10 @@ class AccountMoveLine(models.Model):
     @api.depends('exchange_currency_id')
     def _compute_exchange_amount(self):
         for move in self:
-            rate = self.env['res.currency.rate'].search([('currency_id','=',move.exchange_currency_id.id),('name','<=',move.date)],order='name desc',limit=1)
+            rate = self.env['res.currency.rate'].search([('currency_id','=',move.exchange_currency_id.id),
+                                                         ('name','<=',move.date),
+                                                         ('company_id','=',move.company_id.id)],
+                                                        order='name desc',limit=1)
             if rate:
                 move.exchange_amount = move.balance * rate[0].rate
             else:
