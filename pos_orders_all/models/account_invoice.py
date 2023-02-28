@@ -22,7 +22,7 @@ class AccountInvoiceInherit(models.Model):
 
 	pos_order_id = fields.Many2one('pos.order',string="POS order")
 
-	def _recompute_tax_lines(self, recompute_tax_base_amount=False):
+	def _recompute_tax_lines(self, recompute_tax_base_amount=False, tax_rep_lines_to_recompute=None):
 		''' Compute the dynamic tax lines of the journal entry.
 
 		:param lines_map: The line_ids dispatched by type containing:
@@ -180,6 +180,9 @@ class AccountInvoiceInherit(models.Model):
 				# The tax line is no longer used, drop it.
 				self.line_ids -= tax_line
 			elif tax_line:
+				if tax_rep_lines_to_recompute and tax_line.tax_repartition_line_id not in tax_rep_lines_to_recompute:
+					continue
+
 				tax_line.update({
 					'amount_currency': taxes_map_entry['amount_currency'],
 					'debit': taxes_map_entry['balance'] > 0.0 and taxes_map_entry['balance'] or 0.0,
@@ -190,6 +193,10 @@ class AccountInvoiceInherit(models.Model):
 				create_method = in_draft_mode and self.env['account.move.line'].new or self.env['account.move.line'].create
 				tax_repartition_line_id = taxes_map_entry['grouping_dict']['tax_repartition_line_id']
 				tax_repartition_line = self.env['account.tax.repartition.line'].browse(tax_repartition_line_id)
+
+				if tax_rep_lines_to_recompute and tax_repartition_line not in tax_rep_lines_to_recompute:
+					continue
+
 				tax = tax_repartition_line.invoice_tax_id or tax_repartition_line.refund_tax_id
 				tax_line = create_method({
 					'name': tax.name,
