@@ -36,21 +36,29 @@ odoo.define("pos_all_in_one.bi_pos_product_template", function(require){
 		add_product_templates: function(product_templates){
 			for(var temp=0 ; temp < product_templates.length; temp++){
 				var product_template_attribute_value_ids = [];
+				var product_variant_ids = [];
+				var qty_variants = 0;
 				var prod_temp =  product_templates[temp] ; 
 				this.product_template_by_id[prod_temp.id] = prod_temp;
-
-				for (var prod = 0; prod <prod_temp.product_variant_ids.length; prod++){
+				
+				for (var prod = 0; prod < prod_temp.product_variant_ids.length; prod++){
 					var product = this.product_by_id[prod_temp.product_variant_ids[prod]];
 					if(product){
-						for (var i = 0; i < product.product_template_attribute_value_ids.length; i++){
-							product_template_attribute_value_ids.push(product.product_template_attribute_value_ids[i]);
-						}
-						product.product_variant_count = prod_temp.product_variant_count;
+						qty_variants = product.product_template_attribute_value_ids.length;
+						product.product_template_attribute_value_ids.forEach(function(value, index){
+							product_template_attribute_value_ids.push(value);
+						});
+						product_variant_ids.push(product.id);
+						product.product_variant_count = qty_variants;
 						product.template_name = prod_temp.name
 					}
 				}
 				const unique_attribute_value_ids = [...new Set(product_template_attribute_value_ids)]
 				this.product_template_by_id[prod_temp.id].product_template_attribute_value_ids = unique_attribute_value_ids;
+				this.product_template_by_id[prod_temp.id].product_variant_ids = product_variant_ids;
+				if(qty_variants != 0){
+					this.product_template_by_id[prod_temp.id].product_variant_count = qty_variants;
+				}
 			}
 		},
 	});
