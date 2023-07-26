@@ -24,7 +24,7 @@ class FollowupPrint(models.TransientModel):
                             "to plan your follow-ups",
                        default=lambda *a: time.strftime('%Y-%m-%d'))
     followup_id = fields.Many2one('followup.followup', 'Follow-Up',
-                                  required=True, readonly=True,
+                                  required=True,
                                   default=_get_followup)
     partner_ids = fields.Many2many('followup.stat.by.partner',
                                    'partner_stat_rel', 'osv_memory_id',
