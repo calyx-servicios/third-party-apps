@@ -187,6 +187,12 @@ class GTShopifyInstance(models.Model):
             total_products_url = shopify_url + 'admin/api/2022-01/products/count.json?updated_at_min=' + str_updated_at_min   
             total_products_response = requests.get(total_products_url, auth=(api_key,api_pass))
             total_products = json.loads(total_products_response.text)['count']
+            logger.error('TOTAL_PRODUCTS_URL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            logger.error(total_products_url)
+            logger.error('API_KEY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            logger.error(api_key)
+            logger.error('API_PASS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            logger.error(api_pass)
             total_count = 0
 
             if 'next' in response.links:

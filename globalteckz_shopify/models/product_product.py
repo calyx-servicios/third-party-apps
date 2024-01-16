@@ -44,7 +44,8 @@ class ProductProduct(models.Model):
     gt_product_inventory_id = fields.Char('Product Inventory ID')
     gt_product_price_compare = fields.Float('Product Price Compare')
     gt_product_inventory_tracked = fields.Boolean('Tracking')
-    
+    shopify_import_error = fields.Boolean(string='Import Error')
+    shopify_import_error_log = fields.Char(string='Error Description') 
 
     @api.constrains('gt_product_price_compare')
     def _check_gt_product_price_compare(self):
