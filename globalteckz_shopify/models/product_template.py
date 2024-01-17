@@ -139,99 +139,79 @@ class ProductTemplate(models.Model):
         tags_lst = []
         type_id = []
         
-        #try:
-        if 'product_type' in products:
-            product_type_id = product_type_obj.search([('name','=',products['product_type']),('gt_shopify_instance_id','=',instance.id)])
-            if len(product_type_id) > 0 :
-                type_id = product_type_id.id
-            else:
-                type_id = product_type_obj.create({'name': products['product_type'], 'gt_shopify_instance_id':instance.id }).id
-        if 'title' in products:
-            scope_id = scope_obj.search([('name','=',products['published_scope']),('gt_shopify_instance_id','=',instance.id)])
-            if len(scope_id) > 0 :
-                scopes =  scope_id.id
-            else:
-                scopes = scope_obj.create({'name':str(products['published_scope']),'gt_shopify_instance_id':instance.id}).id
-        if 'vendor' in products:
-            vendor_id = vendor_obj.search([('name','=',products['vendor']),('gt_shopify_instance_id','=',instance.id)])
-            if len(scope_id) > 0 :
-                vendors =  vendor_id.id
-            else:
-                vendors = vendor_obj.create({'name':str(products['vendor']),'gt_shopify_instance_id':instance.id}).id
-        if 'tags' in products:
-            if str(products['tags']) != '':
-                tags_split = products['tags'].split(',')
-                for tags in tags_split:
-                    tags_id = tags_obj.search([('name','=',str(tags)),('gt_shopify_instance_id','=',instance.id)])
-                    if len(tags_id) > 0:
-                        tags_lst.append(tags_id.id)
-                    else:
-                        tags_id = tags_obj.create({'name':str(tags),'gt_shopify_instance_id':instance.id})
-                        tags_lst.append(tags_id.id)
-        variant = []
-        
-        def _variants(self):
-
-            if len(self) == 1:
-                return len(self[0]['values'])
-            elif len(self) == 2:
-                return len(self[1]['values'])
-            elif len(self) == 3:
-                return len(self[2]['values'])    
-            else:  
-                return 1
-
-        for options in products['options']:
-            attribute_id = []
-            att_search = []
-            value_search = []
-            if 'name' in options:
-                att_id = product_attribute_obj.search([('name','=',str(options['name']))])
-                att_search.append(att_id.id)
-                if att_id:
-                    attribute_id = att_search[0]
+        try:
+            if 'product_type' in products:
+                product_type_id = product_type_obj.search([('name','=',products['product_type']),('gt_shopify_instance_id','=',instance.id)])
+                if len(product_type_id) > 0 :
+                    type_id = product_type_id.id
                 else:
-                    attribute_id = product_attribute_obj.create({'name': str(options['name']),'create_variant': True}).id
-            if 'values' in options:
-                value_list = []
-                value_id = []
-                for values in options['values']:
-                    value = product_attribute_option_obj.search([('attribute_id','=',attribute_id),('name','=',values)])
-                    value_search.append(value.id)
-                    if value:
-                        value_id = value
-                    elif values == 'Negro' and attribute_id == 2:
-                        value_id = 2706
-                    elif values == 'Cuadros doble' and attribute_id == 101:
-                        value_id = 2770
-                    elif values == 'Verde pizarra' and attribute_id == 66:
-                        value_id = 1833
+                    type_id = product_type_obj.create({'name': products['product_type'], 'gt_shopify_instance_id':instance.id }).id
+            if 'title' in products:
+                scope_id = scope_obj.search([('name','=',products['published_scope']),('gt_shopify_instance_id','=',instance.id)])
+                if len(scope_id) > 0 :
+                    scopes =  scope_id.id
+                else:
+                    scopes = scope_obj.create({'name':str(products['published_scope']),'gt_shopify_instance_id':instance.id}).id
+            if 'vendor' in products:
+                vendor_id = vendor_obj.search([('name','=',products['vendor']),('gt_shopify_instance_id','=',instance.id)])
+                if len(scope_id) > 0 :
+                    vendors =  vendor_id.id
+                else:
+                    vendors = vendor_obj.create({'name':str(products['vendor']),'gt_shopify_instance_id':instance.id}).id
+            if 'tags' in products:
+                if str(products['tags']) != '':
+                    tags_split = products['tags'].split(',')
+                    for tags in tags_split:
+                        tags_id = tags_obj.search([('name','=',str(tags)),('gt_shopify_instance_id','=',instance.id)])
+                        if len(tags_id) > 0:
+                            tags_lst.append(tags_id.id)
+                        else:
+                            tags_id = tags_obj.create({'name':str(tags),'gt_shopify_instance_id':instance.id})
+                            tags_lst.append(tags_id.id)
+            variant = []
+            
+            def _variants(self):
+
+                if len(self) == 1:
+                    return len(self[0]['values'])
+                elif len(self) == 2:
+                    return len(self[1]['values'])
+                elif len(self) == 3:
+                    return len(self[2]['values'])    
+                else:  
+                    return 1
+
+            for options in products['options']:
+                attribute_id = []
+                att_search = []
+                value_search = []
+                if 'name' in options:
+                    att_id = product_attribute_obj.search([('name','=',str(options['name']))])
+                    att_search.append(att_id.id)
+                    if att_id:
+                        attribute_id = att_search[0]
                     else:
-                        value_id = product_attribute_option_obj.create({'name': values,'attribute_id': attribute_id})
-                    value_list.append(value_id.id)
+                        attribute_id = product_attribute_obj.create({'name': str(options['name']),'create_variant': True}).id
+                if 'values' in options:
+                    value_list = []
+                    value_id = []
+                    for values in options['values']:
+                        value = product_attribute_option_obj.search([('attribute_id','=',attribute_id),('name','=',values)])
+                        value_search.append(value.id)
+                        if value:
+                            value_id = value
+                        elif values == 'Negro' and attribute_id == 2:
+                            value_id = 2706
+                        elif values == 'Cuadros doble' and attribute_id == 101:
+                            value_id = 2770
+                        elif values == 'Verde pizarra' and attribute_id == 66:
+                            value_id = 1833
+                        else:
+                            value_id = product_attribute_option_obj.create({'name': values,'attribute_id': attribute_id})
+                        value_list.append(value_id.id)
 
-                variant.append((0,0,{'attribute_id': attribute_id,'value_ids': [(6, 0,value_list)]}))
-        
-        vals = {
-            'name': products['title'] if 'title' in products else '',
-            'type': "product",
-            'gt_shopify_product':True,
-            'gt_published_scope' : scopes,
-            'gt_shopify_description': products['body_html'] if 'body_html' in products else '',
-            'gt_vendor' : vendors,
-            'gt_product_id' : str(products['id']) if 'id' in products else '',
-            'gt_product_tags': [(6, 0, tags_lst)],
-            'gt_shopify_instance_id':instance.id,
-            'attribute_line_ids': variant,
-            'gt_shopify_exported': True,
-            'gt_shopify_product_type' : type_id,
-            'gt_shopify_active' : self._get_product_active(instance),
-        }
-        product_id = self.search([('gt_product_id','=',str(products['id'])),('gt_shopify_instance_id','=',instance.id),('gt_shopify_product','=',True)])
-
-        if not product_id:
-            self.create(vals)
-        else:
+                    variant.append((0,0,{'attribute_id': attribute_id,'value_ids': [(6, 0,value_list)]}))
+            
             vals = {
                 'name': products['title'] if 'title' in products else '',
                 'type': "product",
@@ -239,75 +219,95 @@ class ProductTemplate(models.Model):
                 'gt_published_scope' : scopes,
                 'gt_shopify_description': products['body_html'] if 'body_html' in products else '',
                 'gt_vendor' : vendors,
+                'gt_product_id' : str(products['id']) if 'id' in products else '',
+                'gt_product_tags': [(6, 0, tags_lst)],
                 'gt_shopify_instance_id':instance.id,
+                'attribute_line_ids': variant,
                 'gt_shopify_exported': True,
                 'gt_shopify_product_type' : type_id,
-                'gt_shopify_active' : product_id._get_product_active(instance)
+                'gt_shopify_active' : self._get_product_active(instance),
             }
-            product_id.write(vals)
-            product_id.update_variant_ids(instance)
-        
-        self._cr.commit()
-        
+            product_id = self.search([('gt_product_id','=',str(products['id'])),('gt_shopify_instance_id','=',instance.id),('gt_shopify_product','=',True)])
 
-        if 'variants' in products and len(products['variants']) > 1:
-            value_id1 = []
-            value_id2 = []
-            value_id3 = []
-            product_product = []
-            for variant in products['variants']:
-                value_id_list = []
-                if 'option1' in variant and variant['option1'] != None and variant['option1'] != 'Default Title':
+            if not product_id:
+                self.create(vals)
+            else:
+                vals = {
+                    'name': products['title'] if 'title' in products else '',
+                    'type': "product",
+                    'gt_shopify_product':True,
+                    'gt_published_scope' : scopes,
+                    'gt_shopify_description': products['body_html'] if 'body_html' in products else '',
+                    'gt_vendor' : vendors,
+                    'gt_shopify_instance_id':instance.id,
+                    'gt_shopify_exported': True,
+                    'gt_shopify_product_type' : type_id,
+                    'gt_shopify_active' : product_id._get_product_active(instance)
+                }
+                product_id.write(vals)
+                product_id.update_variant_ids(instance)
+            
+            self._cr.commit()
+            
 
-                    value_id1 = product_attribute_option_obj.search([('name','=', str(variant['option1']))])
+            if 'variants' in products and len(products['variants']) > 1:
+                value_id1 = []
+                value_id2 = []
+                value_id3 = []
+                product_product = []
+                for variant in products['variants']:
+                    value_id_list = []
+                    if 'option1' in variant and variant['option1'] != None and variant['option1'] != 'Default Title':
 
-                    value_id_list.append(value_id1[0].id)
+                        value_id1 = product_attribute_option_obj.search([('name','=', str(variant['option1']))])
 
-                if 'option2' in variant and variant['option2'] != None:
+                        value_id_list.append(value_id1[0].id)
 
-                    value_id2 = product_attribute_option_obj.search([('name','=', str(variant['option2']))])
+                    if 'option2' in variant and variant['option2'] != None:
 
-                    value_id_list.append(value_id2[0].id)
+                        value_id2 = product_attribute_option_obj.search([('name','=', str(variant['option2']))])
 
-                if 'option3' in variant and variant['option3'] != None:
+                        value_id_list.append(value_id2[0].id)
 
-                    value_id3 = product_attribute_option_obj.search([('name','=', str(variant['option3']))])        
+                    if 'option3' in variant and variant['option3'] != None:
 
-                    value_id_list.append(value_id3[0].id)
+                        value_id3 = product_attribute_option_obj.search([('name','=', str(variant['option3']))])        
 
-                if value_id1 and value_id2 and value_id3:
+                        value_id_list.append(value_id3[0].id)
 
-                    product_product = product_obj.search([('default_code','=',str(products['id'])),('attribute_value_ids','in',[value_id1[0].id,value_id2[0].id,value_id3[0].id])])
+                    if value_id1 and value_id2 and value_id3:
 
-                elif value_id1 and value_id2:
+                        product_product = product_obj.search([('default_code','=',str(products['id'])),('attribute_value_ids','in',[value_id1[0].id,value_id2[0].id,value_id3[0].id])])
 
-                    product_product = product_obj.search([('default_code','=',str(products['id'])),('attribute_value_ids','in',[value_id1[0].id,value_id2[0].id])])
+                    elif value_id1 and value_id2:
 
-                elif value_id1 and value_id2:
+                        product_product = product_obj.search([('default_code','=',str(products['id'])),('attribute_value_ids','in',[value_id1[0].id,value_id2[0].id])])
 
-                    product_product = product_obj.search([('default_code','=',str(products['id'])),('attribute_value_ids','in',[value_id1[0].id])])
+                    elif value_id1 and value_id2:
 
-                if product_product:
-                    for product_ids in product_product:
-                        attribute_list = []
+                        product_product = product_obj.search([('default_code','=',str(products['id'])),('attribute_value_ids','in',[value_id1[0].id])])
 
-                        for att_idss in product_ids.attribute_value_ids:
-                            attribute_list.append(att_idss.id)
-                        if sorted(attribute_list, key=int) == sorted(value_id_list, key=int):
-                            product_ids.update_variant(variant,instance,log_id)
-        else:
-            for variant in products['variants']:
-                product_product = product_obj.search([('default_code','=',str(variant['product_id']))])
-                if product_product:
-                    product_product.update_variant(variant,instance,log_id)
+                    if product_product:
+                        for product_ids in product_product:
+                            attribute_list = []
+
+                            for att_idss in product_ids.attribute_value_ids:
+                                attribute_list.append(att_idss.id)
+                            if sorted(attribute_list, key=int) == sorted(value_id_list, key=int):
+                                product_ids.update_variant(variant,instance,log_id)
+            else:
+                for variant in products['variants']:
+                    product_product = product_obj.search([('default_code','=',str(variant['product_id']))])
+                    if product_product:
+                        product_product.update_variant(variant,instance,log_id)
 
                 
 
-        # except Exception as exc:
-        #     logger.error('Exception===================:  %s', exc)
-        #     log_line_obj.create({'name':'Create Product Template','description':exc,'create_date':date.today(),
-        #                             'shopify_log_id':log_id.id})
-        #     log_id.write({'description': 'Something went wrong'}) 
+        except Exception as exc:
+            logger.error('Exception===================:  %s', exc)
+            log_line_obj.create({'name':'Create Product Template','description':exc,'create_date':date.today(),
+                                    'shopify_log_id':log_id.id})
+            log_id.write({'description': 'Something went wrong'}) 
         return True
     
 
