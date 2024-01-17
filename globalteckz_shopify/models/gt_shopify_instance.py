@@ -180,19 +180,13 @@ class GTShopifyInstance(models.Model):
             shopify_url = str(self.gt_location)
             api_key = str(self.gt_api_key)
             api_pass = str(self.gt_password)
-            shop_url = shopify_url + 'admin/products.json?updated_at_min=' + str_updated_at_min
+            shop_url = shopify_url + 'admin/products.json?updated_at_min=' + str_updated_at_min + '&status=active&limit=250'
             response = requests.get( shop_url,auth=(api_key,api_pass))
             product_rs=json.loads(response.text)
             product_items = product_rs['products']
-            total_products_url = shopify_url + 'admin/api/2022-01/products/count.json?updated_at_min=' + str_updated_at_min   
+            total_products_url = shopify_url + 'admin/api/2022-01/products/count.json?updated_at_min=' + str_updated_at_min + '&status=active&limit=250'   
             total_products_response = requests.get(total_products_url, auth=(api_key,api_pass))
             total_products = json.loads(total_products_response.text)['count']
-            logger.error('TOTAL_PRODUCTS_URL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            logger.error(total_products_url)
-            logger.error('API_KEY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            logger.error(api_key)
-            logger.error('API_PASS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            logger.error(api_pass)
             total_count = 0
 
             if 'next' in response.links:
@@ -230,10 +224,10 @@ class GTShopifyInstance(models.Model):
         _logger.info("INIT %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
         shopify_instances = self.env['gt.shopify.instance'].search([])
         for rec in shopify_instances:
-            rec.gt_import_shopify_customers()
+            #rec.gt_import_shopify_customers()
             rec.gt_import_shopify_products()
-            rec.gt_import_shopify_orders()
-            rec.gt_export_shopify_stock()
+            #rec.gt_import_shopify_orders()
+            #rec.gt_export_shopify_stock()
             rec.shopify_created_at_min = datetime.now()
         _logger.info("FINISH %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
     
