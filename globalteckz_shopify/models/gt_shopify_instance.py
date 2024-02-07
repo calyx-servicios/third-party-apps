@@ -224,10 +224,10 @@ class GTShopifyInstance(models.Model):
         _logger.info("INIT %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
         shopify_instances = self.env['gt.shopify.instance'].search([])
         for rec in shopify_instances:
-            #rec.gt_import_shopify_customers()
+            rec.gt_import_shopify_customers()
             rec.gt_import_shopify_products()
-            #rec.gt_import_shopify_orders()
-            #rec.gt_export_shopify_stock()
+            rec.gt_import_shopify_orders()
+            rec.gt_export_shopify_stock()
             rec.shopify_created_at_min = datetime.now()
         _logger.info("FINISH %s: CRON SHOPIFY" % (datetime.now().strftime('%m/%d/%Y, %H:%M:%S')))
     
