@@ -793,9 +793,9 @@ class GTShopifyInstance(models.Model):
                                     self.env.cr.commit()
                                     logger.info('Update Order===================:  %s', sale_id.name)
 
-                                    if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
-                                        sale_id.action_confirm()
-                                        self.env.cr.commit()
+                                    # if sale_id.state in ['draft','sent'] and sale_id.gt_shopify_financial_status == 'paid':
+                                    #     sale_id.action_confirm()
+                                    self.env.cr.commit()
                             
                     except Exception as exc:
                         logger.error('Exception===================:  %s', exc)

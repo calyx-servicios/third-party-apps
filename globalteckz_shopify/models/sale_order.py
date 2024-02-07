@@ -58,5 +58,5 @@ class SaleOrder(models.Model):
         self.write({'gt_shopify_fulfillment_status': 'Not ready'if order['orders'][0]['fulfillment_status'] == None else order['orders'][0]['fulfillment_status']})
         self.write({'gt_shopify_order_status': self.gt_shopify_instance_id._get_shopify_status(self.gt_shopify_order_id)})
         
-        if self.state in ['draft','sent'] and self.gt_shopify_financial_status == 'paid':
-            self.action_confirm()
+        # if self.state in ['draft','sent'] and self.gt_shopify_financial_status == 'paid':
+        #     self.action_confirm()
