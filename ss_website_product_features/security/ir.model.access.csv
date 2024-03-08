@@ -1,7 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-
-access_feature_feature1,feature1,model_feature_feature,sales_team.group_sale_manager,1,1,1,1
-access_feature_feature2,feature2,model_feature_feature,sales_team.group_sale_salesman,1,1,1,1
-
-access_feature_feature3,feature3,model_feature_product,sales_team.group_sale_manager,1,1,1,1
-access_feature_feature4,feature4,model_feature_product,sales_team.group_sale_salesman,1,1,1,1
