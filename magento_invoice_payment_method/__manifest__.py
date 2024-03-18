@@ -4,11 +4,11 @@
         This module adds referential field for Magento Payment Method into invoice. 
     """,
     "author": "Calyx Servicios S.A.",
-    "maintainers": ["gpperez"],
+    "maintainers": ["gpperez","EnzoGonzalezDev"],
     "website": "https://odoo.calyx-cloud.com.ar/",
     "license": "AGPL-3",
     "category": "Connector",
-    "version": "13.0.1.0.0",
+    "version": "13.0.2.0.0",
     "development_status": "Production/Stable",
     "application": False,
     "installable": True,
